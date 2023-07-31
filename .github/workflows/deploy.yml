@@ -50,6 +50,8 @@ jobs:
     # docker build 과정
     - name: Docker build & push
       run: |
+          sudo usermod -aG docker $USER
+          newgrp docker
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -f Dockerfile -t ${{ secrets.DOCKER_REPO }}/open-run .
           docker push ${{ secrets.DOCKER_REPO }}/open-run
