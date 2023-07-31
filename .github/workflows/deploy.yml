@@ -1,0 +1,75 @@
+name: Spring-Boot-Manito-Amazon EC2
+
+on:
+  push:
+    branches:
+      - main
+env:
+  AWS_REGION: ap-northeast-2
+  S3_BUCKET_NAME: openrun-bucket
+  CODE_DEPLOY_APPLICATION_NAME: open-run
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: open-run-codedeploy
+
+permissions:
+  contents: read
+  
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    # (1) 기본 체크아웃
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # (2) JDK 17 세팅
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    
+    - name: Set application.yml 
+#    - uses: actions/checkout@v3
+    - run: mkdir -p ./src/main/resources
+    - run: touch ./src/main/resources/application.yml
+    - run: echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
+    - run: cat ./src/main/resources/application.yml
+    
+    - name: Make gradlew executable
+      run: chmod +x gradlew
+      shell: bash
+
+    # (3) Gradle build
+    - name: Build with Gradle
+      run: ./gradlew build
+      shell: bash
+
+      # 빌드 결과를 zip파일로 결과를 올리는 작업
+    - name: Make zip file
+      # 공식문서의 GITHUB_SHA를 확인. commit의 결과를 고유한 값으로 만들어주기 위함.
+      run: zip -r ./$GITHUB_SHA .
+      shell: bash
+      
+    # (4) AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    # (5) 빌드 결과물을 S3 버킷에 업로드
+    - name: Upload to AWS S3
+      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$GITHUB_SHA.zip
+
+    # (6) S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
+    - name: Deploy to AWS EC2 from S3
+      run: |
+        aws deploy create-deployment \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+          --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+          --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA.zip,bundleType=zip
