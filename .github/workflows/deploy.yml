@@ -8,7 +8,7 @@ env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: openrun-buket
   CODE_DEPLOY_APPLICATION_NAME: open-run
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: open-run-codedeploy
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: openrun-codedeploy-group
 
 permissions:
   contents: read
