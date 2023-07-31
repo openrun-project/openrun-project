@@ -53,8 +53,8 @@ jobs:
           sudo usermod -aG docker $USER
           newgrp docker
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -f Dockerfile -t ${{ secrets.DOCKER_REPO }}/open-run .
-          docker push ${{ secrets.DOCKER_REPO }}/open-run
+          docker build -f Dockerfile -t ${{ secrets.DOCKER_REPO }}/open-run:shh0429 .
+          docker push ${{ secrets.DOCKER_REPO }}/open-run:shh0429
 
     - name: Deploy
       uses: appleboy/ssh-action@master
