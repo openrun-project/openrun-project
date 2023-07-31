@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 PROJECT_NAME="app"
 JAR_PATH="/home/ubuntu/app/build/libs/app.jar"
