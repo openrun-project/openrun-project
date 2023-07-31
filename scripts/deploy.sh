@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PROJECT_NAME="app"
-JAR_PATH="/home/ubuntu/app/build/libs/app.jar"
+JAR_PATH="/home/ubuntu/app/build/libs/*.jar"
 DEPLOY_PATH=/home/ubuntu/$PROJECT_NAME/
 
 # 배포 log 파일 설정
