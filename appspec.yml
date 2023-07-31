@@ -7,7 +7,7 @@ files:
     overwrite: yes
 file_exists_behavior: OVERWRITE
 
-permission:
+permissions:
   - object: /
     pattern: "**"
     owner: ubuntu
