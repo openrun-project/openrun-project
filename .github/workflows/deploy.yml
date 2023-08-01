@@ -65,8 +65,8 @@ jobs:
         port: 22
         script: |
           sudo docker rm -f $(docker ps -qa)
-          sudo docker pull ${{ secrets.DOCKER_REPO }}/open-run
-          docker-compose up -d
+          sudo docker pull ${{ secrets.DOCKER_REPO }}/open-run:shh0429
+          /home/ubuntu/docker-compose up -d
           docker image prune -f
 
 #      # 빌드 결과를 zip파일로 결과를 올리는 작업
