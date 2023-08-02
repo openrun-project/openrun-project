@@ -1,5 +1,6 @@
 package com.project.openrun.product.entity;
 
+import com.project.openrun.global.entity.BaseAuditing;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class Product {
+public class Product extends BaseAuditing {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,4 +36,15 @@ public class Product {
     private Integer totalQuantity;
 
     private Integer wishCount;
+
+    public void decreaseQuantity(Integer count) {
+        if (this.getCurrentQuantity() < count) {
+            throw new IllegalArgumentException("상품의 재고가 부족합니다.");
+        }
+        this.currentQuantity -= count;
+    }
+
+    public void increaseQuantity(Integer count) {
+        this.currentQuantity += count;
+    }
 }
