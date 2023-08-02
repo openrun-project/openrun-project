@@ -2,11 +2,14 @@ package com.project.openrun.global.config;
 
 
 import com.project.openrun.auth.filter.JwtAuthenticationFilter;
+import com.project.openrun.auth.filter.JwtAuthorizationFilter;
 import com.project.openrun.auth.jwt.JwtUtil;
 import com.project.openrun.auth.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,16 +28,6 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public ExceptionHandlerFilter exceptionHandlerFilter() {
-        return new ExceptionHandlerFilter();
-    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -66,14 +59,15 @@ public class SecurityConfig {
         // 인증 및 권한 api 설정
         httpSecurity.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
-                        .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers("/api/members/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/products/**").permitAll()
                         .anyRequest().authenticated()
         );
 
         // 필터 순서
         httpSecurity.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         httpSecurity.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        httpSecurity.addFilterBefore(exceptionHandlerFilter(), JwtAuthorizationFilter.class);
 
         return httpSecurity.build();
     }

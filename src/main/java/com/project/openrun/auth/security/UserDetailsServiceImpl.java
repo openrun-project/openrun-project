@@ -3,8 +3,6 @@ package com.project.openrun.auth.security;
 
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.member.repository.MemberRepository;
-import com.sparta.lv5assignment.user.entity.User;
-import com.sparta.lv5assignment.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
