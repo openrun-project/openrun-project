@@ -157,12 +157,10 @@ public class JwtUtil {
             if (token != null) {
 
                 token = URLDecoder.decode(token, "utf-8");
-//
-//                String tokenValue = substringToken(token);
-//                if (!validateToken(tokenValue)) {
-//                    return null;
-//                }
-                return token;
+
+                String tokenValue = substringToken(token);
+
+                return tokenValue;
             }
         }catch(UnsupportedEncodingException e){
             return null;

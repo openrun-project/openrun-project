@@ -1,38 +1,29 @@
-package com.project.openrun.product.entity;
+package com.project.openrun.product.dto;
 
-import jakarta.persistence.*;
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Entity
+import static lombok.AccessLevel.PRIVATE;
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class Product {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id")
+@AllArgsConstructor(access = PRIVATE)
+@NoArgsConstructor(access = PROTECTED)
+public class AllProductResponseDto {
     private Long id;
-
-    @Column(nullable = false)
     private String productName;
-
     private String productImage;
-
     private Integer price;
-
     private String mallName;
-
     private Integer currentQuantity;
-
     private LocalDateTime eventStartTime;
-
     private String category;
-
     private Integer totalQuantity;
-
     private Integer wishCount;
 }
