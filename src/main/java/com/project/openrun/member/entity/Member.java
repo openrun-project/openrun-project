@@ -14,7 +14,11 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberId;
+    @Column(name = "member_id")
+    private Long id;
+
+    @Column(nullable = false)
+    private String memberName;
 
     @Column(unique = true , nullable = false)
     private String memberEmail;
@@ -22,7 +26,8 @@ public class Member {
     @Column(unique = false , nullable = false)
     private String memberPassword;
 
-    @Column
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private MemberRoleEnum memberRole;
 
 }

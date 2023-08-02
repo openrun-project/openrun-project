@@ -51,11 +51,11 @@ public class JwtUtil {
 
     //JWT 생성
     //UserNamePassword
-    public String createToken(String username, MemberRoleEnum role) {
+    public String createToken(String email, MemberRoleEnum role) {
         Date date = new Date();
 
         return BEARER_PREFIX + Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
 //                .setClaims(claims)
                 .claim(AUTHORIZATION_HEADER, role) // payload(body 정보)
                 .setExpiration(new Date(date.getTime() + TOKEN_EXPIRED_TIME))
@@ -150,7 +150,7 @@ public class JwtUtil {
         return null;
     }
 
-    public String getTokenFromHeader(HttpServletRequest request) {
+    public String getJwtFromHeader(HttpServletRequest request) {
         try {
 
             String token = request.getHeader(AUTHORIZATION_HEADER);
@@ -168,8 +168,5 @@ public class JwtUtil {
             return null;
         }
         return null;
-
     }
-
-
 }

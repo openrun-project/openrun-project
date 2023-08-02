@@ -2,8 +2,6 @@ package com.project.openrun.auth.security;
 
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.member.entity.MemberRoleEnum;
-import com.sparta.lv5assignment.user.entity.User;
-import com.sparta.lv5assignment.user.entity.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

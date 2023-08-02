@@ -17,6 +17,7 @@ public class Product {
     @Column(name = "product_id")
     private Long id;
 
+    @Column(nullable = false)
     private String productName;
     private String productImage;
     private Integer price;
@@ -25,6 +26,7 @@ public class Product {
     private LocalDateTime eventStartTime;
     private String category;
     private Integer totalQuantity;
-    private Integer wishCount;
+
+    private Integer wishCount = 0;
 
 }
