@@ -4,13 +4,13 @@ import com.project.openrun.global.entity.BaseAuditing;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.product.entity.Product;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import static jakarta.persistence.FetchType.*;
 
 
 @Entity
+@Getter
 @Builder
 @Table(name = "`orders`")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -22,19 +22,19 @@ public class Order extends BaseAuditing {
     @Column(name = "orders_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
     @Column(nullable = false)
-    private int count;
+    private Integer count;
 
     @Column(nullable = false)
-    private int totalPrice;
+    private Integer totalPrice;
 
 
 }
