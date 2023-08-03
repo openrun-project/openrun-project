@@ -35,13 +35,13 @@ public class OrderService {
         );
 
         return orders.stream().map(order -> {
-            return OrderResponseDto.builder()
-                    .id(order.getId())
-                    .productName(order.getProduct().getProductName())
-                    .price(order.getProduct().getPrice())
-                    .count(order.getCount())
-                    .mallName(order.getProduct().getMallName())
-                    .build();
+            return new OrderResponseDto(
+                    order.getId(),
+                    order.getProduct().getProductName(),
+                    order.getProduct().getPrice(),
+                    order.getProduct().getMallName(),
+                    order.getCount()
+            );
         }).collect(Collectors.toList());
     }
 

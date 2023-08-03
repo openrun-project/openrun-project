@@ -1,10 +1,9 @@
 package com.project.openrun.orders.dto;
 
 
-import lombok.Getter;
 
-@Getter
-public class OrderRequestDto {
+public record OrderRequestDto(
+         Integer count
+) {
 
-        private Integer count;
 }
