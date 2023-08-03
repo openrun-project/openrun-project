@@ -2,9 +2,8 @@ package com.project.openrun.member.dto;
 
 import lombok.Getter;
 
-@Getter
-public class MemberLoginRequestDto {
-    private String memberemail;
-    private String memberpassword;
 
-}
+public record MemberLoginRequestDto(
+        String memberemail,
+        String memberpassword
+) {}

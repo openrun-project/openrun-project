@@ -1,4 +1,4 @@
-package com.project.openrun.member;
+package com.project.openrun.member.controller;
 
 import com.project.openrun.member.dto.MemberLoginRequestDto;
 import com.project.openrun.member.dto.MemberSignupRequestDto;

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -53,7 +54,12 @@ public class NaverApiService {
         // 반환 결과
         NaverDto naverDto = restTemplate.exchange(voidRequestEntity, NaverDto.class).getBody();
 
+        if (ObjectUtils.isEmpty(naverDto.getNaverItemResponseDtoList())) {
+            return;
+        }
+
         List<Product> products = new ArrayList<>();
+
         naverDto.getNaverItemResponseDtoList().forEach((dto) -> {
 
             Product newProduct = Product.builder()
@@ -70,7 +76,7 @@ public class NaverApiService {
 
             products.add(newProduct);
         });
-
+        // bulk 연산 적용 테스트 확인 필요
         productRepository.saveAll(products);
 
     }

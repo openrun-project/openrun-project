@@ -43,17 +43,17 @@ public class ProductService {
         Product findProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품"));
 
-        return DetailProductResponseDto.builder()
-                .id(findProduct.getId())
-                .productImage(findProduct.getProductImage())
-                .productName(findProduct.getProductName())
-                .price(findProduct.getPrice())
-                .currentQuantity(findProduct.getCurrentQuantity())
-                .eventStartTime(findProduct.getEventStartTime())
-                .mallName(findProduct.getMallName())
-                .totalQuantity(findProduct.getTotalQuantity())
-                .category(findProduct.getCategory())
-                .wishCount(findProduct.getWishCount())
-                .build();
+        return new DetailProductResponseDto(
+                findProduct.getId(),
+                findProduct.getProductName(),
+                findProduct.getProductImage(),
+                findProduct.getPrice(),
+                findProduct.getMallName(),
+                findProduct.getCurrentQuantity(),
+                findProduct.getEventStartTime(),
+                findProduct.getCategory(),
+                findProduct.getTotalQuantity(),
+                findProduct.getWishCount()
+        );
     }
 }

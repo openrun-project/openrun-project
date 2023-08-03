@@ -3,20 +3,9 @@ package com.project.openrun.member.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-@Getter
-public class MemberSignupRequestDto {
-
-    @NotBlank
-    private String membername;
-    @NotBlank
-    private String memberpassword;
-
-    @Email
-    @NotBlank
-    private String memberemail;
-
-    //private MemberRoleEnum memberRole;
-
-
-
+public record MemberSignupRequestDto(
+        @NotBlank String membername,
+        @NotBlank String memberpassword,
+        @Email @NotBlank String memberemail
+) {
 }

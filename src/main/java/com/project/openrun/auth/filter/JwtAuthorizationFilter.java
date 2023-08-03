@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.PatternMatchUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -24,6 +25,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
 
+    // 토큰이 필요없는 api 리스트를 만들어 놓는다.
+//    private static final String[] whiteUrl = {"/api/user/**", "/css/*", "/js/*", "/error", "/"};
+    private static final String[] whiteUrl = {"/api/products", "/api/products/openrun"};
+
     public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
@@ -31,8 +36,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
-
+        log.info("[JwtAuthorizationFilter doFilterInternal] authorizationFilter 동작");
         String tokenValue = jwtUtil.getJwtFromHeader(req);
+        String url = req.getRequestURI();
 
         if (StringUtils.hasText(tokenValue)) {
 
@@ -41,13 +47,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+            // 위에서 명시된 리스트의 api 요청된 경우, filterChain.doFilter(req, res); 해주자.
+            if (!(StringUtils.hasText(url) && PatternMatchUtils.simpleMatch(whiteUrl, url) && req.getMethod().equals("GET"))) {
 
-            try {
-                setAuthentication(info.getSubject());
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                return;
+                Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+
+                try {
+                    setAuthentication(info.getSubject());
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                    return;
+                }
             }
         }
 

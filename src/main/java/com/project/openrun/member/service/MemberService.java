@@ -18,8 +18,8 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     public void signup(MemberSignupRequestDto memberSignupRequestDto) {
-        String email = memberSignupRequestDto.getMemberemail();
-        String password = passwordEncoder.encode(memberSignupRequestDto.getMemberpassword());
+        String email = memberSignupRequestDto.memberemail();
+        String password = passwordEncoder.encode(memberSignupRequestDto.memberpassword());
 
         if(memberRepository.findByMemberEmail(email).isPresent()){
             throw new IllegalArgumentException("중복된 이메일입니다.");
@@ -27,7 +27,7 @@ public class MemberService {
 
         Member member = Member.builder()
                 .memberEmail(email)
-                .memberName(memberSignupRequestDto.getMembername())
+                .memberName(memberSignupRequestDto.membername())
                 .memberPassword(password)
                 .memberRole(MemberRoleEnum.USER)
                 .build();
