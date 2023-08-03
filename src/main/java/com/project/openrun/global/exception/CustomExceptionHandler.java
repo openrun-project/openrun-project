@@ -17,7 +17,7 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler(MemberException.class)
-    public ResponseEntity<?> memberExceptionHandler(OrderException ex) {
+    public ResponseEntity<?> memberExceptionHandler(MemberException ex) {
         return ResponseEntity.status(ex.getHttpStatus()).body(ex.getErrorMsg());
     }
 
