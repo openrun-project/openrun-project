@@ -3,7 +3,6 @@ package com.project.openrun.member.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.extern.apachecommons.CommonsLog;
 
 @Entity
 @Getter

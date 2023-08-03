@@ -14,6 +14,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -53,7 +54,12 @@ public class NaverApiService {
                 .build();
 
         // 반환 결과
-        NaverDto naverDto = restTemplate.exchange(voidRequestEntity, NaverDto.class).getBody();
+        NaverDto naverDto;
+        try {
+            naverDto = restTemplate.exchange(voidRequestEntity, NaverDto.class).getBody();
+        } catch (RestClientException e) {
+            throw new NaverApiException(NaverApiErrorCode.WRONG_INPUT);
+        }
 
         if (ObjectUtils.isEmpty(naverDto.naverItemResponseDtoList())) {
             log.error("[NaverApiService createItemForNaverApi] no itemResponseDtoList");

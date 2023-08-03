@@ -9,7 +9,6 @@ import com.project.openrun.orders.entity.Order;
 import com.project.openrun.orders.repository.OrderRepository;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
-import com.project.openrun.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
