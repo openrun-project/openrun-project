@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class WIshService {
+public class WishService {
 
     private final WishRepository wishRepository;
     private final ProductRepository productRepository;

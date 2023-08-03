@@ -2,7 +2,7 @@ package com.project.openrun.wish.controller;
 
 import com.project.openrun.auth.security.UserDetailsImpl;
 import com.project.openrun.wish.dto.WishResponseDto;
-import com.project.openrun.wish.service.WIshService;
+import com.project.openrun.wish.service.WishService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/products")
 public class WishController {
 
-    private final WIshService wIshService;
+    private final WishService wishService;
 
     @PostMapping("/{productId}/wish")
     public WishResponseDto createWish (@PathVariable Long productId , @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return wIshService.createWish(productId, userDetails.getMember());
+        return wishService.createWish(productId, userDetails.getMember());
 
     }
     @DeleteMapping("/{productId}/wish")
     public WishResponseDto deleteWish (@PathVariable Long productId , @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return wIshService.deleteWish(productId, userDetails.getMember());
+        return wishService.deleteWish(productId, userDetails.getMember());
     }
 
 
