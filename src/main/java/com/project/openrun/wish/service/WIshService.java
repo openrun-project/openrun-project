@@ -1,5 +1,7 @@
 package com.project.openrun.wish.service;
 
+import com.project.openrun.global.exception.WishException;
+import com.project.openrun.global.exception.type.WishErrorCode;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
@@ -20,11 +22,11 @@ public class WIshService {
 
     public WishResponseDto createWish(Long productId, Member member) {
         Product product = productRepository.findById(productId).orElseThrow(() ->
-                new IllegalArgumentException("상품이 없습니다.")
+                new WishException(WishErrorCode.NOT_EXIST_PRODUCT)
         );
 
         if (wishRepository.findByProductAndMember(product, member).isPresent()) {
-            throw new IllegalArgumentException("이미 찜했습니다.");
+            throw new WishException(WishErrorCode.ALREADY_CHOOSE_WISH);
         }
         wishRepository.save(
                 Wish.builder()
@@ -32,6 +34,7 @@ public class WIshService {
                         .member(member)
                         .build()
         );
+
         product.addWish();
 
         return new WishResponseDto(product.getWishCount());
@@ -40,11 +43,11 @@ public class WIshService {
     public WishResponseDto deleteWish(Long productId, Member member) {
 
         Product product = productRepository.findById(productId).orElseThrow(() ->
-                new IllegalArgumentException("상품이 없습니다.")
+                 new WishException(WishErrorCode.NOT_EXIST_PRODUCT)
         );
 
         Wish wish = wishRepository.findByProductAndMember(product, member).orElseThrow(() ->
-                new IllegalArgumentException("찜한 상품이 아닙니다.")
+                 new WishException(WishErrorCode.NO_CHOOSE_WISH)
         );
 
         wishRepository.delete(wish);
