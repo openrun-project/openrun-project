@@ -1,9 +1,7 @@
 package com.project.openrun.member.dto;
 
-import com.project.openrun.member.entity.MemberRoleEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
 
 @Getter
 public class MemberSignupRequestDto {

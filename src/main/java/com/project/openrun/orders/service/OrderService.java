@@ -55,11 +55,11 @@ public class OrderService {
         Order order = Order.builder()
                 .member(member)
                 .product(product)
-                .count(orderRequestDto.getCount())
-                .totalPrice(product.getPrice() * orderRequestDto.getCount())
+                .count(orderRequestDto.count())
+                .totalPrice(product.getPrice() * orderRequestDto.count())
                 .build();
 
-        product.decreaseQuantity(orderRequestDto.getCount());
+        product.decreaseQuantity(orderRequestDto.count());
 
         orderRepository.save(order);
 

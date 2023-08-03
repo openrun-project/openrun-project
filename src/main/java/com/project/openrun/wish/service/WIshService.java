@@ -34,9 +34,7 @@ public class WIshService {
         );
         product.addWish();
 
-        return WishResponseDto.builder()
-                .wishCount(product.getWishCount())
-                .build();
+        return new WishResponseDto(product.getWishCount());
     }
 
     public WishResponseDto deleteWish(Long productId, Member member) {
@@ -53,8 +51,6 @@ public class WIshService {
 
         product.deleteWish();
 
-        return WishResponseDto.builder()
-                .wishCount(product.getWishCount())
-                .build();
+        return new WishResponseDto(product.getWishCount());
     }
 }

@@ -1,6 +1,5 @@
 package com.project.openrun.member.service;
 
-import com.project.openrun.member.dto.MemberLoginRequestDto;
 import com.project.openrun.member.dto.MemberSignupRequestDto;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.member.entity.MemberRoleEnum;
@@ -9,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @Transactional
