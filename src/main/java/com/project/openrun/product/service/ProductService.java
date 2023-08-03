@@ -24,19 +24,19 @@ public class ProductService {
     public List<AllProductResponseDto> getAllProducts() {
         return productRepository.findAll().stream()
                 .map((entity) ->
-                        AllProductResponseDto.builder()
-                                .id(entity.getId())
-                                .productImage(entity.getProductImage())
-                                .productName(entity.getProductName())
-                                .price(entity.getPrice())
-                                .currentQuantity(entity.getCurrentQuantity())
-                                .eventStartTime(entity.getEventStartTime())
-                                .mallName(entity.getMallName())
-                                .totalQuantity(entity.getTotalQuantity())
-                                .category(entity.getCategory())
-                                .wishCount(entity.getWishCount())
-                                .build()
-                ).collect(Collectors.toList());
+                        new AllProductResponseDto(
+                                entity.getId(),
+                                entity.getProductName(),
+                                entity.getProductImage(),
+                                entity.getPrice(),
+                                entity.getMallName(),
+                                entity.getCurrentQuantity(),
+                                entity.getEventStartTime(),
+                                entity.getCategory(),
+                                entity.getTotalQuantity(),
+                                entity.getWishCount()
+                        ))
+                .collect(Collectors.toList());
     }
 
     public DetailProductResponseDto getDetailProduct(Long productId) {
