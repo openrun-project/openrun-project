@@ -15,4 +15,29 @@ public class CustomExceptionHandler {
         log.error("Data Not Valid", ex);
         return ResponseEntity.status(400).build();
     }
+
+    @ExceptionHandler(MemberException.class)
+    public ResponseEntity<?> memberExceptionHandler(OrderException ex) {
+        return ResponseEntity.status(ex.getHttpStatus()).body(ex.getErrorMsg());
+    }
+
+    @ExceptionHandler(OrderException.class)
+    public ResponseEntity<?> orderExceptionHandler(OrderException ex) {
+        return ResponseEntity.status(ex.getHttpStatus()).body(ex.getErrorMsg());
+    }
+
+    @ExceptionHandler(NaverApiException.class)
+    public ResponseEntity<?> naverApiExceptionHandler(NaverApiException ex) {
+        return ResponseEntity.status(ex.getHttpStatus()).body(ex.getErrorMsg());
+    }
+
+    @ExceptionHandler(ProductException.class)
+    public ResponseEntity<String> productExceptionHandler(ProductException ex){
+        return ResponseEntity.status(ex.getHttpStatus()).body(ex.getErrorMsg());
+    }
+
+    @ExceptionHandler(WishException.class)
+    public ResponseEntity<?> wishExceptionHandler(WishException ex) {
+        return ResponseEntity.status(ex.getHttpStatus()).body(ex.getErrorMsg());
+    }
 }

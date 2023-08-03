@@ -1,5 +1,7 @@
 package com.project.openrun.orders.service;
 
+import com.project.openrun.global.exception.OrderException;
+import com.project.openrun.global.exception.type.OrderErrorCode;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.orders.dto.OrderRequestDto;
 import com.project.openrun.orders.dto.OrderResponseDto;
@@ -31,7 +33,7 @@ public class OrderService {
 //        Page<Tweets> retweets = reTweetsRepository.findAllByRetweets_Id(tweetId, pageable);
 
         List<Order> orders = orderRepository.findAllByMember(member).orElseThrow(
-                () -> new IllegalArgumentException("주문 내역이 없습니다.")
+                () -> new OrderException(OrderErrorCode.NOT_ORDER)
         );
 
         return orders.stream().map(order -> {
@@ -49,7 +51,7 @@ public class OrderService {
     public void postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {
 
         Product product = productRepository.findById(productId).orElseThrow(
-                () -> new IllegalArgumentException("해당 상품이 존재하지 않습니다.")
+                () -> new OrderException(OrderErrorCode.NOT_PRODUCT)
         );
 
         Order order = Order.builder()
@@ -68,11 +70,11 @@ public class OrderService {
     @Transactional
     public void deleteOrders(Long orderId, Member member) {
         Order order = orderRepository.findById(orderId).orElseThrow(
-                () -> new IllegalArgumentException("해당 주문 내역이 존재하지 않습니다.")
+                () -> new OrderException(OrderErrorCode.NOT_ORDER)
         );
 
         if (order.getMember().getId() != member.getId()) {
-            throw new IllegalArgumentException("해당 주문 내역을 삭제할 권한이 없습니다.");
+            throw new OrderException(OrderErrorCode.NOT_USER_ORDER);
 
         }
 
