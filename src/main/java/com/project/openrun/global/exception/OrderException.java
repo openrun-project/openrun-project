@@ -1,7 +1,6 @@
 package com.project.openrun.global.exception;
 
 import com.project.openrun.global.exception.type.OrderErrorCode;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 

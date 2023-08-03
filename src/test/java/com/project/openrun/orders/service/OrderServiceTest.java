@@ -2,25 +2,23 @@ package com.project.openrun.orders.service;
 
 import com.project.openrun.global.exception.OrderException;
 import com.project.openrun.member.entity.Member;
-import com.project.openrun.member.entity.MemberRoleEnum;
 import com.project.openrun.orders.dto.OrderRequestDto;
 import com.project.openrun.orders.dto.OrderResponseDto;
 import com.project.openrun.orders.entity.Order;
-import com.project.openrun.product.entity.Product;
 import com.project.openrun.orders.repository.OrderRepository;
+import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

@@ -3,7 +3,6 @@ package com.project.openrun.member.service;
 import com.project.openrun.global.exception.MemberException;
 import com.project.openrun.member.dto.MemberSignupRequestDto;
 import com.project.openrun.member.entity.Member;
-import com.project.openrun.member.entity.MemberRoleEnum;
 import com.project.openrun.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

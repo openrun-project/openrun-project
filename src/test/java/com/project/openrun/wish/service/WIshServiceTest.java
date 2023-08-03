@@ -2,7 +2,6 @@ package com.project.openrun.wish.service;
 
 import com.project.openrun.global.exception.WishException;
 import com.project.openrun.member.entity.Member;
-import com.project.openrun.member.entity.MemberRoleEnum;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
 import com.project.openrun.wish.dto.WishResponseDto;
@@ -16,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
