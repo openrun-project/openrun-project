@@ -5,9 +5,8 @@ import lombok.Getter;
 
 import java.util.List;
 
-@Getter
-public class NaverDto {
 
-    @JsonProperty("items")
-    private List<NaverItemResponseDto> naverItemResponseDtoList;
-}
+public record NaverDto(
+        @JsonProperty("items")
+        List<NaverItemResponseDto> naverItemResponseDtoList
+){}

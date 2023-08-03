@@ -1,9 +1,10 @@
 package com.project.openrun.product.api.service;
 
 
+import com.project.openrun.global.exception.NaverApiException;
+import com.project.openrun.global.exception.type.NaverApiErrorCode;
 import com.project.openrun.product.api.dto.CreateDataRequestDto;
 import com.project.openrun.product.api.dto.NaverDto;
-import com.project.openrun.product.api.dto.NaverItemResponseDto;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class NaverApiService {
 
     public void createItemForNaverApi(CreateDataRequestDto requestDto) {
 
-        URI uri = naverUriBuilderService.buildUriByQueryAndDisplayAndStart(requestDto.getQuery(), requestDto.getDisplay(), requestDto.getStart());
+        URI uri = naverUriBuilderService.buildUriByQueryAndDisplayAndStart(requestDto.query(), requestDto.display(), requestDto.start());
 
         // 보내줄 헤더 정보. 메타 정보
         RequestEntity<Void> voidRequestEntity = RequestEntity
@@ -60,7 +61,7 @@ public class NaverApiService {
 
         List<Product> products = new ArrayList<>();
 
-        naverDto.getNaverItemResponseDtoList().forEach((dto) -> {
+        naverDto.naverItemResponseDtoList().forEach((dto) -> {
 
             Product newProduct = Product.builder()
                     .price(Integer.valueOf(dto.getPrice()))

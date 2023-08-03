@@ -1,5 +1,7 @@
 package com.project.openrun.member.service;
 
+import com.project.openrun.global.exception.MemberException;
+import com.project.openrun.global.exception.type.MemberErrorCode;
 import com.project.openrun.member.dto.MemberSignupRequestDto;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.member.entity.MemberRoleEnum;
@@ -22,7 +24,7 @@ public class MemberService {
         String password = passwordEncoder.encode(memberSignupRequestDto.memberpassword());
 
         if(memberRepository.findByMemberEmail(email).isPresent()){
-            throw new IllegalArgumentException("중복된 이메일입니다.");
+            throw new MemberException(MemberErrorCode.DUPLICATE_EMAIL);
         }
 
         Member member = Member.builder()

@@ -24,6 +24,7 @@ public class NaverUriBuilderService {
         URI uri = uriBuilder.build().encode().toUri();
         log.info("[NaverUriBuilderService buildUriByQueryAndDisplayAndStart] uri: {}", uri);
 
+
         return uri;
     }
 }
