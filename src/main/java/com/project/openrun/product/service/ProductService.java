@@ -1,6 +1,8 @@
 package com.project.openrun.product.service;
 
 
+import com.project.openrun.global.exception.ProductException;
+import com.project.openrun.global.exception.type.ProductErrorCode;
 import com.project.openrun.product.dto.AllProductResponseDto;
 import com.project.openrun.product.dto.DetailProductResponseDto;
 import com.project.openrun.product.entity.Product;
@@ -10,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +25,11 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public List<AllProductResponseDto> getAllProducts() {
+        if (productRepository.findAll().isEmpty()) {
+            log.info("[ProductService getAllProducts] emptyList");
+            return Collections.emptyList();
+        }
+
         return productRepository.findAll().stream()
                 .map((entity) ->
                         new AllProductResponseDto(
@@ -41,7 +49,7 @@ public class ProductService {
 
     public DetailProductResponseDto getDetailProduct(Long productId) {
         Product findProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품"));
+                .orElseThrow(() -> new ProductException(ProductErrorCode.NO_PRODUCT_SEARCH));
 
         return new DetailProductResponseDto(
                 findProduct.getId(),

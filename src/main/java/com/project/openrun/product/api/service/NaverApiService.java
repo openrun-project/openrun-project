@@ -55,8 +55,9 @@ public class NaverApiService {
         // 반환 결과
         NaverDto naverDto = restTemplate.exchange(voidRequestEntity, NaverDto.class).getBody();
 
-        if (ObjectUtils.isEmpty(naverDto.getNaverItemResponseDtoList())) {
-            return;
+        if (ObjectUtils.isEmpty(naverDto.naverItemResponseDtoList())) {
+            log.error("[NaverApiService createItemForNaverApi] no itemResponseDtoList");
+            throw new NaverApiException(NaverApiErrorCode.NO_SEARCH_DATA);
         }
 
         List<Product> products = new ArrayList<>();
@@ -64,11 +65,11 @@ public class NaverApiService {
         naverDto.naverItemResponseDtoList().forEach((dto) -> {
 
             Product newProduct = Product.builder()
-                    .price(Integer.valueOf(dto.getPrice()))
-                    .productImage(dto.getImage())
-                    .productName(dto.getProductName())
-                    .category(requestDto.getQuery())
-                    .mallName(dto.getMallName())
+                    .price(Integer.valueOf(dto.price()))
+                    .productImage(dto.image())
+                    .productName(dto.productName())
+                    .category(requestDto.query())
+                    .mallName(dto.mallName())
                     .currentQuantity(30)    // 여기는 메서드로 랜덤하게 넣어주는 방향도 고려
                     .eventStartTime(setDate())
                     .totalQuantity(30)

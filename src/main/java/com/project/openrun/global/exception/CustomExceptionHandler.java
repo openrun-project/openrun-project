@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity DataValidException(MethodArgumentNotValidException ex){
+    public ResponseEntity dataValidException(MethodArgumentNotValidException ex){
         log.error("Data Not Valid", ex);
         return ResponseEntity.status(400).build();
     }
