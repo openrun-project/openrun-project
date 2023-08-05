@@ -5,10 +5,13 @@ import com.project.openrun.global.exception.ProductException;
 import com.project.openrun.global.exception.type.ProductErrorCode;
 import com.project.openrun.product.dto.AllProductResponseDto;
 import com.project.openrun.product.dto.DetailProductResponseDto;
+import com.project.openrun.product.dto.ProductSearchCondition;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,5 +66,10 @@ public class ProductService {
                 findProduct.getTotalQuantity(),
                 findProduct.getWishCount()
         );
+    }
+
+    public Page<AllProductResponseDto> searchAllProducts(ProductSearchCondition condition, Pageable pageable) {
+//        Page<AllProductResponseDto> allProductResponseDtos = productRepository.searchAllProducts(condition, pageable);
+        return null;
     }
 }

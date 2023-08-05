@@ -5,6 +5,7 @@ import com.project.openrun.global.exception.NaverApiException;
 import com.project.openrun.global.exception.type.NaverApiErrorCode;
 import com.project.openrun.product.api.dto.CreateDataRequestDto;
 import com.project.openrun.product.api.dto.NaverDto;
+import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -74,6 +75,7 @@ public class NaverApiService {
                     .eventStartTime(setDate())
                     .totalQuantity(30)
                     .wishCount(0)
+                    .status(OpenRunStatus.WAITING)
                     .build();
 
             products.add(newProduct);
@@ -84,8 +86,8 @@ public class NaverApiService {
     }
 
     private LocalDateTime setDate() {
-        LocalDate from = LocalDate.now();
-        LocalDate to = LocalDate.of(2023, Month.DECEMBER, 31);
+        LocalDate from = LocalDate.now().plusDays(1);
+        LocalDate to = LocalDate.of(2023, Month.AUGUST, 31);
 
         LocalDate randomDate = getRandomDateBetween(from, to);
 
@@ -103,4 +105,5 @@ public class NaverApiService {
 
         return from.plusDays(randomDays);
     }
+
 }

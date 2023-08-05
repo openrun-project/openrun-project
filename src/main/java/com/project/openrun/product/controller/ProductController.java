@@ -29,4 +29,10 @@ public class ProductController {
         return productService.getDetailProduct(productId);
     }
 
+//    @GetMapping("/search")
+//    public Page<AllProductResponseDto> searchAllProducts(ProductSearchCondition condition, Pageable pageable){
+//        return productService.searchAllProducts(condition, pageable);
+//
+//    }
+
 }

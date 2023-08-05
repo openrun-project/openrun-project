@@ -15,4 +15,9 @@ public record AllProductResponseDto (
     String category,
     Integer totalQuantity,
     Integer wishCount
-){}
+) {
+    public void AllProductResponseDto() {
+    }
+}
+
+
