@@ -220,3 +220,5 @@ gradle-app.setting
 /src/main/resources/application.yml
 /src/test/resources/application.yml
 # End of https://www.toptal.com/developers/gitignore/api/windows,database,macos,intellij+all,redis,java
+
+/src/main/generated/**
