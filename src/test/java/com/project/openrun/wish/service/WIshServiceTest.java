@@ -1,6 +1,5 @@
 package com.project.openrun.wish.service;
 
-import com.project.openrun.global.exception.WishException;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;

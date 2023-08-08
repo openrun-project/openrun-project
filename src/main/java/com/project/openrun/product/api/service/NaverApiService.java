@@ -1,8 +1,6 @@
 package com.project.openrun.product.api.service;
 
 
-import com.project.openrun.global.exception.NaverApiException;
-import com.project.openrun.global.exception.type.NaverApiErrorCode;
 import com.project.openrun.product.api.dto.CreateDataRequestDto;
 import com.project.openrun.product.api.dto.NaverDto;
 import com.project.openrun.product.entity.OpenRunStatus;

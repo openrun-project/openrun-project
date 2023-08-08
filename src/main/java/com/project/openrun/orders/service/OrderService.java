@@ -1,7 +1,6 @@
 package com.project.openrun.orders.service;
 
-import com.project.openrun.global.exception.OrderException;
-import com.project.openrun.global.exception.type.OrderErrorCode;
+import com.project.openrun.global.exception.type.ErrorCode;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.orders.dto.OrderRequestDto;
 import com.project.openrun.orders.dto.OrderResponseDto;
@@ -10,11 +9,14 @@ import com.project.openrun.orders.repository.OrderRepository;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.project.openrun.global.exception.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -24,16 +26,16 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
 
-    public List<OrderResponseDto> getOrders(Member member) {
-//        Sort.Direction direction = Sort.Direction.DESC;
-//        Sort sort = Sort.by(direction, "createdAt");
-//
-//        Pageable pageable = PageRequest.of(page, limit, sort);
-//        Page<Tweets> retweets = reTweetsRepository.findAllByRetweets_Id(tweetId, pageable);
+    public Page<OrderResponseDto> getOrders(Member member, Pageable pageable) {
 
-        List<Order> orders = orderRepository.findAllByMember(member).orElseThrow(
-                () -> new OrderException(OrderErrorCode.NOT_ORDER)
-        );
+        Page<Order> orders = orderRepository.findAllByMember(member, pageable);
+        if (orders.isEmpty()) {
+            throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("주문"));
+        }
+
+//        List<Order> orders = orderRepository.findAllByMember(member).orElseThrow(
+//                () -> new OrderException(OrderErrorCode.NOT_ORDER)
+//        );
 
         return orders.map(order -> {
             return new OrderResponseDto(
@@ -50,7 +52,7 @@ public class OrderService {
     public void postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {
 
         Product product = productRepository.findById(productId).orElseThrow(
-                () -> new OrderException(OrderErrorCode.NOT_PRODUCT)
+                () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
         );
 
         Order order = Order.builder()
@@ -69,12 +71,11 @@ public class OrderService {
     @Transactional
     public void deleteOrders(Long orderId, Member member) {
         Order order = orderRepository.findById(orderId).orElseThrow(
-                () -> new OrderException(OrderErrorCode.NOT_ORDER)
-        );
+                () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("주문")
+        ));
 
         if (order.getMember().getId() != member.getId()) {
-            throw new OrderException(OrderErrorCode.NOT_USER_ORDER);
-
+            throw new ResponseStatusException(NOT_AUTHORIZATION.getStatus(), NOT_AUTHORIZATION.formatMessage("주문"));
         }
 
         order.getProduct().increaseQuantity(order.getCount());

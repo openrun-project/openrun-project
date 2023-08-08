@@ -1,6 +1,5 @@
 package com.project.openrun.product.service;
 
-import com.project.openrun.global.exception.ProductException;
 import com.project.openrun.product.dto.AllProductResponseDto;
 import com.project.openrun.product.dto.DetailProductResponseDto;
 import com.project.openrun.product.entity.Product;

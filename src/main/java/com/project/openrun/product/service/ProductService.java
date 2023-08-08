@@ -1,8 +1,7 @@
 package com.project.openrun.product.service;
 
 
-import com.project.openrun.global.exception.ProductException;
-import com.project.openrun.global.exception.type.ProductErrorCode;
+import com.project.openrun.global.exception.type.ErrorCode;
 import com.project.openrun.product.dto.AllProductResponseDto;
 import com.project.openrun.product.dto.DetailProductResponseDto;
 import com.project.openrun.product.dto.ProductSearchCondition;
@@ -14,10 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import static com.project.openrun.global.exception.type.ErrorCode.NOT_FOUND_DATA;
 
 @Slf4j
 @Service
@@ -51,8 +49,9 @@ public class ProductService {
     }
 
     public DetailProductResponseDto getDetailProduct(Long productId) {
-        Product findProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductException(ProductErrorCode.NO_PRODUCT_SEARCH));
+        Product findProduct = productRepository.findById(productId).orElseThrow(
+                () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("해당 상품"))
+        );
 
         return new DetailProductResponseDto(
                 findProduct.getId(),

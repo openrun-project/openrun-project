@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 @Slf4j
@@ -16,28 +17,11 @@ public class CustomExceptionHandler {
         return ResponseEntity.status(400).build();
     }
 
-    @ExceptionHandler(MemberException.class)
-    public ResponseEntity<?> memberExceptionHandler(MemberException ex) {
-        return ResponseEntity.status(ex.getHttpStatus()).body(ex.getErrorMsg());
-    }
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<?> responseStatusException(ResponseStatusException ex) {
 
-    @ExceptionHandler(OrderException.class)
-    public ResponseEntity<?> orderExceptionHandler(OrderException ex) {
-        return ResponseEntity.status(ex.getHttpStatus()).body(ex.getErrorMsg());
-    }
-
-    @ExceptionHandler(NaverApiException.class)
-    public ResponseEntity<?> naverApiExceptionHandler(NaverApiException ex) {
-        return ResponseEntity.status(ex.getHttpStatus()).body(ex.getErrorMsg());
-    }
-
-    @ExceptionHandler(ProductException.class)
-    public ResponseEntity<String> productExceptionHandler(ProductException ex){
-        return ResponseEntity.status(ex.getHttpStatus()).body(ex.getErrorMsg());
-    }
-
-    @ExceptionHandler(WishException.class)
-    public ResponseEntity<?> wishExceptionHandler(WishException ex) {
-        return ResponseEntity.status(ex.getHttpStatus()).body(ex.getErrorMsg());
+        return ResponseEntity
+                .status(ex.getStatusCode())
+                .body(new ExceptionResponseDto(ex.getBody().getTitle(),ex.getBody().getDetail()));
     }
 }
