@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -100,7 +101,7 @@ class WIshServiceTest {
 
         // when & then
         // 이미 찜이 존재하면 WishException이 발생하는지 확인
-        assertThrows(WishException.class, () -> wishService.createWish(1L, member));
+        assertThrows(ResponseStatusException.class, () -> wishService.createWish(1L, member));
     }
 
     @Test
@@ -115,7 +116,7 @@ class WIshServiceTest {
 
         // when & then
         // 존재하지 않는 상품에 대해 WishException이 발생하는지 확인
-        assertThrows(WishException.class, () -> wishService.createWish(1L, member));
+        assertThrows(ResponseStatusException.class, () -> wishService.createWish(1L, member));
     }
 
 
@@ -178,7 +179,7 @@ class WIshServiceTest {
 
         // when & then
         // 찜이 존재하지 않으면 WishException이 발생하는지 확인
-        assertThrows(WishException.class, () -> wishService.deleteWish(1L, member));
+        assertThrows(ResponseStatusException.class, () -> wishService.deleteWish(1L, member));
     }
 
     @Test
@@ -192,7 +193,7 @@ class WIshServiceTest {
         when(productRepository.findById(any())).thenReturn(Optional.empty());
 
         //then
-        assertThrows(WishException.class, () -> wishService.deleteWish(1L, member));
+        assertThrows(ResponseStatusException.class, () -> wishService.deleteWish(1L, member));
     }
 
 }

@@ -43,7 +43,7 @@ public class OrderService {
                     order.getProduct().getMallName(),
                     order.getCount()
             );
-        }).collect(Collectors.toList());
+        });
     }
 
     @Transactional
