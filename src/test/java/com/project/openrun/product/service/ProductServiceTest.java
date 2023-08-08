@@ -90,7 +90,7 @@ class ProductServiceTest {
         Page<AllProductResponseDto> result = productService.getAllProducts(pageRequest);
 
         //then
-        assertThat(result.getContent().size()).isEqualTo(0);
+        assertThat(result).isNull();
     }
 
     @Test
