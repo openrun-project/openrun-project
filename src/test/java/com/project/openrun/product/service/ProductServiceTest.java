@@ -11,8 +11,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 
+import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -116,11 +122,11 @@ class ProductServiceTest {
     void test4() {
 
         //when
-        when(productRepository.findById(2L)).thenThrow(ProductException.class);
+        when(productRepository.findById(2L)).thenThrow(ResponseStatusException.class);
 
         //then
         assertThatThrownBy(
                         () -> productService.getDetailProduct(2L)
-                ).isInstanceOf(ProductException.class);
+                ).isInstanceOf(ResponseStatusException.class);
     }
 }

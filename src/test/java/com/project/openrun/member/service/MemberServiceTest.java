@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -62,7 +63,7 @@ class MemberServiceTest {
         when(passwordEncoder.encode(anyString())).thenReturn("비밀번호");
 
         //When
-        assertThrows(MemberException.class, () -> memberService.signup(memberSignupRequestDto));
+        assertThrows(ResponseStatusException.class, () -> memberService.signup(memberSignupRequestDto));
 
         //Then
         verify(memberRepository, never()).save(any(Member.class));
