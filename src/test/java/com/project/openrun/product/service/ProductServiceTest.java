@@ -40,56 +40,59 @@ class ProductServiceTest {
     private ProductService productService;
 
 
-//    @Test
-//    @DisplayName("상품 전체 조회 가능한가")
-//    void test() {
-//        // given
-//        Product product1 = Product.builder()
-//                .id(1L)
-//                .productName("test")
-//                .price(1000)
-//                .wishCount(0)
-//                .mallName("test mall")
-//                .totalQuantity(30)
-//                .currentQuantity(30)
-//                .category("category")
-//                .productImage("test Image")
-//                .eventStartTime(LocalDateTime.now())
-//                .build();
-//
-//        Product product2 = Product.builder()
-//                .id(2L)
-//                .productName("test2")
-//                .price(1000)
-//                .wishCount(0)
-//                .mallName("test mall2")
-//                .totalQuantity(30)
-//                .currentQuantity(30)
-//                .category("category2")
-//                .productImage("test Image2")
-//                .eventStartTime(LocalDateTime.now())
-//                .build();
-//
-//        //when
-//        when(productRepository.findAll()).thenReturn(Arrays.asList(product1, product2));
-//        List<AllProductResponseDto> result = productService.getAllProducts();
-//
-//
-//        //then
-//        assertThat(result).extracting("productName").containsExactly("test", "test2");
-//        assertThat(result.size()).isEqualTo(2);
-//    }
-//
-//    @Test
-//    @DisplayName("상품이 없을 때 빈 리스트가 나오는가")
-//    void test1() {
-//        //when
-//        when(productRepository.findAll()).thenReturn(Collections.emptyList());
-//        List<AllProductResponseDto> result = productService.getAllProducts();
-//
-//        //then
-//        assertThat(result.size()).isEqualTo(0);
-//    }
+    @Test
+    @DisplayName("상품 전체 조회 가능한가")
+    void test() {
+        // given
+        Product product1 = Product.builder()
+                .id(1L)
+                .productName("test")
+                .price(1000)
+                .wishCount(0)
+                .mallName("test mall")
+                .totalQuantity(30)
+                .currentQuantity(30)
+                .category("category")
+                .productImage("test Image")
+                .eventStartTime(LocalDateTime.now())
+                .build();
+
+        Product product2 = Product.builder()
+                .id(2L)
+                .productName("test2")
+                .price(1000)
+                .wishCount(0)
+                .mallName("test mall2")
+                .totalQuantity(30)
+                .currentQuantity(30)
+                .category("category2")
+                .productImage("test Image2")
+                .eventStartTime(LocalDateTime.now())
+                .build();
+
+        //when
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        when(productRepository.findAll(pageRequest)).thenReturn(new PageImpl<>(Arrays.asList(product1, product2), pageRequest, 2));
+        Page<AllProductResponseDto> result = productService.getAllProducts(pageRequest);
+
+
+        //then
+        assertThat(result).extracting("productName").containsExactly("test", "test2");
+        assertThat(result.getContent().size()).isEqualTo(2);
+
+    }
+
+    @Test
+    @DisplayName("상품이 없을 때 빈 리스트가 나오는가")
+    void test1() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        //when
+        when(productRepository.findAll(pageRequest)).thenReturn(new PageImpl<>(Collections.emptyList(), pageRequest, 0));
+        Page<AllProductResponseDto> result = productService.getAllProducts(pageRequest);
+
+        //then
+        assertThat(result.getContent().size()).isEqualTo(0);
+    }
 
     @Test
     @DisplayName("특정 상품 조회가 가능한가")

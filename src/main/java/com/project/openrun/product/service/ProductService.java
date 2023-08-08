@@ -34,21 +34,6 @@ public class ProductService {
             return null;
         }
 
-//        return productRepository.findAll(pageable).stream()
-//                .map((entity) ->
-//                        new AllProductResponseDto(
-//                                entity.getId(),
-//                                entity.getProductName(),
-//                                entity.getProductImage(),
-//                                entity.getPrice(),
-//                                entity.getMallName(),
-//                                entity.getCurrentQuantity(),
-//                                entity.getEventStartTime(),
-//                                entity.getCategory(),
-//                                entity.getTotalQuantity(),
-//                                entity.getWishCount()
-//                        ))
-//                .collect(Collectors.toList());
         Page<Product> result = productRepository.findAll(pageable);
         return result.map((entity) ->
                 new AllProductResponseDto(

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -25,6 +26,9 @@ import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static com.project.openrun.global.exception.type.ErrorCode.NO_SEARCH_DATA;
+import static com.project.openrun.global.exception.type.ErrorCode.WRONG_INPUT;
 
 @Slf4j
 @Service
@@ -91,12 +95,12 @@ public class NaverApiService {
                     try {
                         naverDto = restTemplate.exchange(voidRequestEntity, NaverDto.class).getBody();
                     } catch (RestClientException e) {
-                        throw new NaverApiException(NaverApiErrorCode.WRONG_INPUT);
+                        throw new ResponseStatusException(WRONG_INPUT.getStatus(), WRONG_INPUT.getMessageTemplate());
                     }
 
                     if (ObjectUtils.isEmpty(naverDto.naverItemResponseDtoList())) {
                         log.error("[NaverApiService createItemForNaverApi] no itemResponseDtoList");
-                        throw new NaverApiException(NaverApiErrorCode.NO_SEARCH_DATA);
+                        throw new ResponseStatusException(NO_SEARCH_DATA.getStatus(),NO_SEARCH_DATA.getMessageTemplate());
                     }
 
                     List<Product> products = new ArrayList<>();
@@ -126,7 +130,6 @@ public class NaverApiService {
                     });
                     // bulk 연산 적용 테스트 확인 필요
                     productRepository.saveAll(products);
-//                    System.out.println("products = " + products);
 
                     i += 100;
 

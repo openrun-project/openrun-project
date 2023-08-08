@@ -35,7 +35,7 @@ public class OrderService {
                 () -> new OrderException(OrderErrorCode.NOT_ORDER)
         );
 
-        return orders.stream().map(order -> {
+        return orders.map(order -> {
             return new OrderResponseDto(
                     order.getId(),
                     order.getProduct().getProductName(),
