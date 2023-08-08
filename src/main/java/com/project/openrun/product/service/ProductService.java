@@ -1,10 +1,10 @@
 package com.project.openrun.product.service;
 
 
-import com.project.openrun.global.exception.type.ErrorCode;
 import com.project.openrun.product.dto.AllProductResponseDto;
 import com.project.openrun.product.dto.DetailProductResponseDto;
 import com.project.openrun.product.dto.ProductSearchCondition;
+import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -91,5 +91,21 @@ public class ProductService {
                         product.getWishCount()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public Page<AllProductResponseDto> getOpenrunAllProducts(Pageable pageable) {
+        return productRepository.findAllByStatusOrderByWishCountDesc(OpenRunStatus.OPEN, pageable)
+                .map((product) -> new AllProductResponseDto(
+                        product.getId(),
+                        product.getProductName(),
+                        product.getProductImage(),
+                        product.getPrice(),
+                        product.getMallName(),
+                        product.getCurrentQuantity(),
+                        product.getEventStartTime(),
+                        product.getCategory(),
+                        product.getTotalQuantity(),
+                        product.getWishCount()
+                ));
     }
 }

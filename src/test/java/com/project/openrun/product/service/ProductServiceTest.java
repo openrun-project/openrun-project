@@ -2,6 +2,7 @@ package com.project.openrun.product.service;
 
 import com.project.openrun.product.dto.AllProductResponseDto;
 import com.project.openrun.product.dto.DetailProductResponseDto;
+import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -178,4 +179,46 @@ class ProductServiceTest {
         assertThat(result.size()).isEqualTo(3);
         assertThat(result).extracting("productName").containsExactly("test3", "test2", "test1");
     }
+
+    @Test
+    @DisplayName("오픈런 상품 조회 테스트")
+    public void getOpenrunAllProductsTest(){
+        // given
+        Product product1 = Product.builder()
+                .id(1L)
+                .productName("test1")
+                .price(1000)
+                .wishCount(1)
+                .mallName("test mall")
+                .totalQuantity(30)
+                .currentQuantity(30)
+                .category("category")
+                .productImage("test Image")
+                .eventStartTime(LocalDateTime.now())
+                .status(OpenRunStatus.OPEN)
+                .build();
+
+        Product product2 = Product.builder()
+                .id(2L)
+                .productName("test2")
+                .price(1000)
+                .wishCount(2)
+                .mallName("test mall2")
+                .totalQuantity(30)
+                .currentQuantity(30)
+                .category("category2")
+                .productImage("test Image2")
+                .eventStartTime(LocalDateTime.now())
+                .status(OpenRunStatus.OPEN)
+                .build();
+
+        //when
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        when(productRepository.findAllByStatusOrderByWishCountDesc(OpenRunStatus.OPEN, pageRequest)).thenReturn(new PageImpl<>(Arrays.asList(product2, product1), pageRequest, 2));
+        Page<AllProductResponseDto> openrunAllProducts = productService.getOpenrunAllProducts(pageRequest);
+
+        //then
+        assertThat(openrunAllProducts).extracting("productName").containsExactly("test2", "test1");
+    }
+
 }

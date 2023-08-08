@@ -41,4 +41,12 @@ public class ProductController {
     public List<AllProductResponseDto> getTopCountProducts(@PathVariable("count") Long count) {
         return productService.getTopCountProducts(count);
     }
+
+    @GetMapping("/openrun")
+    public Page<AllProductResponseDto> getOpenrunAllProducts(Pageable pageable){
+        return  productService.getOpenrunAllProducts(pageable);
+    }
+
+
+
 }
