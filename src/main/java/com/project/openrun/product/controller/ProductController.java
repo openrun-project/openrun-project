@@ -3,8 +3,11 @@ package com.project.openrun.product.controller;
 
 import com.project.openrun.product.dto.AllProductResponseDto;
 import com.project.openrun.product.dto.DetailProductResponseDto;
+import com.project.openrun.product.dto.ProductSearchCondition;
 import com.project.openrun.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,10 +32,10 @@ public class ProductController {
         return productService.getDetailProduct(productId);
     }
 
-//    @GetMapping("/search")
-//    public Page<AllProductResponseDto> searchAllProducts(ProductSearchCondition condition, Pageable pageable){
-//        return productService.searchAllProducts(condition, pageable);
-//
-//    }
+    @GetMapping("/search")
+    public Page<AllProductResponseDto> searchAllProducts(ProductSearchCondition condition, Pageable pageable){
+        return productService.searchAllProducts(condition, pageable);
+
+    }
 
 }
