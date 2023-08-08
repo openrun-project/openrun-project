@@ -84,7 +84,8 @@ public class ProductService {
     }
 
     public Page<AllProductResponseDto> searchAllProducts(ProductSearchCondition condition, Pageable pageable) {
-//        Page<AllProductResponseDto> allProductResponseDtos = productRepository.searchAllProducts(condition, pageable);
-        return null;
+        Page<AllProductResponseDto> allProductResponseDtos = productRepository.searchAllProducts(condition, pageable);
+
+        return allProductResponseDtos;
     }
 }
