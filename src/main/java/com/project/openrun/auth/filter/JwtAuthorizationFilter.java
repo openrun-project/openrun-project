@@ -26,7 +26,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final UserDetailsServiceImpl userDetailsService;
 
     // 토큰이 필요없는 api 리스트를 만들어 놓는다.
-    private static final String[] whiteUrl = {"/api/products", "/api/products/openrun"};
+    private static final String[] whiteUrl = {"/api/products", "/api/products/openrun", "/api/products/wishcount/**"};
 
     public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
         this.jwtUtil = jwtUtil;
