@@ -1,7 +1,5 @@
 package com.project.openrun.member.service;
 
-import com.project.openrun.global.exception.MemberException;
-import com.project.openrun.global.exception.type.MemberErrorCode;
 import com.project.openrun.member.dto.MemberSignupRequestDto;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.member.entity.MemberRoleEnum;
@@ -10,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import static com.project.openrun.global.exception.type.ErrorCode.*;
 
 @Service
 @Transactional
@@ -24,7 +25,7 @@ public class MemberService {
         String password = passwordEncoder.encode(memberSignupRequestDto.memberpassword());
 
         if(memberRepository.findByMemberEmail(email).isPresent()){
-            throw new MemberException(MemberErrorCode.DUPLICATE_EMAIL);
+            throw new ResponseStatusException(NOT_AUTHORIZATION.getStatus(), NOT_AUTHORIZATION.formatMessage("이미 존재하는 이메일입니다."));
         }
 
         Member member = Member.builder()

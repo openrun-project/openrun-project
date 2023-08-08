@@ -6,10 +6,12 @@ import com.project.openrun.orders.dto.OrderRequestDto;
 import com.project.openrun.orders.dto.OrderResponseDto;
 import com.project.openrun.orders.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -19,10 +21,11 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    public List<OrderResponseDto> getOrders(
-            @AuthenticationPrincipal UserDetailsImpl userDetails
+    public Page<OrderResponseDto> getOrders(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            Pageable pageable
     ) {
-        return orderService.getOrders(userDetails.getMember());
+        return orderService.getOrders(userDetails.getMember(), pageable);
     }
 
     @PostMapping("/{productId}")
