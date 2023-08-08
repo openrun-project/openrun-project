@@ -112,7 +112,7 @@ public class OrderServiceTest {
         ResponseStatusException orderException = assertThrows(ResponseStatusException.class,
                 () -> orderService.getOrders(member, pageable));
 
-        assertEquals("주문 내역이 존재하지 않습니다.", orderException.getMessage());
+        assertEquals("400 BAD_REQUEST \"데이터가 존재하지 않습니다. 사유 : 주문\"", orderException.getMessage());
     }
 
     @Test
@@ -166,7 +166,7 @@ public class OrderServiceTest {
         );
 
         // then
-        assertEquals("해당 상품이 존재하지 않습니다.", OrderException.getMessage());
+        assertEquals("400 BAD_REQUEST \"데이터가 존재하지 않습니다. 사유 : 상품\"", OrderException.getMessage());
     }
 
     @Test
@@ -227,7 +227,7 @@ public class OrderServiceTest {
         ResponseStatusException orderException = assertThrows(ResponseStatusException.class, () -> orderService.deleteOrders(order.getId(), member2));
 
         // then
-        assertEquals("주문을 취소할 권한이 없습니다.", orderException.getMessage());
+        assertEquals("400 BAD_REQUEST \"권한이 없습니다. 사유 : 주문\"", orderException.getMessage());
     }
 
     @Test
@@ -245,6 +245,6 @@ public class OrderServiceTest {
         ResponseStatusException orderException = assertThrows(ResponseStatusException.class, () -> orderService.deleteOrders(orderId, member));
 
         // then
-        assertEquals("주문 내역이 존재하지 않습니다.", orderException.getMessage());
+        assertEquals("400 BAD_REQUEST \"데이터가 존재하지 않습니다. 사유 : 주문\"", orderException.getMessage());
     }
 }
