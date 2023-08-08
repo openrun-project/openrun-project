@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.project.openrun.global.exception.type.ErrorCode.NOT_FOUND_DATA;
 
 @Slf4j
@@ -71,5 +74,22 @@ public class ProductService {
         Page<AllProductResponseDto> allProductResponseDtos = productRepository.searchAllProducts(condition, pageable);
 
         return allProductResponseDtos;
+    }
+
+    public List<AllProductResponseDto> getTopCountProducts(Long count) {
+        return productRepository.findTopCountProduct(count).stream()
+                .map((product) -> new AllProductResponseDto(
+                        product.getId(),
+                        product.getProductName(),
+                        product.getProductImage(),
+                        product.getPrice(),
+                        product.getMallName(),
+                        product.getCurrentQuantity(),
+                        product.getEventStartTime(),
+                        product.getCategory(),
+                        product.getTotalQuantity(),
+                        product.getWishCount()
+                ))
+                .collect(Collectors.toList());
     }
 }

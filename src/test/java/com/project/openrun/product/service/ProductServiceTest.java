@@ -13,11 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-
-import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -130,5 +127,55 @@ class ProductServiceTest {
         assertThatThrownBy(
                         () -> productService.getDetailProduct(2L)
                 ).isInstanceOf(ResponseStatusException.class);
+    }
+
+    @Test
+    @DisplayName("인기 상품 조회 테스트")
+    void test5() {
+        // given
+        Product product1 = Product.builder()
+                .id(1L)
+                .productName("test1")
+                .price(1000)
+                .wishCount(1)
+                .mallName("test mall")
+                .totalQuantity(30)
+                .currentQuantity(30)
+                .category("category")
+                .productImage("test Image")
+                .eventStartTime(LocalDateTime.now())
+                .build();
+
+        Product product2 = Product.builder()
+                .id(2L)
+                .productName("test2")
+                .price(1000)
+                .wishCount(2)
+                .mallName("test mall2")
+                .totalQuantity(30)
+                .currentQuantity(30)
+                .category("category2")
+                .productImage("test Image2")
+                .eventStartTime(LocalDateTime.now())
+                .build();
+
+        Product product3 = Product.builder()
+                .id(3L)
+                .productName("test3")
+                .price(1000)
+                .wishCount(3)
+                .mallName("test mall2")
+                .totalQuantity(30)
+                .currentQuantity(30)
+                .category("category2")
+                .productImage("test Image2")
+                .eventStartTime(LocalDateTime.now())
+                .build();
+
+        when(productRepository.findTopCountProduct(3L)).thenReturn(Arrays.asList(product3, product2, product1));
+        List<AllProductResponseDto> result = productService.getTopCountProducts(3L);
+
+        assertThat(result.size()).isEqualTo(3);
+        assertThat(result).extracting("productName").containsExactly("test3", "test2", "test1");
     }
 }

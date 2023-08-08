@@ -35,7 +35,10 @@ public class ProductController {
     @GetMapping("/search")
     public Page<AllProductResponseDto> searchAllProducts(ProductSearchCondition condition, Pageable pageable){
         return productService.searchAllProducts(condition, pageable);
-
     }
 
+    @GetMapping("/wishcount/{count}")
+    public List<AllProductResponseDto> getTopCountProducts(@PathVariable("count") Long count) {
+        return productService.getTopCountProducts(count);
+    }
 }
