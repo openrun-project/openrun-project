@@ -2,12 +2,12 @@ package com.project.openrun.orders.repository;
 
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.orders.entity.Order;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-import java.util.Optional;
-
+import org.springframework.data.domain.Pageable;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    Optional<List<Order>> findAllByMember(Member member);
+    Page<Order> findAllByMember(Member member, Pageable pageable);
+
 }

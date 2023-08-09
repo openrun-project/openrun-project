@@ -23,6 +23,33 @@ public class ProductRepositoryImpl implements  ProductRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
 
+    @Override
+    public Page<AllProductResponseDto> findAllByDto(Pageable pageable) {
+        List<AllProductResponseDto> content = queryFactory
+                .select(Projections.constructor(AllProductResponseDto.class,
+                        product.id,
+                        product.productName,
+                        product.productImage,
+                        product.price,
+                        product.mallName,
+                        product.currentQuantity,
+                        product.eventStartTime,
+                        product.category,
+                        product.totalQuantity,
+                        product.wishCount
+                )).from(product)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(product.count())
+                .from(product);
+
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
 
     @Override
     public Page<AllProductResponseDto> searchAllProducts(ProductSearchCondition condition, Pageable pageable){
@@ -62,6 +89,8 @@ public class ProductRepositoryImpl implements  ProductRepositoryCustom{
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
+
+
 
     private OrderSpecifier<?> sortMethod(String sortBy, Boolean isAsc) {
         if(isAsc ==null){
