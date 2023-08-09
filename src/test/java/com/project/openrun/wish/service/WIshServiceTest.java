@@ -54,7 +54,7 @@ class WIshServiceTest {
         //productRepository.findById() 메서드가 호출될 때,
         // 어떤 값이든 인자로 받아 Optional.of(product)를 반환하도록 설정합니다.
         // 상품을 찾아줌
-        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        when(productRepository.findWithLockById(any())).thenReturn(Optional.of(product));
 
         //wishRepository.findByProductAndMember() 메서드가 호출될 때,
         // 어떤 값이든 인자로 받아 Optional.empty()를 반환하도록 설정합니다.
@@ -95,7 +95,7 @@ class WIshServiceTest {
                 .product(product)
                 .build();
 
-        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        when(productRepository.findWithLockById(any())).thenReturn(Optional.of(product));
         when(wishRepository.findByProductAndMember(any(), any())).thenReturn(Optional.of(wish));
 
         // when & then
@@ -111,7 +111,7 @@ class WIshServiceTest {
                 .id(1L)
                 .build();
 
-        when(productRepository.findById(any())).thenReturn(Optional.empty());
+        when(productRepository.findWithLockById(any())).thenReturn(Optional.empty());
 
         // when & then
         // 존재하지 않는 상품에 대해 WishException이 발생하는지 확인
@@ -141,7 +141,7 @@ class WIshServiceTest {
         //productRepository.findById() 메서드가 호출될 때,
         // 어떤 값이든 인자로 받아 Optional.of(product)를 반환하도록 설정합니다.
         // 상품을 찾아줌
-        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        when(productRepository.findWithLockById(any())).thenReturn(Optional.of(product));
 
         //wishRepository.findByProductAndMember() 메서드가 호출될 때,
         // 어떤 값이든 인자로 받아 Optional.of(wish)를 반환하도록 설정합니다.
@@ -173,7 +173,7 @@ class WIshServiceTest {
                 .wishCount(0)
                 .build();
 
-        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        when(productRepository.findWithLockById(any())).thenReturn(Optional.of(product));
         when(wishRepository.findByProductAndMember(any(), any())).thenReturn(Optional.empty());
 
         // when & then
@@ -189,7 +189,7 @@ class WIshServiceTest {
                 .id(1L)
                 .build();
         //when
-        when(productRepository.findById(any())).thenReturn(Optional.empty());
+        when(productRepository.findWithLockById(any())).thenReturn(Optional.empty());
 
         //then
         assertThrows(ResponseStatusException.class, () -> wishService.deleteWish(1L, member));
