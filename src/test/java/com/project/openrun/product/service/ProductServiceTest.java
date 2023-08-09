@@ -41,40 +41,41 @@ class ProductServiceTest {
     @DisplayName("상품 전체 조회 가능한가")
     void test() {
         // given
-        Product product1 = Product.builder()
-                .id(1L)
-                .productName("test")
-                .price(1000)
-                .wishCount(0)
-                .mallName("test mall")
-                .totalQuantity(30)
-                .currentQuantity(30)
-                .category("category")
-                .productImage("test Image")
-                .eventStartTime(LocalDateTime.now())
-                .build();
+        AllProductResponseDto product1 = new AllProductResponseDto(
+                1L
+                ,"test1"
+                ,"test image1"
+                ,0
+                ,"test mall1"
+                ,30
+                ,LocalDateTime.now()
+                ,"category1"
+                ,30
+                ,0
+        );
 
-        Product product2 = Product.builder()
-                .id(2L)
-                .productName("test2")
-                .price(1000)
-                .wishCount(0)
-                .mallName("test mall2")
-                .totalQuantity(30)
-                .currentQuantity(30)
-                .category("category2")
-                .productImage("test Image2")
-                .eventStartTime(LocalDateTime.now())
-                .build();
+        AllProductResponseDto product2 = new AllProductResponseDto(
+                2L
+                ,"test2"
+                ,"test image2"
+                ,0
+                ,"test mall2"
+                ,30
+                ,LocalDateTime.now()
+                ,"category2"
+                ,30
+                ,0
+        );
+
 
         //when
         PageRequest pageRequest = PageRequest.of(0, 10);
-        when(productRepository.findAll(pageRequest)).thenReturn(new PageImpl<>(Arrays.asList(product1, product2), pageRequest, 2));
+        when(productRepository.findAllByDto(pageRequest)).thenReturn(new PageImpl<>(Arrays.asList(product1, product2), pageRequest, 2));
         Page<AllProductResponseDto> result = productService.getAllProducts(pageRequest);
 
 
         //then
-        assertThat(result).extracting("productName").containsExactly("test", "test2");
+        assertThat(result).extracting("productName").containsExactly("test1", "test2");
         assertThat(result.getContent().size()).isEqualTo(2);
 
     }
@@ -84,7 +85,7 @@ class ProductServiceTest {
     void test1() {
         PageRequest pageRequest = PageRequest.of(0, 10);
         //when
-        when(productRepository.findAll(pageRequest)).thenReturn(new PageImpl<>(Collections.emptyList(), pageRequest, 0));
+        when(productRepository.findAllByDto(pageRequest)).thenReturn(new PageImpl<>(Collections.emptyList(), pageRequest, 0));
         Page<AllProductResponseDto> result = productService.getAllProducts(pageRequest);
 
         //then

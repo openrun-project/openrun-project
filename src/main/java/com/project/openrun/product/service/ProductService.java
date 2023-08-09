@@ -29,26 +29,29 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public Page<AllProductResponseDto> getAllProducts(Pageable pageable) {
-        if (productRepository.findAll(pageable).isEmpty()) {
+        if (productRepository.findAllByDto(pageable).isEmpty()) {
             log.info("[ProductService getAllProducts] emptyList");
 //            return Collections.emptyList();
             return null;
         }
 
-        Page<Product> result = productRepository.findAll(pageable);
-        return result.map((entity) ->
-                new AllProductResponseDto(
-                        entity.getId(),
-                        entity.getProductName(),
-                        entity.getProductImage(),
-                        entity.getPrice(),
-                        entity.getMallName(),
-                        entity.getCurrentQuantity(),
-                        entity.getEventStartTime(),
-                        entity.getCategory(),
-                        entity.getTotalQuantity(),
-                        entity.getWishCount()
-                ));
+        Page<AllProductResponseDto> result = productRepository.findAllByDto(pageable);
+
+        return result;
+
+//        return result.map((entity) ->
+//                new AllProductResponseDto(
+//                        entity.getId(),
+//                        entity.getProductName(),
+//                        entity.getProductImage(),
+//                        entity.getPrice(),
+//                        entity.getMallName(),
+//                        entity.getCurrentQuantity(),
+//                        entity.getEventStartTime(),
+//                        entity.getCategory(),
+//                        entity.getTotalQuantity(),
+//                        entity.getWishCount()
+//                ));
     }
 
     public DetailProductResponseDto getDetailProduct(Long productId) {
