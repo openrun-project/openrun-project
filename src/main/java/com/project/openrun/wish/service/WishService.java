@@ -22,7 +22,7 @@ public class WishService {
     private final ProductRepository productRepository;
 
     public WishResponseDto createWish(Long productId, Member member) {
-        Product product = productRepository.findById(productId).orElseThrow(() ->
+        Product product = productRepository.findWithLockById(productId).orElseThrow(() ->
                 new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품")
         ));
 
@@ -43,7 +43,7 @@ public class WishService {
 
     public WishResponseDto deleteWish(Long productId, Member member) {
 
-        Product product = productRepository.findById(productId).orElseThrow(() ->
+        Product product = productRepository.findWithLockById(productId).orElseThrow(() ->
                 new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
         );
 
