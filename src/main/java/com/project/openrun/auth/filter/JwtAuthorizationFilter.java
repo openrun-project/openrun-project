@@ -35,7 +35,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
-        log.info("[JwtAuthorizationFilter doFilterInternal] authorizationFilter 동작");
+        log.info("[JwtAuthorizationFilter doFilterInternal] authorizationFilter 동작 "+req.getRequestURL().toString());
         String tokenValue = jwtUtil.getJwtFromHeader(req);
         String url = req.getRequestURI();
 
