@@ -68,7 +68,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void deleteOrders(Long orderId, Member member) {
+    public void deleteOrders(Long orderId, Member member) throws ResponseStatusException {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("주문")
         ));

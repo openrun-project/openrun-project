@@ -17,7 +17,7 @@ $(document).ready(function () {
                 let mallName = data['mallName'];
 
                 let html = `<div class="col-md-3">
-                                    <div class="card">
+                                    <div class="card" onclick="window.location.href='/openrun/detail/${productId}'">
                                         <img src="${productImage}" class="card-img-top" alt="...">
                                         <div class="card-body">
                                             <h5 class="card-title">${productName}</h5>

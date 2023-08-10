@@ -19,7 +19,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>,ProductR
     @Query(value = "select * from product p where p.event_start_time >= now() order by p.wish_count desc limit :count", nativeQuery = true)
     List<Product> findTopCountProduct(@Param("count") Long count);
 
-    Page<Product> findAllByStatusOrderByWishCountDesc(OpenRunStatus openRunStatus, Pageable pageable);
+    Page<Product> findAllByStatusOrderByWishCountDescProductNameDesc(OpenRunStatus openRunStatus, Pageable pageable);
 
 
     @Modifying(flushAutomatically = true)

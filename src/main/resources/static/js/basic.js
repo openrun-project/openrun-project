@@ -1,4 +1,4 @@
-$(document).ready(function() {
+이$(document).ready(function() {
     const token = localStorage.getItem("Authorization")
     console.log("token", token)
     $("#nav-items").empty()

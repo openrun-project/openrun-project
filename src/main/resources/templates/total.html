@@ -11,10 +11,10 @@
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">전체 상품</a>
+                        <a class="nav-link active" href="/openrun/total">전체 상품</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">오픈런 상품</a>
+                        <a class="nav-link" href="/openrun/page/or">오픈런 상품</a>
                     </li>
                 </ul>
             </div>
@@ -25,33 +25,20 @@
                 <tr>
                     <th scope="col">상품 번호</th>
                     <th scope="col">카테고리</th>
-                    <th scope="col">가게 이름</th>
+                    <th scope="col">업체명</th>
                     <th scope="col">상품명</th>
                     <th scope="col">가격</th>
                 </tr>
                 </thead>
                 <tbody id="product-list">
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>@twitter</td>
-                </tr>
+                       <!--페이징 처리-->
                 </tbody>
             </table>
-            <div id="pagination"></div>
+            <div class="row justify-content-center">
+                <nav id="pagination" aria-label="Product Pagination">
+                    <!--<ul class="pagination"></ul>-->
+                </nav>
+            </div>
         </div>
     </div>
 </div>

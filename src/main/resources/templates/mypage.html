@@ -14,10 +14,10 @@
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">전체 상품</a>
+                        <a class="nav-link active" href="/openrun/total">전체 상품</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">오픈런 상품</a>
+                        <a class="nav-link" href="/openrun/page/or">오픈런 상품</a>
                     </li>
                 </ul>
             </div>
@@ -29,7 +29,13 @@
                 <!--여기 나의 관심 상품 목록 나오는 곳!!-->
 
             </div>
+            <div class="row justify-content-center">
+                <nav id="wishpagination" aria-label="Product Pagination">
+                    <!--<ul class="pagination"></ul>-->
+                </nav>
+            </div>
         </div>
+
 
         <div class="container mt-4">
             <h3>구매 내역</h3>
@@ -48,7 +54,13 @@
                 <!-- 여기에 JavaScript를 사용하여 동적으로 구매 내역을 추가합니다. -->
                 </tbody>
             </table>
+            <div class="row justify-content-center">
+                <nav id="orderpagination"> <!--aria-label="Product Pagination"-->
+                    <!--<ul class="pagination"></ul>-->
+                </nav>
+            </div>
         </div>
+
     </div>
 </div>
 
@@ -57,15 +69,4 @@
 
 <script type="text/javascript" th:src="@{/js/basic.js}"></script>
 <script type="text/javascript" th:src="@{/js/mypage.js}"></script>
-
-
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-
 </html>
