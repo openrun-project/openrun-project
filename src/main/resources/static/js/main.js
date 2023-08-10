@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    let count = 3;
+    let count = 10;
     $.ajax({
         type: "GET",
         url: `/api/products/wishcount/${count}`,
@@ -9,6 +9,7 @@ $(document).ready(function () {
         .done(function (json) {
 
             json.forEach((data) => {
+                let productId = data['id'];
                 let productName = data['productName'];
                 let productImage = data['productImage'];
                 let productCategory = data['category'];
@@ -20,8 +21,10 @@ $(document).ready(function () {
                                         <img src="${productImage}" class="card-img-top" alt="...">
                                         <div class="card-body">
                                             <h5 class="card-title">${productName}</h5>
+                                            <p class="card-text">${mallName}</p>
                                             <p class="card-text">${price}</p>
-                                            <a href="#" class="btn btn-primary">Buy Now</a>
+                                            <p class="card-text">${productCategory}</p>
+                                            <a href="/openrun/detail/${productId}" class="btn btn-primary">Buy Now</a>
                                         </div>
                                     </div>
                                 </div>`
@@ -67,6 +70,20 @@ function onLogin() {
             window.location.href = '/openrun/main'
         });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
