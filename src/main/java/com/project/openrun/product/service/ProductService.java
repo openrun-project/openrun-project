@@ -69,7 +69,8 @@ public class ProductService {
                 findProduct.getEventStartTime(),
                 findProduct.getCategory(),
                 findProduct.getTotalQuantity(),
-                findProduct.getWishCount()
+                findProduct.getWishCount(),
+                findProduct.getStatus()
         );
     }
 
