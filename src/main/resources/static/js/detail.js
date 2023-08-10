@@ -1,27 +1,30 @@
 let productId = window.location.pathname.split('/')[3];
 let status = "";
+let token = localStorage.getItem("Authorization");
+let isWish = false;
+let wishCount = 0;
 $(document).ready(function () {
-    console.log("productId", productId);
+
     $.ajax({
         type: "GET",
         url: `/api/products/${productId}`,
         contentType: "application/json",
     }).done(function (json) {
         console.log(json);
-            let productId = json['id'];
-            let productName = json['productName'];
-            let productImage = json['productImage'];
-            let productCategory = json['category'];
-            let price = json['price'];
-            let mallName = json['mallName'];
-            let wishCount = json['wishCount'];
-            status = json['status'];
+        let productId = json['id'];
+        let productName = json['productName'];
+        let productImage = json['productImage'];
+        let productCategory = json['category'];
+        let price = json['price'];
+        let mallName = json['mallName'];
+        wishCount = json['wishCount'];
+        status = json['status'];
 
-            // 카운트다운 타이머 설정
-            let eventDate = new Date(json['eventStartTime']);
-            let endTime = new Date(eventDate);
-            endTime.setDate(endTime.getDate() + 1);  // 다음날
-            endTime.setHours(0, 0, 0, 0);
+        // 카운트다운 타이머 설정
+        let eventDate = new Date(json['eventStartTime']);
+        let endTime = new Date(eventDate);
+        endTime.setDate(endTime.getDate() + 1);  // 다음날
+        endTime.setHours(0, 0, 0, 0);
 
 
         $("#product-container").empty();
@@ -40,7 +43,7 @@ $(document).ready(function () {
                                     </div>
                                     <button class="btn btn-primary btn-lg" onclick="order()">구매</button>
                                     
-                                    <button class="btn btn-primary btn-lg">찜 ${wishCount}</button>
+                                    <button class="btn btn-primary btn-lg" id="wish-btn" onclick="onWish()">찜 ${wishCount}</button>
                                 </div>
                             </div>
                             <div class="row mt-5">
@@ -53,15 +56,37 @@ $(document).ready(function () {
 
         updateCountdown(eventDate, endTime, status);
 
-        setInterval(function() {
+        setInterval(function () {
             updateCountdown(eventDate, endTime, status);
         }, 1000);
 
+    }).fail(function (jqXHR, textStatus) {
+        alert("상품 조회 실패!");
+        window.location.href = '/openrun/main'
+    });
+
+    // 로그인 상태일 때만 찜 조회
+    if (token != null) { // 로그인 상태
+        $.ajax({
+            type: "GET",
+            url: `/api/products/${productId}/wish/user`,
+            contentType: "application/json",
+            headers: {
+                'Authorization': token
+            },
+        }).done(function (json) {
+            console.log(json);
+            isWish = json['isWish'];
+            if (isWish) {
+                $("#wish-btn").text("찜 취소" + wishCount);
+            } else {
+                $("#wish-btn").text("찜 하기" + wishCount);
+            }
         }).fail(function (jqXHR, textStatus) {
-            alert("상품 조회 실패!");
-            window.location.href = '/openrun/main'
         });
+    }
 });
+
 function updateCountdown(eventDate, endTime, status) {
     let now = new Date();
     let timeDiff = endTime - now;
@@ -72,41 +97,88 @@ function updateCountdown(eventDate, endTime, status) {
     if (timeDiff <= 0 || status === "CLOSE") {
         clearInterval(updateCountdown);
         document.getElementById("countdown-timer").textContent = "판매 기간이 종료되었습니다!";
-    }else if(status === "WAITING") {
+    } else if (status === "WAITING") {
         document.getElementById("countdown-timer").textContent = `판매 기간이 아닙니다! 판매날짜는 : ${eventDate} 입니다!`;
-    }else {
+    } else {
         document.getElementById("countdown-timer").textContent = `남은 시간: ${hours}시간 ${minutes}분 ${seconds}초`;
     }
 }
 
-function order(){
-    // if ($("#quantity").val() < 1) {
-    //     alert("구매 수량은 1개 이상이어야 합니다.");
-    //     return;
-    // }
-    // if (!confirm("구매하시겠습니까?")) {
-    //     return;
-    // }
-    // if(localStorage.getItem("Authorization") === null){
-    //     alert("로그인이 필요합니다!");
-    //     return;
-    // }
-    // if(status === "WAITING" || status === "CLOSE"){
-    //     alert("판매 기간이 아닙니다!");
-    //     return;
-    // }
+function order() {
+    if (localStorage.getItem("Authorization") === null) {
+        alert("로그인이 필요합니다!");
+        return;
+    }
+    if ($("#quantity").val() < 1) {
+        alert("구매 수량은 1개 이상이어야 합니다.");
+        return;
+    }
+    if (!confirm("구매하시겠습니까?")) {
+        return;
+    }
+    if (status === "WAITING" || status === "CLOSE") {
+        alert("판매 기간이 아닙니다!");
+        return;
+    }
     $.ajax({
         type: "POST",
         url: `/api/orders/${productId}`,
         contentType: "application/json",
+        headers: {
+            'Authorization': token
+        },
         data: JSON.stringify({count: $("#quantity").val()}),
     }).done(function (json) {
-        console.log(json);
         alert("구매 성공");
+        window.location.reload();
     }).fail(function (jqXHR, textStatus) {
-        console.log(jqXHR)
-        console.log(textStatus)
         alert("구매 실패");
-        // window.location.reload();
+        window.location.reload();
     });
+}
+
+function onWish() {
+    if (localStorage.getItem("Authorization") === null) {
+        alert("로그인이 필요합니다!");
+        return;
+    }
+    if (isWish) {
+        if (!confirm("찜을 취소하시겠습니까?")) {
+            return;
+        }
+        $.ajax({
+            type: "DELETE",
+            url: `/api/products/${productId}/wish`,
+            contentType: "application/json",
+            headers: {
+                'Authorization': token
+            },
+        }).done(function (json) {
+            alert("찜 취소 성공");
+            isWish = false
+            wishCount = wishCount - 1
+            $("#wish-btn").text("찜 하기 " + wishCount);
+        }).fail(function (jqXHR, textStatus) {
+            alert("찜 취소 실패");
+        });
+    } else {
+        if (!confirm("찜 하시겠습니까?")) {
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: `/api/products/${productId}/wish`,
+            contentType: "application/json",
+            headers: {
+                'Authorization': token
+            },
+        }).done(function (json) {
+            alert("찜 성공");
+            isWish = true
+            wishCount = wishCount + 1
+            $("#wish-btn").text("찜 취소 " + wishCount);
+        }).fail(function (jqXHR, textStatus) {
+            alert("찜 실패");
+        });
+    }
 }
