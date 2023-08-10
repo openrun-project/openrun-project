@@ -1,10 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"/>
 
+<body>
+<!-- 1. 페이지 우상단 위치에 로그인, 회원가입, 마이 페이지 선택 탭 존재 -->
+<nav th:replace="~{fragments/headertop :: headertop}"></nav>
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">전체 상품</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">오픈런 상품</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container mt-5">
+            <table class="table">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">상품 번호</th>
+                    <th scope="col">카테고리</th>
+                    <th scope="col">가게 이름</th>
+                    <th scope="col">상품명</th>
+                    <th scope="col">가격</th>
+                </tr>
+                </thead>
+                <tbody id="product-list">
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>@fat</td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td>Larry</td>
+                    <td>the Bird</td>
+                    <td>@twitter</td>
+                </tr>
+                </tbody>
+            </table>
+            <div id="pagination"></div>
+        </div>
+    </div>
+</div>
 </body>
+<script type="text/javascript" th:src="@{/js/basic.js}"></script>
+<script type="text/javascript" th:src="@{/js/total.js}"></script>
 </html>
