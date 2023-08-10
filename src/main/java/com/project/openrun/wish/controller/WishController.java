@@ -1,12 +1,9 @@
 package com.project.openrun.wish.controller;
 
 import com.project.openrun.auth.security.UserDetailsImpl;
-import com.project.openrun.wish.dto.WishProductResponseDto;
 import com.project.openrun.wish.dto.WishResponseDto;
 import com.project.openrun.wish.service.WishService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,14 +22,6 @@ public class WishController {
     @DeleteMapping("/{productId}/wish")
     public WishResponseDto deleteWish (@PathVariable Long productId , @AuthenticationPrincipal UserDetailsImpl userDetails){
         return wishService.deleteWish(productId, userDetails.getMember());
-    }
-
-    @GetMapping("/wish")
-    public Page<WishProductResponseDto> getMyWishProduct(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            Pageable pageable
-    ) {
-        return wishService.getMyWishProduct(userDetails.getMember(), pageable);
     }
 
 

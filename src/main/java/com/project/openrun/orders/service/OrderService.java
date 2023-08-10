@@ -1,5 +1,6 @@
 package com.project.openrun.orders.service;
 
+import com.project.openrun.global.exception.type.ErrorCode;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.orders.dto.OrderRequestDto;
 import com.project.openrun.orders.dto.OrderResponseDto;
@@ -14,7 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.project.openrun.global.exception.type.ErrorCode.NOT_FOUND_DATA;
+
+import static com.project.openrun.global.exception.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
