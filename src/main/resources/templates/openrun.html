@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}">
+    <style>
+        .pagination {
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        .search-form {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+<!-- 1. 페이지 우상단 위치에 로그인, 회원가입, 마이 페이지 선택 탭 존재 -->
+<nav th:replace="~{fragments/headertop :: headertop}"></nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- 2. 메인페이지 좌측 바에 전체 상품, 오픈런 상품 페이지 선택 탭 존재 -->
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">전체 상품</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">오픈런 상품</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+
+        <div class="container mt-5">
+            <div class="row mb-4">
+                <div class="col text-center">
+                    <h1>Product List</h1>
+                </div>
+            </div>
+            <div class="row mb-4 justify-content-center search-form">
+                <div class="col-6 text-center">
+                    <form class="form-inline">
+                        <input class="form-control mr-sm-2 w-75" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+            <div class="row" id="product-row"></div>
+            <div class="row justify-content-center">
+                <nav id="pagination" aria-label="Product Pagination">
+                    <ul class="pagination"></ul>
+                </nav>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+</body>
+<script type="text/javascript" th:src="@{/js/basic.js}"></script>
+<script type="text/javascript" th:src="@{/js/openrun.js}"></script>
+
+</html>
