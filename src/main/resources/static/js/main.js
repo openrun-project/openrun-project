@@ -75,6 +75,20 @@ function onLogin() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function getAuthTokenFromCookie() {
     return document.cookie.split(';').find(
             cookie => cookie.trim().startsWith('Authorization='))?.split('=')[1]
