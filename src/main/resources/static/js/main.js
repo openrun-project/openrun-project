@@ -9,6 +9,7 @@ $(document).ready(function () {
         .done(function (json) {
 
             json.forEach((data) => {
+                let productId = data['id'];
                 let productName = data['productName'];
                 let productImage = data['productImage'];
                 let productCategory = data['category'];
