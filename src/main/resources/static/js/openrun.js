@@ -1,24 +1,28 @@
 var currentPage = 0;
 var totalPages = 0;
 
-$(document).ready(function() {
-    fetchProducts(0); // Fetch initial page on page load
+//페이지 접속시 자동실행
+fetchProducts(0); // Fetch initial page on page load
 
-    $('#pagination').on('click', 'a', function(e) {
-        e.preventDefault(); // Prevent default link behavior
-        var page = parseInt($(this).text()) - 1;
-        fetchProducts(1);
-    });
+//이게 페이징에서 클릭시
+$('#pagination').on('click', 'a', function (e) {
+    e.preventDefault(); // Prevent default link behavior
+    var page = parseInt($(this).text().replace("[", "").replace("]", "")) - 1; // 2 - 1
+    fetchProducts(page)
 });
 
 
+
+
 function fetchProducts(page) {
+    let size = 16;
     $.ajax({
         type: "GET",
-        url: '/api/products/openrun',
-        dataType: "json",
-        data: { page: page, size: 10 }, // Adjust the page size as needed
-        success: function(data) {
+        url: `/api/products/openrun?page=${page}&size=${size}`,
+        // dataType: "json",
+        /*data: JSON.stringify({ page: page, size: 10 }), // Adjust the page size as needed*/
+        contentType: "json",
+        success: function (data) {
             console.log(data)
 
             currentPage = data.number;
@@ -46,7 +50,7 @@ function displayData(data) {
         let mallName = products['mallName'];
 
         let html = `<div class="col-md-3">
-                                    <div class="card">
+                                    <div class="card" onclick="window.location.href='/openrun/detail/${productId}'">
                                         <img src="${productImage}" class="card-img-top" alt="...">
                                         <div class="card-body">
                                             <h5 class="card-title">${productName}</h5>
@@ -70,6 +74,7 @@ function updatePagination() {
     /*페이징의 끝 페이지를 계산합니다. startPage에서 9를 더한 값과 totalPages - 1 중 작은 값을 선택합니다. 이렇게 하면 최대 10개의 페이지 버튼이 표시됩니다.*/
     var endPage = Math.min(startPage + 9, totalPages - 1);
 
+    /* << */
     if (startPage > 0) {
         pagination.append('<a href="#" onclick="fetchProducts(' + (startPage - 1) + ')">&laquo;</a>');
     }
@@ -78,10 +83,13 @@ function updatePagination() {
         if (i === currentPage) {
             pagination.append('<span class="current-page">[' + (i + 1) + ']</span>');
         } else {
-            pagination.append('<a href="#" onclick="fetchProducts(' + i + ')">[' + (i + 1) + ']</a>');
+            pagination.append('<a href="#">' +
+                '[' + (i + 1) + ']' +
+                '</a>');
         }
     }
 
+    /* >> */
     if (endPage < totalPages - 1) {
         pagination.append('<a href="#" onclick="fetchProducts(' + (endPage + 1) + ')">&raquo;</a>');
     }

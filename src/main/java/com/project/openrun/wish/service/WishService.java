@@ -3,6 +3,7 @@ package com.project.openrun.wish.service;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
+import com.project.openrun.wish.dto.IsWishResponseDto;
 import com.project.openrun.wish.dto.WishProductResponseDto;
 import com.project.openrun.wish.dto.WishResponseDto;
 import com.project.openrun.wish.entity.Wish;
@@ -77,5 +78,18 @@ public class WishService {
                     wish.getProduct().getProductImage()
             );
         });
+    }
+
+    public IsWishResponseDto getProductWishUser(Long productId, Member member) {
+
+        Product product = productRepository.findWithLockById(productId).orElseThrow(() ->
+                new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품")
+                ));
+
+        if(wishRepository.findByProductAndMember(product, member).isPresent()) {
+            return new IsWishResponseDto(true);
+        }
+
+        return new IsWishResponseDto(false);
     }
 }

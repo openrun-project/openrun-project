@@ -17,7 +17,7 @@ $(document).ready(function () {
                 let mallName = data['mallName'];
 
                 let html = `<div class="col-md-3">
-                                    <div class="card">
+                                    <div class="card" onclick="window.location.href='/openrun/detail/${productId}'">
                                         <img src="${productImage}" class="card-img-top" alt="...">
                                         <div class="card-body">
                                             <h5 class="card-title">${productName}</h5>
@@ -41,53 +41,35 @@ $(document).ready(function () {
 
 
 
-function onLogin() {
-    let loginemail = $('#loginemail').val();
-    let loginpassword = $('#loginpassword').val();
-
-    $.ajax({
-        type: "POST",
-        url: `/api/members/login`,
-        contentType: "application/json",
-        data: JSON.stringify({memberemail: loginemail, memberpassword: loginpassword}),
-    })
-        .done(function (res, status, xhr) {
-
-            const token = xhr.getResponseHeader('Authorization');
-            alert("Login Success");
-
-            console.log(token);
-
-            localStorage.setItem("Authorization", token)
-
-            // $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-            //     jqXHR.setRequestHeader('Authorization', token);
-            // });
-            window.location.href = '/openrun/main'
-        })
-        .fail(function (jqXHR, textStatus) {
-            alert("Login Fail");
-            window.location.href = '/openrun/main'
-        });
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// function onLogin() {
+//     let loginemail = $('#loginemail').val();
+//     let loginpassword = $('#loginpassword').val();
+//
+//     $.ajax({
+//         type: "POST",
+//         url: `/api/members/login`,
+//         contentType: "application/json",
+//         data: JSON.stringify({memberemail: loginemail, memberpassword: loginpassword}),
+//     })
+//         .done(function (res, status, xhr) {
+//
+//             const token = xhr.getResponseHeader('Authorization');
+//             alert("Login Success");
+//
+//             console.log(token);
+//
+//             localStorage.setItem("Authorization", token)
+//
+//             // $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+//             //     jqXHR.setRequestHeader('Authorization', token);
+//             // });
+//             window.location.href = '/openrun/main'
+//         })
+//         .fail(function (jqXHR, textStatus) {
+//             alert("Login Fail");
+//             window.location.href = '/openrun/main'
+//         });
+// }
 
 function getAuthTokenFromCookie() {
     return document.cookie.split(';').find(
