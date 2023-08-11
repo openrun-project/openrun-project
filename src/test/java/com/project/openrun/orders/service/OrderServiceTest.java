@@ -132,7 +132,7 @@ public class OrderServiceTest {
                 .build();
 
         // when
-        when(productRepository.findById(any(Long.class))).thenReturn(Optional.of(product));
+        when(productRepository.findWithLockById(any(Long.class))).thenReturn(Optional.of(product));
 
         orderService.postOrders(product.getId(), orderRequestDto, member);
 
@@ -190,7 +190,7 @@ public class OrderServiceTest {
                 .build();
 
         // when
-        when(orderRepository.findById(any(Long.class))).thenReturn(Optional.of(order));
+        when(orderRepository.findWithLockById(any(Long.class))).thenReturn(Optional.of(order));
 
         orderService.deleteOrders(order.getId(), member);
 
@@ -222,7 +222,7 @@ public class OrderServiceTest {
                 .product(product)
                 .build();
         // when
-        when(orderRepository.findById(any(Long.class))).thenReturn(Optional.of(order));
+        when(orderRepository.findWithLockById(any(Long.class))).thenReturn(Optional.of(order));
 
         ResponseStatusException orderException = assertThrows(ResponseStatusException.class, () -> orderService.deleteOrders(order.getId(), member2));
 
