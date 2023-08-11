@@ -3,15 +3,20 @@ package com.project.openrun.wish.service;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
+import com.project.openrun.wish.dto.IsWishResponseDto;
+import com.project.openrun.wish.dto.WishProductResponseDto;
 import com.project.openrun.wish.dto.WishResponseDto;
 import com.project.openrun.wish.entity.Wish;
 import com.project.openrun.wish.repository.WishRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.project.openrun.global.exception.type.ErrorCode.*;
+import static com.project.openrun.global.exception.type.ErrorCode.DUPLICATE_DATA;
+import static com.project.openrun.global.exception.type.ErrorCode.NOT_FOUND_DATA;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +27,7 @@ public class WishService {
     private final ProductRepository productRepository;
 
     public WishResponseDto createWish(Long productId, Member member) {
-        Product product = productRepository.findById(productId).orElseThrow(() ->
+        Product product = productRepository.findWithLockById(productId).orElseThrow(() ->
                 new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품")
         ));
 
@@ -43,7 +48,7 @@ public class WishService {
 
     public WishResponseDto deleteWish(Long productId, Member member) {
 
-        Product product = productRepository.findById(productId).orElseThrow(() ->
+        Product product = productRepository.findWithLockById(productId).orElseThrow(() ->
                 new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
         );
 
@@ -56,5 +61,35 @@ public class WishService {
         product.deleteWish();
 
         return new WishResponseDto(product.getWishCount());
+    }
+
+    public Page<WishProductResponseDto> getMyWishProduct(Member member, Pageable pageable) {
+        Page<Wish> wishes = wishRepository.findAllByMember(member, pageable);
+        if (wishes.isEmpty()) {
+            return null;
+        }
+
+        return wishes.map(wish -> {
+            return new WishProductResponseDto(
+                    wish.getProduct().getId(),
+                    wish.getProduct().getProductName(),
+                    wish.getProduct().getPrice(),
+                    wish.getProduct().getMallName(),
+                    wish.getProduct().getProductImage()
+            );
+        });
+    }
+
+    public IsWishResponseDto getProductWishUser(Long productId, Member member) {
+
+        Product product = productRepository.findWithLockById(productId).orElseThrow(() ->
+                new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품")
+                ));
+
+        if(wishRepository.findByProductAndMember(product, member).isPresent()) {
+            return new IsWishResponseDto(true);
+        }
+
+        return new IsWishResponseDto(false);
     }
 }

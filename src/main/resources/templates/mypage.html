@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"/>
+
+<body>
+<!-- 1. 페이지 우상단 위치에 로그인, 회원가입, 마이 페이지 선택 탭 존재 -->
+<nav th:replace="~{fragments/headertop :: headertop}"></nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- 2. 메인페이지 좌측 바에 전체 상품, 오픈런 상품 페이지 선택 탭 존재 -->
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/openrun/total">전체 상품</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/openrun/page/or">오픈런 상품</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container mt-5">
+            <h3>My Wish Products</h3>
+            <div class="row" id="myWish-row">
+                <!--여기 나의 관심 상품 목록 나오는 곳!!-->
+
+            </div>
+            <div class="row justify-content-center">
+                <nav id="wishpagination" aria-label="Product Pagination">
+                    <!--<ul class="pagination"></ul>-->
+                </nav>
+            </div>
+        </div>
+
+
+        <div class="container mt-4">
+            <h3>구매 내역</h3>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">번호</th>
+                    <th scope="col">상품명</th>
+                    <th scope="col">가격</th>
+                    <th scope="col">구매 수량</th>
+                    <th scope="col">총가격</th>
+                    <th scope="col">취소</th>
+                </tr>
+                </thead>
+                <tbody id="purchase-list">
+                <!-- 여기에 JavaScript를 사용하여 동적으로 구매 내역을 추가합니다. -->
+                </tbody>
+            </table>
+            <div class="row justify-content-center">
+                <nav id="orderpagination"> <!--aria-label="Product Pagination"-->
+                    <!--<ul class="pagination"></ul>-->
+                </nav>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+</body>
+
+<script type="text/javascript" th:src="@{/js/basic.js}"></script>
+<script type="text/javascript" th:src="@{/js/mypage.js}"></script>
+</html>

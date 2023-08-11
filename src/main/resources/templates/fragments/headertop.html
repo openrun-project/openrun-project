@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!--<head th:replace="fragments/header :: header"/>-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="headertop">
+    <a class="navbar-brand" href="/openrun/main">Openrace</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" id="login" href="#loginModal" data-toggle="modal">로그인</a>
+                <a class="nav-link" id="logout" href="javascript:logout()">로그아웃</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="signup" href="#signupModal" data-toggle="modal">회원가입</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/openrun/mypage">마이 페이지</a>
+
+            </li>
+        </ul>
+    </div>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+<!--                    <form>-->
+                        <div class="form-group">
+                            <label for="loginemail">Email address</label>
+                            <input type="email" class="form-control" id="loginemail" aria-describedby="emailHelp"
+                                   placeholder="Enter email">
+                        </div>
+                        <div class="form-group">
+                            <label for="loginpassword">Password</label>
+                            <input type="password" class="form-control" id="loginpassword" placeholder="Password">
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="onLogin();">Login</button>
+<!--                    </form>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="signupModalLabel">Signup</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="email">Email address</label>
+                            <input type="email" class="form-control" id="email" aria-describedby="emailHelp"
+                                   placeholder="Enter email">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Password">
+                        </div>
+                        <!-- ... [회원 가입 폼 필드] ... -->
+                        <button type="submit" class="btn btn-primary">Signup</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<script>
+    // $(document).ready(function() {
+    //     console.log("ok????????????????")
+    //     // console.log(Cookies.get('Authorization'))
+    //     const token = localStorage.getItem("Authorization")
+    //     console.log("token", token)
+    //     let isLogIn = Cookies.get('Authorization') !== undefined; // 'Authorization' 쿠키가 있는지 확인
+    //     $("#nav-items").empty()
+    //     console.log(isLogIn)
+    //
+    //
+    //     if (token !== null) {
+    //         // $("#nav-items").append('<a class="nav-link" href="#" onclick="onLogout();">로그아웃</a>');
+    //         $('#logout').show();
+    //         $('#login').hide();
+    //     } else {
+    //         // $("#nav-items").append('<a class="nav-link" href="#loginModal" data-toggle="modal">로그인</a></li><li class="nav-item"><a class="nav-link" href="#signupModal" data-toggle="modal">회원가입</a>');
+    //         $('#login').show();
+    //         $('#logout').hide();
+    //     }
+    // });
+
+
+
+
+
+    function getCookie(name) {
+        const cookieString = document.cookie;
+        const cookies = cookieString.split(';');
+
+        console.log("cookies : " + cookies)
+
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+
+            if (cookie.startsWith(name + '=')) {
+                return cookie.substring(name.length + 1);
+            }
+        }
+        return null;
+    }
+</script>

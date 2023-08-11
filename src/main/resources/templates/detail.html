@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"/>
+
+<body>
+<nav th:replace="~{fragments/headertop :: headertop}"></nav>
+<div class="container-fluid">
+    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+        <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/openrun/total">전체 상품</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/openrun/page/or">오픈런 상품</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container my-5" id="product-container">
+
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" th:src="@{/js/basic.js}"></script>
+<script type="text/javascript" th:src="@{/js/detail.js}"></script>
+
+</html>

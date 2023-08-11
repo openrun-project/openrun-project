@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"/>
+
+<body>
+<!-- 1. 페이지 우상단 위치에 로그인, 회원가입, 마이 페이지 선택 탭 존재 -->
+<nav th:replace="~{fragments/headertop :: headertop}"></nav>
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/openrun/total">전체 상품</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/openrun/page/or">오픈런 상품</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container mt-5">
+            <table class="table">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">상품 번호</th>
+                    <th scope="col">카테고리</th>
+                    <th scope="col">업체명</th>
+                    <th scope="col">상품명</th>
+                    <th scope="col">가격</th>
+                </tr>
+                </thead>
+                <tbody id="product-list">
+                       <!--페이징 처리-->
+                </tbody>
+            </table>
+            <div class="row justify-content-center">
+                <nav id="pagination" aria-label="Product Pagination">
+                    <!--<ul class="pagination"></ul>-->
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" th:src="@{/js/basic.js}"></script>
+<script type="text/javascript" th:src="@{/js/total.js}"></script>
+</html>

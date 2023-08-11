@@ -69,7 +69,8 @@ public class ProductService {
                 findProduct.getEventStartTime(),
                 findProduct.getCategory(),
                 findProduct.getTotalQuantity(),
-                findProduct.getWishCount()
+                findProduct.getWishCount(),
+                findProduct.getStatus()
         );
     }
 
@@ -97,7 +98,7 @@ public class ProductService {
     }
 
     public Page<AllProductResponseDto> getOpenrunAllProducts(Pageable pageable) {
-        return productRepository.findAllByStatusOrderByWishCountDesc(OpenRunStatus.OPEN, pageable)
+        return productRepository.findAllByStatusOrderByWishCountDescProductNameDesc(OpenRunStatus.OPEN, pageable)
                 .map((product) -> new AllProductResponseDto(
                         product.getId(),
                         product.getProductName(),

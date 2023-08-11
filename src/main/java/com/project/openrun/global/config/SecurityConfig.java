@@ -58,6 +58,9 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
+                        .requestMatchers("openrun/**").permitAll()
                         .requestMatchers("/api/members/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/products/**").permitAll()
                         .anyRequest().authenticated()
