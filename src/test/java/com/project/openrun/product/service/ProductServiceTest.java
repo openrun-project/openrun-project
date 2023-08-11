@@ -215,7 +215,7 @@ class ProductServiceTest {
 
         //when
         PageRequest pageRequest = PageRequest.of(0, 10);
-        when(productRepository.findAllByStatusOrderByWishCountDesc(OpenRunStatus.OPEN, pageRequest)).thenReturn(new PageImpl<>(Arrays.asList(product2, product1), pageRequest, 2));
+        when(productRepository.findAllByStatusOrderByWishCountDescProductNameDesc(OpenRunStatus.OPEN, pageRequest)).thenReturn(new PageImpl<>(Arrays.asList(product2, product1), pageRequest, 2));
         Page<AllProductResponseDto> openrunAllProducts = productService.getOpenrunAllProducts(pageRequest);
 
         //then
