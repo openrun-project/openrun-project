@@ -27,7 +27,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>,ProductR
     int updateProductStatus(@Param("yesterday")LocalDateTime yesterday, @Param("today")LocalDateTime today, @Param("openRunStatus") OpenRunStatus openRunStatus, @Param("nowStatus") OpenRunStatus nowStatus);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value ="10")})
+//    @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value ="50")})
     Optional<Product> findWithLockById(Long productId);
 
 //    @Override
