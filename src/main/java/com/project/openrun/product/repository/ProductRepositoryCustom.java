@@ -8,5 +8,6 @@ import org.springframework.data.domain.Pageable;
 public interface ProductRepositoryCustom {
     Page<AllProductResponseDto> searchAllProducts(ProductSearchCondition condition, Pageable pageable);
 
-    Page<AllProductResponseDto> findAllByDto(Pageable pageable);
+    Page<AllProductResponseDto> findAllDto(Pageable pageable);
+
 }

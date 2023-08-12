@@ -24,29 +24,24 @@ public class ProductRepositoryImpl implements  ProductRepositoryCustom{
 
 
     @Override
-    public Page<AllProductResponseDto> findAllByDto(Pageable pageable) {
+    public Page<AllProductResponseDto> findAllDto(Pageable pageable) {
         List<AllProductResponseDto> content = queryFactory
                 .select(Projections.constructor(AllProductResponseDto.class,
                         product.id,
                         product.productName,
-                        product.productImage,
                         product.price,
                         product.mallName,
-                        product.currentQuantity,
-                        product.eventStartTime,
-                        product.category,
-                        product.totalQuantity,
-                        product.wishCount
+                        product.category
+
                 )).from(product)
+//                .where(product.id.gt(pageable.getOffset()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-
         JPAQuery<Long> countQuery = queryFactory
                 .select(product.count())
                 .from(product);
-
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -145,5 +140,4 @@ public class ProductRepositoryImpl implements  ProductRepositoryCustom{
 
         return product.price.between(lprice, uprice);
     }
-
 }
