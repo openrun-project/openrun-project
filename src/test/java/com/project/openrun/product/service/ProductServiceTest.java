@@ -1,6 +1,7 @@
 package com.project.openrun.product.service;
 
 import com.project.openrun.product.dto.AllProductResponseDto;
+import com.project.openrun.product.dto.AllProductResponseDtos;
 import com.project.openrun.product.dto.DetailProductResponseDto;
 import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
@@ -44,33 +45,26 @@ class ProductServiceTest {
         AllProductResponseDto product1 = new AllProductResponseDto(
                 1L
                 ,"test1"
-                ,"test image1"
                 ,0
                 ,"test mall1"
-                ,30
-                ,LocalDateTime.now()
                 ,"category1"
-                ,30
-                ,0
+
         );
 
         AllProductResponseDto product2 = new AllProductResponseDto(
                 2L
                 ,"test2"
-                ,"test image2"
                 ,0
                 ,"test mall2"
-                ,30
-                ,LocalDateTime.now()
                 ,"category2"
-                ,30
-                ,0
+
+
         );
 
 
         //when
         PageRequest pageRequest = PageRequest.of(0, 10);
-        when(productRepository.findAllByDto(pageRequest)).thenReturn(new PageImpl<>(Arrays.asList(product1, product2), pageRequest, 2));
+        when(productRepository.findAllDto(pageRequest)).thenReturn(new PageImpl<>(Arrays.asList(product1, product2), pageRequest, 2));
         Page<AllProductResponseDto> result = productService.getAllProducts(pageRequest);
 
 
@@ -85,7 +79,7 @@ class ProductServiceTest {
     void test1() {
         PageRequest pageRequest = PageRequest.of(0, 10);
         //when
-        when(productRepository.findAllByDto(pageRequest)).thenReturn(new PageImpl<>(Collections.emptyList(), pageRequest, 0));
+        when(productRepository.findAllDto(pageRequest)).thenReturn(new PageImpl<>(Collections.emptyList(), pageRequest, 0));
         Page<AllProductResponseDto> result = productService.getAllProducts(pageRequest);
 
         //then
@@ -175,7 +169,7 @@ class ProductServiceTest {
                 .build();
 
         when(productRepository.findTopCountProduct(3L)).thenReturn(Arrays.asList(product3, product2, product1));
-        List<AllProductResponseDto> result = productService.getTopCountProducts(3L);
+        List<AllProductResponseDtos> result = productService.getTopCountProducts(3L);
 
         assertThat(result.size()).isEqualTo(3);
         assertThat(result).extracting("productName").containsExactly("test3", "test2", "test1");
@@ -216,7 +210,7 @@ class ProductServiceTest {
         //when
         PageRequest pageRequest = PageRequest.of(0, 10);
         when(productRepository.findAllByStatusOrderByWishCountDescProductNameDesc(OpenRunStatus.OPEN, pageRequest)).thenReturn(new PageImpl<>(Arrays.asList(product2, product1), pageRequest, 2));
-        Page<AllProductResponseDto> openrunAllProducts = productService.getOpenrunAllProducts(pageRequest);
+        Page<AllProductResponseDtos> openrunAllProducts = productService.getOpenrunAllProducts(pageRequest);
 
         //then
         assertThat(openrunAllProducts).extracting("productName").containsExactly("test2", "test1");
