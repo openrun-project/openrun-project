@@ -2,6 +2,7 @@ package com.project.openrun.product.service;
 
 
 import com.project.openrun.product.dto.AllProductResponseDto;
+import com.project.openrun.product.dto.AllProductResponseDtos;
 import com.project.openrun.product.dto.DetailProductResponseDto;
 import com.project.openrun.product.dto.ProductSearchCondition;
 import com.project.openrun.product.entity.OpenRunStatus;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.project.openrun.global.exception.type.ErrorCode.NOT_FOUND_DATA;
@@ -29,29 +31,15 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public Page<AllProductResponseDto> getAllProducts(Pageable pageable) {
-        if (productRepository.findAllByDto(pageable).isEmpty()) {
+        // 인덱싱 적용 고려중
+        Page<AllProductResponseDto> result = productRepository.findAllDto(pageable);
+
+        if (Objects.isNull(result) || !result.hasContent()) {
             log.info("[ProductService getAllProducts] emptyList");
-//            return Collections.emptyList();
             return null;
         }
 
-        Page<AllProductResponseDto> result = productRepository.findAllByDto(pageable);
-
         return result;
-
-//        return result.map((entity) ->
-//                new AllProductResponseDto(
-//                        entity.getId(),
-//                        entity.getProductName(),
-//                        entity.getProductImage(),
-//                        entity.getPrice(),
-//                        entity.getMallName(),
-//                        entity.getCurrentQuantity(),
-//                        entity.getEventStartTime(),
-//                        entity.getCategory(),
-//                        entity.getTotalQuantity(),
-//                        entity.getWishCount()
-//                ));
     }
 
     public DetailProductResponseDto getDetailProduct(Long productId) {
@@ -74,42 +62,39 @@ public class ProductService {
         );
     }
 
+    //테스트 코드 작성 필요
     public Page<AllProductResponseDto> searchAllProducts(ProductSearchCondition condition, Pageable pageable) {
         Page<AllProductResponseDto> allProductResponseDtos = productRepository.searchAllProducts(condition, pageable);
 
         return allProductResponseDtos;
     }
 
-    public List<AllProductResponseDto> getTopCountProducts(Long count) {
+    public List<AllProductResponseDtos> getTopCountProducts(Long count) {
+        //querydsl로 projections 필요함
         return productRepository.findTopCountProduct(count).stream()
-                .map((product) -> new AllProductResponseDto(
+                .map((product) -> new AllProductResponseDtos(
                         product.getId(),
                         product.getProductName(),
                         product.getProductImage(),
                         product.getPrice(),
                         product.getMallName(),
-                        product.getCurrentQuantity(),
-                        product.getEventStartTime(),
-                        product.getCategory(),
-                        product.getTotalQuantity(),
-                        product.getWishCount()
+                        product.getCategory()
+
                 ))
                 .collect(Collectors.toList());
     }
 
-    public Page<AllProductResponseDto> getOpenrunAllProducts(Pageable pageable) {
+    public Page<AllProductResponseDtos> getOpenrunAllProducts(Pageable pageable) {
+        //querydsl로 projections 필요함
         return productRepository.findAllByStatusOrderByWishCountDescProductNameDesc(OpenRunStatus.OPEN, pageable)
-                .map((product) -> new AllProductResponseDto(
+                .map((product) -> new AllProductResponseDtos(
                         product.getId(),
                         product.getProductName(),
                         product.getProductImage(),
                         product.getPrice(),
                         product.getMallName(),
-                        product.getCurrentQuantity(),
-                        product.getEventStartTime(),
-                        product.getCategory(),
-                        product.getTotalQuantity(),
-                        product.getWishCount()
+                        product.getCategory()
+
                 ));
     }
 }

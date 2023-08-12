@@ -2,13 +2,17 @@ package com.project.openrun.product.controller;
 
 
 import com.project.openrun.product.dto.AllProductResponseDto;
+import com.project.openrun.product.dto.AllProductResponseDtos;
 import com.project.openrun.product.dto.DetailProductResponseDto;
 import com.project.openrun.product.dto.ProductSearchCondition;
 import com.project.openrun.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -35,15 +39,13 @@ public class ProductController {
     }
 
     @GetMapping("/wishcount/{count}")
-    public List<AllProductResponseDto> getTopCountProducts(@PathVariable("count") Long count) {
+    public List<AllProductResponseDtos> getTopCountProducts(@PathVariable("count") Long count) {
         return productService.getTopCountProducts(count);
     }
 
     @GetMapping("/openrun")
-    public Page<AllProductResponseDto> getOpenrunAllProducts(Pageable pageable){
+    public Page<AllProductResponseDtos> getOpenrunAllProducts(Pageable pageable){
         return  productService.getOpenrunAllProducts(pageable);
     }
-
-
 
 }

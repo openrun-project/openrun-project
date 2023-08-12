@@ -25,6 +25,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
 
+
+    // fetchJoin 이후에 적용
     public Page<OrderResponseDto> getOrders(Member member, Pageable pageable) {
 
         Page<Order> orders = orderRepository.findAllByMember(member, pageable);
@@ -32,20 +34,18 @@ public class OrderService {
             throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("주문"));
         }
 
-//        List<Order> orders = orderRepository.findAllByMember(member).orElseThrow(
-//                () -> new OrderException(OrderErrorCode.NOT_ORDER)
-//        );
-
         return orders.map(order -> {
             return new OrderResponseDto(
                     order.getId(),
                     order.getProduct().getProductName(),
                     order.getProduct().getPrice(),
                     order.getProduct().getMallName(),
-                    order.getCount()
+                    order.getCount(),
+                    order.getModifiedAt()
             );
         });
     }
+
 
     @Transactional
     public void postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {
@@ -64,10 +64,9 @@ public class OrderService {
         product.decreaseQuantity(orderRequestDto.count());
 
         orderRepository.save(order);
-
     }
 
-    // fetch join 적용 예시
+    // fetchJoin 이후에 적용
     @Transactional
     public void deleteOrders(Long orderId, Member member) throws ResponseStatusException {
         Order order = orderRepository.findWithLockById(orderId).orElseThrow(
