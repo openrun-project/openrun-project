@@ -1,11 +1,7 @@
 package com.project.openrun.product.controller;
 
 
-import com.project.openrun.product.dto.AllProductResponseDto;
-import com.project.openrun.product.dto.AllProductResponseDtos;
-import com.project.openrun.product.dto.DetailProductResponseDto;
-import com.project.openrun.product.dto.ProductSearchCondition;
-import com.project.openrun.product.service.ProductService;
+import com.project.openrun.product.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.project.openrun.product.service.*;
 
 import java.util.List;
 
@@ -44,8 +41,8 @@ public class ProductController {
     }
 
     @GetMapping("/openrun")
-    public Page<AllProductResponseDtos> getOpenrunAllProducts(Pageable pageable){
-        return  productService.getOpenrunAllProducts(pageable);
+    public Page<OpenRunProductResponseDto> getOpenrunAllProducts(Pageable pageable){
+        return  productService.getOpenRunAllProducts(pageable);
     }
 
 }
