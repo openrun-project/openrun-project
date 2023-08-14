@@ -1,6 +1,7 @@
 package com.project.openrun.product.repository;
 
 import com.project.openrun.product.dto.AllProductResponseDto;
+import com.project.openrun.product.dto.OpenRunProductResponseDto;
 import com.project.openrun.product.dto.ProductSearchCondition;
 import com.project.openrun.product.entity.OpenRunStatus;
 import com.querydsl.core.types.OrderSpecifier;
@@ -46,6 +47,7 @@ public class ProductRepositoryImpl implements  ProductRepositoryCustom{
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
+
     @Override
     public Page<AllProductResponseDto> searchAllProducts(ProductSearchCondition condition, Pageable pageable){
 
@@ -84,6 +86,41 @@ public class ProductRepositoryImpl implements  ProductRepositoryCustom{
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
+
+    @Override
+    public Page<OpenRunProductResponseDto> findOpenRunProducts(OpenRunStatus openRunStatus, Pageable pageable) {
+
+        List<OpenRunProductResponseDto> content = queryFactory
+                .select(Projections.constructor(OpenRunProductResponseDto.class,
+                        product.id,
+                        product.productName,
+                        product.productImage,
+                        product.price,
+                        product.mallName,
+                        product.category
+                )).from(product)
+                .where(product.status.eq(openRunStatus))
+                .orderBy(product.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(product.count())
+                .from(product)
+                .where(product.status.eq(openRunStatus));
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+
+
+
+
+
+
+
+
 
 
 

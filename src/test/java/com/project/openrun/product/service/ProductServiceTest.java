@@ -3,6 +3,7 @@ package com.project.openrun.product.service;
 import com.project.openrun.product.dto.AllProductResponseDto;
 import com.project.openrun.product.dto.AllProductResponseDtos;
 import com.project.openrun.product.dto.DetailProductResponseDto;
+import com.project.openrun.product.dto.OpenRunProductResponseDto;
 import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
@@ -179,38 +180,28 @@ class ProductServiceTest {
     @DisplayName("오픈런 상품 조회 테스트")
     public void getOpenrunAllProductsTest(){
         // given
-        Product product1 = Product.builder()
-                .id(1L)
-                .productName("test1")
-                .price(1000)
-                .wishCount(1)
-                .mallName("test mall")
-                .totalQuantity(30)
-                .currentQuantity(30)
-                .category("category")
-                .productImage("test Image")
-                .eventStartTime(LocalDateTime.now())
-                .status(OpenRunStatus.OPEN)
-                .build();
+        OpenRunProductResponseDto product1 = new OpenRunProductResponseDto(
+                1L,
+                "test1",
+                "testImg",
+                1000,
+                "의류",
+                "의류"
+        );
 
-        Product product2 = Product.builder()
-                .id(2L)
-                .productName("test2")
-                .price(1000)
-                .wishCount(2)
-                .mallName("test mall2")
-                .totalQuantity(30)
-                .currentQuantity(30)
-                .category("category2")
-                .productImage("test Image2")
-                .eventStartTime(LocalDateTime.now())
-                .status(OpenRunStatus.OPEN)
-                .build();
+        OpenRunProductResponseDto product2 = new OpenRunProductResponseDto(
+                2L,
+                "test2",
+                "testImg2",
+                2000,
+                "의류",
+                "의류"
+        );
 
         //when
         PageRequest pageRequest = PageRequest.of(0, 10);
-        when(productRepository.findAllByStatusOrderByWishCountDescProductNameDesc(OpenRunStatus.OPEN, pageRequest)).thenReturn(new PageImpl<>(Arrays.asList(product2, product1), pageRequest, 2));
-        Page<AllProductResponseDtos> openrunAllProducts = productService.getOpenrunAllProducts(pageRequest);
+        when(productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageRequest)).thenReturn(new PageImpl<>(Arrays.asList(product2, product1), pageRequest, 2));
+        Page<OpenRunProductResponseDto> openrunAllProducts = productService.getOpenRunAllProducts(pageRequest);
 
         //then
         assertThat(openrunAllProducts).extracting("productName").containsExactly("test2", "test1");
