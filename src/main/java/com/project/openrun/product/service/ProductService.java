@@ -1,12 +1,10 @@
 package com.project.openrun.product.service;
 
 
-import com.project.openrun.product.dto.AllProductResponseDto;
-import com.project.openrun.product.dto.AllProductResponseDtos;
-import com.project.openrun.product.dto.DetailProductResponseDto;
-import com.project.openrun.product.dto.ProductSearchCondition;
+import com.project.openrun.product.dto.*;
 import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
+import com.project.openrun.product.repository.CachshRedisRepository;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,17 +27,22 @@ import static com.project.openrun.global.exception.type.ErrorCode.NOT_FOUND_DATA
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final CachshRedisRepository<OpenRunProductResponseDto> openRunProductRedisRepository;
+    private final CachshRedisRepository<AllProductResponseDto> allProductRedisRepositoryImpl;
 
     public Page<AllProductResponseDto> getAllProducts(Pageable pageable) {
-        // 인덱싱 적용 고려중
-        Page<AllProductResponseDto> result = productRepository.findAllDto(pageable);
+        int pageNumber = pageable.getPageNumber();
 
-        if (Objects.isNull(result) || !result.hasContent()) {
-            log.info("[ProductService getAllProducts] emptyList");
-            return null;
+        Page<AllProductResponseDto> productsInRedis = allProductRedisRepositoryImpl.getProduct(pageNumber);
+
+        if(Objects.isNull(productsInRedis)){
+            // 인덱싱 적용 고려중
+            Page<AllProductResponseDto> productsInDB = productRepository.findAllDto(pageable);
+            allProductRedisRepositoryImpl.saveProduct(pageNumber, productsInDB);
+            return productsInDB;
         }
 
-        return result;
+        return productsInRedis;
     }
 
     public DetailProductResponseDto getDetailProduct(Long productId) {
@@ -84,17 +87,19 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public Page<AllProductResponseDtos> getOpenrunAllProducts(Pageable pageable) {
-        //querydsl로 projections 필요함
-        return productRepository.findAllByStatusOrderByWishCountDescProductNameDesc(OpenRunStatus.OPEN, pageable)
-                .map((product) -> new AllProductResponseDtos(
-                        product.getId(),
-                        product.getProductName(),
-                        product.getProductImage(),
-                        product.getPrice(),
-                        product.getMallName(),
-                        product.getCategory()
+    public Page<OpenRunProductResponseDto> getOpenRunAllProducts(Pageable pageable) {
+        int pageNumber = pageable.getPageNumber();
+        Page<OpenRunProductResponseDto> productsInRedis = openRunProductRedisRepository.getProduct(pageNumber);
 
-                ));
+        if(Objects.isNull(productsInRedis)){
+            Page<OpenRunProductResponseDto> productsInDB = productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageable);
+            openRunProductRedisRepository.saveProduct(pageNumber, productsInDB);
+            return productsInDB;
+        }
+
+        return productsInRedis;
     }
+
+
+
 }
