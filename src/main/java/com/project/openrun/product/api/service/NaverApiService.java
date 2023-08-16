@@ -87,7 +87,6 @@ public class NaverApiService {
     public void createItemForNaverApi(CreateDataRequestDto requestDto) {
         // 첫 for 문 -> display:100, start:1  /  display:100, start:101 / display:100, start:201  /  display:100, start:301 / ..  /  display:100, start:901 / display:100 , start:1000
         int display = 100;
-        int cnt = 0;
 
         for (Map.Entry<String, ArrayList<String>> stringArrayListEntry : PRODUCT_ITEMS.entrySet()) {
 

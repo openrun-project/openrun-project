@@ -167,8 +167,8 @@ class ProductServiceTest {
 
         //then
         assertThatThrownBy(
-                        () -> productService.getDetailProduct(2L)
-                ).isInstanceOf(ResponseStatusException.class);
+                () -> productService.getDetailProduct(2L)
+        ).isInstanceOf(ResponseStatusException.class);
     }
 
     @Test
