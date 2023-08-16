@@ -23,22 +23,7 @@ public class AllProductRedisRepositoryImpl implements CacheRedisRepository<AllPr
     private final RedisTemplate<String, String> redisCountTemplate;
 
 
-    @Override
-    public void saveProduct(int subKey, Page<AllProductResponseDto> products) {
-        redisTemplate.opsForValue().set(createKey(subKey), new PageProductResponseDto<>(
-                products.getContent()
-                , products.getNumber()
-                , products.getTotalPages()
-                , products.getSize()
-                , products.getTotalElements()), Duration.ofHours(1)
-        );
-    }
 
-    @Override
-    public Page<AllProductResponseDto> getProduct(int subKey) {
-        PageProductResponseDto result = redisTemplate.opsForValue().get(createKey(subKey));
-        return result != null ? new PageImpl<>(result.getContent(), PageRequest.of(result.getNumber(), result.getSize()), result.getTotalElements()) : null;
-    }
 
     @Override
     public void saveProductCount(Long count){

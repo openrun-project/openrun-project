@@ -26,32 +26,6 @@ public class OpenRunProductRedisRepositoryImpl implements CacheRedisRepository<O
 
 
 
-
-    @Override
-    public void saveProduct(int subKey, Page<OpenRunProductResponseDto> products) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime midnight = LocalDateTime.of(now.toLocalDate(), LocalTime.MIDNIGHT);
-
-        Duration durationUntilMidnight = Duration.between(now, midnight.plusDays(1));
-
-        long hours = durationUntilMidnight.toHours();
-        long minutes = durationUntilMidnight.toMinutesPart();
-        long seconds = durationUntilMidnight.toSecondsPart();
-
-        redisTemplate.opsForValue().set(createKey(subKey), new PageProductResponseDto<>(
-                products.getContent()
-                , products.getNumber()
-                , products.getTotalPages()
-                , products.getSize()
-                , products.getTotalElements()), Duration.ofSeconds(hours * 60 * 60 + minutes * 60 + seconds));
-    }
-
-    @Override
-    public Page<OpenRunProductResponseDto> getProduct(int subKey) {
-        PageProductResponseDto result = redisTemplate.opsForValue().get(createKey(subKey));
-        return result != null ? new PageImpl<>(result.getContent(), PageRequest.of(result.getNumber(), result.getSize()), result.getTotalElements()) : null;
-    }
-
     @Override
     public void saveProductCount(Long count){
         redisCountTemplate.opsForValue().set(CACHE_OPEN_RUN_PRODUCT_COUNT_KEY, String.valueOf(count));
