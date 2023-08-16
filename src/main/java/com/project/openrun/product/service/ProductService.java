@@ -4,7 +4,7 @@ package com.project.openrun.product.service;
 import com.project.openrun.product.dto.*;
 import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
-import com.project.openrun.product.repository.CachshRedisRepository;
+import com.project.openrun.product.repository.CacheRedisRepository;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,23 +27,26 @@ import static com.project.openrun.global.exception.type.ErrorCode.NOT_FOUND_DATA
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final CachshRedisRepository<OpenRunProductResponseDto> openRunProductRedisRepository;
-    private final CachshRedisRepository<AllProductResponseDto> allProductRedisRepositoryImpl;
+    private final CacheRedisRepository<OpenRunProductResponseDto> openRunProductRedisRepository;
+    private final CacheRedisRepository<AllProductResponseDto> allProductRedisRepository;
 
     public Page<AllProductResponseDto> getAllProducts(Pageable pageable) {
         int pageNumber = pageable.getPageNumber();
 
-        Page<AllProductResponseDto> productsInRedis = allProductRedisRepositoryImpl.getProduct(pageNumber);
-
-        if(Objects.isNull(productsInRedis)){
             // 인덱싱 적용 고려중
-            Page<AllProductResponseDto> productsInDB = productRepository.findAllDto(pageable);
-            allProductRedisRepositoryImpl.saveProduct(pageNumber, productsInDB);
-            return productsInDB;
-        }
 
-        return productsInRedis;
+            Long count = allProductRedisRepository.getProductCount().orElseGet(() -> {
+                long countResult = productRepository.count();
+                allProductRedisRepository.saveProductCount(countResult);
+                return countResult;
+            });
+
+            Page<AllProductResponseDto> productsInDB = productRepository.findAllDto(pageable,count);
+
+            return productsInDB;
+
     }
+
 
     public DetailProductResponseDto getDetailProduct(Long productId) {
         Product findProduct = productRepository.findById(productId).orElseThrow(
@@ -88,18 +91,16 @@ public class ProductService {
     }
 
     public Page<OpenRunProductResponseDto> getOpenRunAllProducts(Pageable pageable) {
-        int pageNumber = pageable.getPageNumber();
-        Page<OpenRunProductResponseDto> productsInRedis = openRunProductRedisRepository.getProduct(pageNumber);
 
-        if(Objects.isNull(productsInRedis)){
-            Page<OpenRunProductResponseDto> productsInDB = productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageable);
-            openRunProductRedisRepository.saveProduct(pageNumber, productsInDB);
-            return productsInDB;
-        }
+        Long count = openRunProductRedisRepository.getProductCount().orElseGet(() -> {
+            Long countResult = productRepository.countByStatus(OpenRunStatus.OPEN);
+            openRunProductRedisRepository.saveProductCount(countResult);
+            return countResult;
+        });
+        Page<OpenRunProductResponseDto> productsInDB = productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageable, count);
 
-        return productsInRedis;
+        return productsInDB;
     }
-
 
 
 }

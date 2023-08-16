@@ -4,9 +4,8 @@ import com.project.openrun.product.dto.AllProductResponseDto;
 import com.project.openrun.product.dto.AllProductResponseDtos;
 import com.project.openrun.product.dto.DetailProductResponseDto;
 import com.project.openrun.product.dto.OpenRunProductResponseDto;
-import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
-import com.project.openrun.product.repository.CachshRedisRepository;
+import com.project.openrun.product.repository.CacheRedisRepository;
 import com.project.openrun.product.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,14 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,10 +33,10 @@ class ProductServiceTest {
     private ProductRepository productRepository;
 
     @Mock
-    private CachshRedisRepository<AllProductResponseDto> allProductRedisRepository;
+    private CacheRedisRepository<AllProductResponseDto> allProductRedisRepository;
 
     @Mock
-    private CachshRedisRepository<OpenRunProductResponseDto> openRunProductRedisRepository;
+    private CacheRedisRepository<OpenRunProductResponseDto> openRunProductRedisRepository;
 
     @InjectMocks
     private ProductService productService;

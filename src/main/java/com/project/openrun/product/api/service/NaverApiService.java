@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -24,9 +23,6 @@ import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static com.project.openrun.global.exception.type.ErrorCode.NO_SEARCH_DATA;
-import static com.project.openrun.global.exception.type.ErrorCode.WRONG_INPUT;
 
 @Slf4j
 @Service
@@ -91,6 +87,7 @@ public class NaverApiService {
     public void createItemForNaverApi(CreateDataRequestDto requestDto) {
         // 첫 for 문 -> display:100, start:1  /  display:100, start:101 / display:100, start:201  /  display:100, start:301 / ..  /  display:100, start:901 / display:100 , start:1000
         int display = 100;
+        int cnt = 0;
 
         for (Map.Entry<String, ArrayList<String>> stringArrayListEntry : PRODUCT_ITEMS.entrySet()) {
 
