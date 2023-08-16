@@ -32,4 +32,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>,ProductR
 //    @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value ="50")})
     Optional<Product> findWithLockById(Long productId);
 
+    Long countByStatus(OpenRunStatus status);
+
 }

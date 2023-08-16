@@ -1,8 +1,9 @@
 package com.project.openrun.global.scheuler;
 
+import com.project.openrun.product.dto.AllProductResponseDto;
 import com.project.openrun.product.dto.OpenRunProductResponseDto;
 import com.project.openrun.product.entity.OpenRunStatus;
-import com.project.openrun.product.repository.CachshRedisRepository;
+import com.project.openrun.product.repository.CacheRedisRepository;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +23,17 @@ import java.time.LocalDateTime;
 public class ProductScheduler {
 
     private final ProductRepository productRepository;
-    private final CachshRedisRepository<OpenRunProductResponseDto> openRunProductRedisRepository;
+    private final CacheRedisRepository<AllProductResponseDto> allProductRedisRepository;
+    private final CacheRedisRepository<OpenRunProductResponseDto> openRunProductRedisRepository;
+
 
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
     public void schedulingOpenRunProduct() throws InterruptedException{
         updateProductStatus();
-        saveOpenRundRedisCache();
+        Long count = saveOpenRunCount();
+        saveAllProductCount();
+        saveOpenRunRedisCache(count);
     }
 
     private void updateProductStatus(){
@@ -44,14 +49,26 @@ public class ProductScheduler {
         }
     }
 
-    private void saveOpenRundRedisCache(){
+    private void saveOpenRunRedisCache(Long count){
         Pageable pageable = PageRequest.of(0, 16);
-        Page<OpenRunProductResponseDto> openRunProducts = productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageable);
+
+        Page<OpenRunProductResponseDto> openRunProducts = productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageable,count);
 
         for (int i = 0; i <= openRunProducts.getTotalPages(); i++) {
             pageable = PageRequest.of(i, 16);
-            openRunProductRedisRepository.saveProduct(i, productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageable));
+            openRunProductRedisRepository.saveProduct(i, productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageable,count));
         }
+    }
+
+    public void saveAllProductCount(){
+        Long count = productRepository.count();
+        allProductRedisRepository.saveProductCount(count);
+    }
+
+    public Long saveOpenRunCount(){
+        Long count = productRepository.countByStatus(OpenRunStatus.OPEN);
+        openRunProductRedisRepository.saveProductCount(count);
+        return count;
     }
 
 }
