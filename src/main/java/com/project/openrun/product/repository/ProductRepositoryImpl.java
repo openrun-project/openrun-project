@@ -11,6 +11,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
@@ -25,7 +26,7 @@ public class ProductRepositoryImpl implements  ProductRepositoryCustom{
 
 
     @Override
-    public Page<AllProductResponseDto> findAllDto(Pageable pageable) {
+    public Page<AllProductResponseDto> findAllDto(Pageable pageable,Long count) {
         List<AllProductResponseDto> content = queryFactory
                 .select(Projections.constructor(AllProductResponseDto.class,
                         product.id,
@@ -33,19 +34,14 @@ public class ProductRepositoryImpl implements  ProductRepositoryCustom{
                         product.price,
                         product.mallName,
                         product.category
-
                 )).from(product)
-//                .where(product.id.gt(pageable.getOffset()))
                 .orderBy(product.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<Long> countQuery = queryFactory
-                .select(product.count())
-                .from(product);
 
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+        return new PageImpl<>(content, pageable, count);
     }
 
 
@@ -85,11 +81,12 @@ public class ProductRepositoryImpl implements  ProductRepositoryCustom{
                         isPriceBetween(condition.getLprice(), condition.getGprice())
                 );
 
+
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
     @Override
-    public Page<OpenRunProductResponseDto> findOpenRunProducts(OpenRunStatus openRunStatus, Pageable pageable) {
+    public Page<OpenRunProductResponseDto> findOpenRunProducts(OpenRunStatus openRunStatus, Pageable pageable,Long count) {
 
         List<OpenRunProductResponseDto> content = queryFactory
                 .select(Projections.constructor(OpenRunProductResponseDto.class,
@@ -106,23 +103,9 @@ public class ProductRepositoryImpl implements  ProductRepositoryCustom{
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<Long> countQuery = queryFactory
-                .select(product.count())
-                .from(product)
-                .where(product.status.eq(openRunStatus));
 
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+        return new PageImpl<>(content, pageable, count);
     }
-
-
-
-
-
-
-
-
-
-
 
 
     private OrderSpecifier<?> sortMethod(String sortBy, Boolean isAsc) {
