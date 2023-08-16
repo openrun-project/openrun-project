@@ -33,6 +33,9 @@ public class ProductService {
     public Page<AllProductResponseDto> getAllProducts(Pageable pageable) {
         int pageNumber = pageable.getPageNumber();
 
+        Page<AllProductResponseDto> productsInRedis = allProductRedisRepository.getProduct(pageNumber);
+
+        if (Objects.isNull(productsInRedis)) {
             // 인덱싱 적용 고려중
 
             Long count = allProductRedisRepository.getProductCount().orElseGet(() -> {
@@ -43,8 +46,12 @@ public class ProductService {
 
             Page<AllProductResponseDto> productsInDB = productRepository.findAllDto(pageable,count);
 
-            return productsInDB;
+            allProductRedisRepository.saveProduct(pageNumber, productsInDB);
 
+            return productsInDB;
+        }
+
+        return productsInRedis;
     }
 
 
@@ -91,15 +98,22 @@ public class ProductService {
     }
 
     public Page<OpenRunProductResponseDto> getOpenRunAllProducts(Pageable pageable) {
+        int pageNumber = pageable.getPageNumber();
+        Page<OpenRunProductResponseDto> productsInRedis = openRunProductRedisRepository.getProduct(pageNumber);
 
-        Long count = openRunProductRedisRepository.getProductCount().orElseGet(() -> {
-            Long countResult = productRepository.countByStatus(OpenRunStatus.OPEN);
-            openRunProductRedisRepository.saveProductCount(countResult);
-            return countResult;
-        });
-        Page<OpenRunProductResponseDto> productsInDB = productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageable, count);
 
-        return productsInDB;
+        if (Objects.isNull(productsInRedis)) {
+            Long count = openRunProductRedisRepository.getProductCount().orElseGet(() -> {
+                Long countResult = productRepository.countByStatus(OpenRunStatus.OPEN);
+                openRunProductRedisRepository.saveProductCount(countResult);
+                return countResult;
+            });
+            Page<OpenRunProductResponseDto> productsInDB = productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageable, count);
+            openRunProductRedisRepository.saveProduct(pageNumber, productsInDB);
+            return productsInDB;
+        }
+
+        return productsInRedis;
     }
 
 

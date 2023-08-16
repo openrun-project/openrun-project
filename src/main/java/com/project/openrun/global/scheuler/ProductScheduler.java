@@ -56,7 +56,7 @@ public class ProductScheduler {
 
         for (int i = 0; i <= openRunProducts.getTotalPages(); i++) {
             pageable = PageRequest.of(i, 16);
-            //openRunProductRedisRepository.saveProduct(i, productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageable,count));
+            openRunProductRedisRepository.saveProduct(i, productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageable,count));
         }
     }
 

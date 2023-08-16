@@ -28,7 +28,7 @@ public class RedisConfig {
     @Bean
     public RedisTemplate<String, PageProductResponseDto> productRedisTemplate() {
         RedisTemplate<String, PageProductResponseDto> redisTemplate = new RedisTemplate<>();
-// command 를 코드로 구현할 수 있게 도와주는 것.
+        // command 를 코드로 구현할 수 있게 도와주는 것.
         redisTemplate.setConnectionFactory(redisConnectionFactory());
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
@@ -41,7 +41,7 @@ public class RedisConfig {
 
     @Primary
     @Bean
-    public RedisTemplate<String,String> countRedisTemplate(){
+    public RedisTemplate<String, String> countRedisTemplate() {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
 
         redisTemplate.setConnectionFactory(redisConnectionFactory());
