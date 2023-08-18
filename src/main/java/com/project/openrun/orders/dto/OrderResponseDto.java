@@ -9,6 +9,4 @@ public record OrderResponseDto(
         String mallName,
         Integer count,
         LocalDateTime modifiedAt
-
-
 ) {}
