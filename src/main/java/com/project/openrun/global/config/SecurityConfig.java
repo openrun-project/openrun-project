@@ -63,6 +63,7 @@ public class SecurityConfig {
                         .requestMatchers("openrun/**").permitAll()
                         .requestMatchers("/api/members/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/products/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
         );
 
