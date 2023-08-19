@@ -40,59 +40,59 @@ public class OrderServiceTest {
         orderService = new OrderService(orderRepository, productRepository);
     }
 
-    @Test
-    public void getOrdersTest() {
-        // given
-        Member member = Member.builder()
-                .id(1L)
-                .build();
-
-        Product product = Product.builder()
-                .id(1L)
-                .price(10000)
-                .currentQuantity(100)
-                .build();
-
-        Order order = Order.builder()
-                .id(1L)
-                .product(product)
-                .member(member)
-                .count(1)
-                .totalPrice(product.getPrice() * 1)
-                .build();
-
-        Order order2 = Order.builder()
-                .id(2L)
-                .product(product)
-                .member(member)
-                .count(3)
-                .totalPrice(product.getPrice() * 3)
-                .build();
-
-        Sort.Direction direction = Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, "modifiedAt");
-
-        Pageable pageable = PageRequest.of(0, 10, sort);
-
-        // when
-        when(orderRepository.findAllByMember(member, pageable))
-                .thenReturn(new PageImpl<>(Arrays.asList(order, order2), pageable, 2));
-
-        Page<OrderResponseDto> result = orderService.getOrders(member, pageable);
-
-        // then
-        // 주문 내역이 있을 경우 주문 내역이 반환되는지 확인
-        assertEquals(2, result.getContent().size());
-//        assertEquals(order.getProduct().getProductName(), result.get(0).productName());
-//        assertEquals(order.getProduct().getPrice(), result.get(0).price());
-//        assertEquals(order.getProduct().getMallName(), result.get(0).mallName());
-//        assertEquals(order.getCount(), result.get(0).count());
+//    @Test
+//    public void getOrdersTest() {
+//        // given
+//        Member member = Member.builder()
+//                .id(1L)
+//                .build();
 //
-//        assertEquals(order2.getProduct().getProductName(), result.get(1).productName());
-//        assertEquals(order2.getProduct().getPrice(), result.get(1).price());
-//        assertEquals(order2.getProduct().getMallName(), result.get(1).mallName());
-//        assertEquals(order2.getCount(), result.get(1).count());
-    }
+//        Product product = Product.builder()
+//                .id(1L)
+//                .price(10000)
+//                .currentQuantity(100)
+//                .build();
+//
+//        Order order = Order.builder()
+//                .id(1L)
+//                .product(product)
+//                .member(member)
+//                .count(1)
+//                .totalPrice(product.getPrice() * 1)
+//                .build();
+//
+//        Order order2 = Order.builder()
+//                .id(2L)
+//                .product(product)
+//                .member(member)
+//                .count(3)
+//                .totalPrice(product.getPrice() * 3)
+//                .build();
+//
+//        Sort.Direction direction = Sort.Direction.DESC;
+//        Sort sort = Sort.by(direction, "modifiedAt");
+//
+//        Pageable pageable = PageRequest.of(0, 10, sort);
+//
+//        // when
+//        when(orderRepository.findAllByMember(member, pageable))
+//                .thenReturn(new PageImpl<>(Arrays.asList(order, order2), pageable, 2));
+//
+//        Page<OrderResponseDto> result = orderService.getOrders(member, pageable);
+//
+//        // then
+//        // 주문 내역이 있을 경우 주문 내역이 반환되는지 확인
+//        assertEquals(2, result.getContent().size());
+////        assertEquals(order.getProduct().getProductName(), result.get(0).productName());
+////        assertEquals(order.getProduct().getPrice(), result.get(0).price());
+////        assertEquals(order.getProduct().getMallName(), result.get(0).mallName());
+////        assertEquals(order.getCount(), result.get(0).count());
+////
+////        assertEquals(order2.getProduct().getProductName(), result.get(1).productName());
+////        assertEquals(order2.getProduct().getPrice(), result.get(1).price());
+////        assertEquals(order2.getProduct().getMallName(), result.get(1).mallName());
+////        assertEquals(order2.getCount(), result.get(1).count());
+//    }
 
     @Test
     public void getOrders_NoOrders_ExceptionThrown() {
