@@ -20,6 +20,94 @@
             </div>
         </nav>
         <div class="container mt-5">
+
+            <div class="row mb-4">
+                <div class="col text-center">
+                    <h1>Product List</h1>
+                </div>
+            </div>
+<!--            <div class="row"> &lt;!&ndash; 이 부분 추가 &ndash;&gt;-->
+<!--                <div class="col-md-6 dropdown">-->
+<!--                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--                        카테고리-->
+<!--                    </button>-->
+<!--                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">-->
+<!--                        <a class="dropdown-item" href="#">상의</a>-->
+<!--                        <a class="dropdown-item" href="#">하의</a>-->
+<!--                        <a class="dropdown-item" href="#">다음 카테고리..</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div class="col-md-6 dropdown">-->
+<!--                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--                        오픈런 상태-->
+<!--                    </button>-->
+<!--                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">-->
+<!--                        <a class="dropdown-item" href="#">Waiting</a>-->
+<!--                        <a class="dropdown-item" href="#">Open</a>-->
+<!--                        <a class="dropdown-item" href="#">Close</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div> &lt;!&ndash; 이 부분 추가 끝 &ndash;&gt;-->
+
+            <!--검색-->
+            <div class="container">
+                <div class="row justify-content-center mt-4">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input class="form-control" id="search-input" type="search" placeholder="Search" aria-label="Search">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-success" type="button" onclick="searchProducts();">검색</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row justify-content-center mt-4">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <select id="category" class="custom-select">
+                                <option value="">전체 카테고리</option>
+                                <option value="아우터">아우터</option>
+                                <option value="상의">상의</option>
+                                <option value="하의">하의</option>
+                                <option value="모자">모자</option>
+                                <option value="신발">신발</option>
+                                <option value="가방">가방</option>
+                                <option value="시계">시계</option>
+                                <option value="노트북">노트북</option>
+                                <option value="가전제품">가전제품</option>
+                                <option value="건강식품">식품건강</option>
+                                <!-- 다른 카테고리 옵션들도 추가 -->
+                            </select>
+                            &nbsp&nbsp&nbsp
+                            <select class="custom-select" id="array">
+                                <option value="">정렬</option>
+                                <!-- 다른 정렬 옵션들도 추가 -->
+                                <option value="">정렬</option>
+                                <option value="product_id_ASC">인기순△</option><!--ASC-->
+                                <option value="product_id_DESC">인기순▽</option><!--DESC-->
+                                <option value="product_price_ASC">가격순△</option><!--ASC-->
+                                <option value="product_price_DESC">가격순▽</option><!--DESC-->
+                                <option value="product_event_start_time_ASC">판매시작시간△</option><!--ASC-->
+                                <option value="product_event_start_time_DESC">판매시작시간▽</option><!--DESC-->
+                            </select>
+                            &nbsp&nbsp
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">가격</span>
+                            </div>
+                            <input type="number" class="form-control" id="minPrice" placeholder="최소">
+                            <div class="input-group-prepend input-group-append">
+                                <span class="input-group-text">~</span>
+                            </div>
+                            <input type="number" class="form-control" id="maxPrice" placeholder="최대">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br><br>
+
             <table class="table">
                 <thead class="thead-light">
                 <tr>

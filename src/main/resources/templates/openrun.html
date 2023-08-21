@@ -37,18 +37,74 @@
         <div class="container mt-5">
             <div class="row mb-4">
                 <div class="col text-center">
-                    <h1>Product List</h1>
+                    <h1>Open Product List</h1>
                 </div>
             </div>
-            <div class="row mb-4 justify-content-center search-form">
-                <div class="col-6 text-center">
-                    <form class="form-inline">
-                        <input class="form-control mr-sm-2 w-75" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form>
+
+
+            <!--검색-->
+            <div class="container">
+                <div class="row justify-content-center mt-4">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input class="form-control" id="search-input" type="search" placeholder="Search" aria-label="Search">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-success" type="button" onclick="searchProducts();">검색</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row justify-content-center mt-4">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <select id="category" class="custom-select">
+                                <option value="">전체 카테고리</option>
+                                <option value="아우터">아우터</option>
+                                <option value="상의">상의</option>
+                                <option value="하의">하의</option>
+                                <option value="모자">모자</option>
+                                <option value="신발">신발</option>
+                                <option value="가방">가방</option>
+                                <option value="시계">시계</option>
+                                <option value="노트북">노트북</option>
+                                <option value="가전제품">가전제품</option>
+                                <option value="건강식품">식품건강</option>
+                                <!-- 다른 카테고리 옵션들도 추가 -->
+                            </select>
+                            &nbsp&nbsp&nbsp
+                            <select class="custom-select" id="array">
+                                <option value="">정렬</option>
+                                <!-- 다른 정렬 옵션들도 추가 -->
+                                <option value="wish_count">인기순△</option><!--ASC-->
+                                <option value="wish_count">인기순▽</option><!--DESC-->
+                                <option value="product_price">가격순△</option><!--ASC-->
+                                <option value="product_price">가격순▽</option><!--DESC-->
+                                <option value="event_start_time">판매시작시간△</option><!--ASC-->
+                                <option value="event_start_time">판매시작시간▽</option><!--DESC-->
+                            </select>
+<!--                            <select class="custom-select" id="isAsc">-->
+<!--                                <option value="true">오름차순</option>-->
+<!--                                &lt;!&ndash; 다른 정렬 옵션들도 추가 &ndash;&gt;-->
+<!--                                <option value="false">내림차순</option>-->
+<!--                            </select>-->
+                            &nbsp&nbsp
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">가격</span>
+                            </div>
+                            <input type="number" class="form-control" id="minPrice" placeholder="최소">
+                            <div class="input-group-prepend input-group-append">
+                                <span class="input-group-text">~</span>
+                            </div>
+                            <input type="number" class="form-control" id="maxPrice" placeholder="최대">
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row" id="product-row"></div>
+
+            <br><br>
+
+            <div class="row" id="product-row"><!--상품 나오는 곳--></div>
             <div class="row justify-content-center">
                 <nav id="pagination" aria-label="Product Pagination">
                     <!--<ul class="pagination"></ul>-->
