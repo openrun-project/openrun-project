@@ -6,6 +6,7 @@ import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.CacheRedisRepository;
 import com.project.openrun.product.repository.ProductRepository;
+import com.project.openrun.product.repository.ProductsSearchRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,6 +30,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CacheRedisRepository<OpenRunProductResponseDto> openRunProductRedisRepository;
     private final CacheRedisRepository<AllProductResponseDto> allProductRedisRepository;
+    private final ProductsSearchRepository productsSearchRepository;
 
     public Page<AllProductResponseDto> getAllProducts(Pageable pageable) {
         int pageNumber = pageable.getPageNumber();
@@ -77,7 +79,7 @@ public class ProductService {
 
     //테스트 코드 작성 필요
     public Page<AllProductResponseDto> searchAllProducts(ProductSearchCondition condition, Pageable pageable) {
-        Page<AllProductResponseDto> allProductResponseDtos = productRepository.searchAllProducts(condition, pageable);
+        Page<AllProductResponseDto> allProductResponseDtos = productsSearchRepository.searchAllProductsUsingFullText(condition, pageable);
 
         return allProductResponseDtos;
     }
