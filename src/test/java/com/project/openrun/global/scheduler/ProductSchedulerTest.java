@@ -1,4 +1,4 @@
-package com.project.openrun.global.scheuler;
+package com.project.openrun.global.scheduler;
 
 import com.project.openrun.TestConfig;
 import com.project.openrun.product.entity.OpenRunStatus;
@@ -10,14 +10,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @DirtiesContext
@@ -38,16 +34,12 @@ class ProductSchedulerTest {
         // given
         //LocalDateTime yesterday = LocalDate.now().plusDays(-1).atStartOfDay();//어제
         LocalDateTime yesterday = LocalDateTime.of(2023, 8, 7, 9, 0);
-        System.out.println("yesterday = " + yesterday);
 
         //LocalDateTime today = LocalDate.now().atStartOfDay();//오늘
         LocalDateTime today = LocalDateTime.of(2023, 8, 8, 9, 0);
-        System.out.println("today = " + today);
 
         //LocalDateTime tomorrow = LocalDate.now().plusDays(1).atStartOfDay();//내일
         LocalDateTime tomorrow = LocalDateTime.of(2023, 8, 9, 9, 0);
-        System.out.println("tomorrow = " + tomorrow);
-
 
         //어제 오픈한것 상태 : Open
         Product product1 = Product.builder()
@@ -94,8 +86,4 @@ class ProductSchedulerTest {
         Assertions.assertThat(productRepository.findById(2L).orElseThrow().getStatus()).isEqualTo(OpenRunStatus.OPEN);
 
     }
-
-
-
-
 }
