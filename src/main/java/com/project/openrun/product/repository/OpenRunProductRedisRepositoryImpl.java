@@ -21,7 +21,7 @@ public class OpenRunProductRedisRepositoryImpl implements CacheRedisRepository<O
     public static final String CACHE_OPEN_RUN_PRODUCT_KEY = "OPEN_PRODUCT";
     public static final String CACHE_OPEN_RUN_PRODUCT_COUNT_KEY = "OPEN_RUN_PRODUCT_COUNT";
 
-    private final RedisTemplate<String, PageProductResponseDto> redisTemplate;
+    private final RedisTemplate<String, PageProductResponseDto> productRedisTemplate;
     private final RedisTemplate<String, String> redisCountTemplate;
 
 
@@ -30,25 +30,20 @@ public class OpenRunProductRedisRepositoryImpl implements CacheRedisRepository<O
     @Override
     public void saveProduct(int subKey, Page<OpenRunProductResponseDto> products) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime midnight = LocalDateTime.of(now.toLocalDate(), LocalTime.MIDNIGHT);
+        long totalSecondsUntilMidnight = Duration.between(now, now.toLocalDate().atStartOfDay().plusDays(1)).getSeconds();
+        Duration time = Duration.ofSeconds(totalSecondsUntilMidnight);
 
-        Duration durationUntilMidnight = Duration.between(now, midnight.plusDays(1));
-
-        long hours = durationUntilMidnight.toHours();
-        long minutes = durationUntilMidnight.toMinutesPart();
-        long seconds = durationUntilMidnight.toSecondsPart();
-
-        redisTemplate.opsForValue().set(createKey(subKey), new PageProductResponseDto<>(
+        productRedisTemplate.opsForValue().set(createKey(subKey), new PageProductResponseDto<>(
                 products.getContent()
                 , products.getNumber()
                 , products.getTotalPages()
                 , products.getSize()
-                , products.getTotalElements()), Duration.ofSeconds(hours * 60 * 60 + minutes * 60 + seconds));
+                , products.getTotalElements()), time);
     }
 
     @Override
     public Page<OpenRunProductResponseDto> getProduct(int subKey) {
-        PageProductResponseDto result = redisTemplate.opsForValue().get(createKey(subKey));
+        PageProductResponseDto result = productRedisTemplate.opsForValue().get(createKey(subKey));
         return result != null ? new PageImpl<>(result.getContent(), PageRequest.of(result.getNumber(), result.getSize()), result.getTotalElements()) : null;
     }
 

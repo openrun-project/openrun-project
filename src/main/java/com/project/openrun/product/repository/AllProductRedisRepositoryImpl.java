@@ -19,13 +19,13 @@ public class AllProductRedisRepositoryImpl implements CacheRedisRepository<AllPr
     public static final String CACHE_ALL_PRODUCT_KEY = "ALL_PRODUCT";
     public static final String CACHE_ALL_PRODUCT_COUNT_KEY = "ALL_PRODUCT_COUNT";
 
-    private final RedisTemplate<String, PageProductResponseDto> redisTemplate;
+    private final RedisTemplate<String, PageProductResponseDto> productRedisTemplate;
     private final RedisTemplate<String, String> redisCountTemplate;
 
 
     @Override
     public void saveProduct(int subKey, Page<AllProductResponseDto> products) {
-        redisTemplate.opsForValue().set(createKey(subKey), new PageProductResponseDto<>(
+        productRedisTemplate.opsForValue().set(createKey(subKey), new PageProductResponseDto<>(
                 products.getContent()
                 , products.getNumber()
                 , products.getTotalPages()
@@ -36,7 +36,7 @@ public class AllProductRedisRepositoryImpl implements CacheRedisRepository<AllPr
 
     @Override
     public Page<AllProductResponseDto> getProduct(int subKey) {
-        PageProductResponseDto result = redisTemplate.opsForValue().get(createKey(subKey));
+        PageProductResponseDto result = productRedisTemplate.opsForValue().get(createKey(subKey));
         return result != null ? new PageImpl<>(result.getContent(), PageRequest.of(result.getNumber(), result.getSize()), result.getTotalElements()) : null;
     }
 
