@@ -59,6 +59,7 @@ public class OrderService {
 
         orderCreateProducer.createOrder(orderEventDto);
 
+        /*kafka 로 미룰 예정
         Order order = Order.builder()
                 .member(member)
                 .product(product)
