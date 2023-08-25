@@ -50,24 +50,14 @@ public class OrderService {
         );
 
         if (product.getCurrentQuantity() < orderRequestDto.count()) {
-            return;
+            throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("재고 부족"));
         }
-        
-        product.decreaseQuantity(orderRequestDto.count());
+
+        productRepository.updateProductQuantity(-orderRequestDto.count(),productId);
 
         OrderEventDto orderEventDto = new OrderEventDto(product, orderRequestDto, member);
 
         orderCreateProducer.createOrder(orderEventDto);
-
-        /*kafka 로 미룰 예정
-        Order order = Order.builder()
-                .member(member)
-                .product(product)
-                .count(orderRequestDto.count())
-                .totalPrice(product.getPrice() * orderRequestDto.count())
-                .build();
-        orderRepository.save(order);
-        orderCreateProducer.createOrder(new OrderEventDto(product, orderRequestDto, member));*/
     }
 
     // fetchJoin 이후에 적용
@@ -81,7 +71,7 @@ public class OrderService {
             throw new ResponseStatusException(NOT_AUTHORIZATION.getStatus(), NOT_AUTHORIZATION.formatMessage("주문"));
         }
 
-        order.getProduct().increaseQuantity(order.getCount());
+        productRepository.updateProductQuantity(order.getCount(), order.getProduct().getId());
 
         orderRepository.delete(order);
     }
