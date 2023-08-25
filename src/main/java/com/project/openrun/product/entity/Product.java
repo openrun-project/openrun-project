@@ -40,16 +40,7 @@ public class Product extends BaseAuditing {
     @Enumerated(EnumType.STRING)
     private OpenRunStatus status;
 
-    public void decreaseQuantity(Integer count) {
-        if (this.getCurrentQuantity() < count) {
-            throw new IllegalArgumentException("상품의 재고가 부족합니다.");
-        }
-        this.currentQuantity -= count;
-    }
 
-    public void increaseQuantity(Integer count) {
-        this.currentQuantity += count;
-    }
 
     public void addWish() {
         this.wishCount += 1;
@@ -58,4 +49,6 @@ public class Product extends BaseAuditing {
     public void deleteWish() {
         this.wishCount -= 1;
     }
+
+
 }
