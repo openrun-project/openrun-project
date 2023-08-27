@@ -57,7 +57,8 @@ public class OrderService {
             throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("재고 부족"));
         }
 
-        productRepository.updateProductQuantity(orderRequestDto.count(),productId);
+//        productRepository.updateProductQuantity(-orderRequestDto.count(),productId);
+        product.decreaseProductQuantity(orderRequestDto.count());
 
         OrderEventDto orderEventDto = new OrderEventDto(product, orderRequestDto, member);
 
