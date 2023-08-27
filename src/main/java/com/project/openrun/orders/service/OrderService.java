@@ -7,6 +7,7 @@ import com.project.openrun.orders.entity.Order;
 import com.project.openrun.orders.repository.OrderRepository;
 import com.project.openrun.global.kafka.producer.OrderCreateProducer;
 import com.project.openrun.global.kafka.producer.dto.OrderEventDto;
+import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.project.openrun.global.exception.type.ErrorCode.NOT_AUTHORIZATION;
-import static com.project.openrun.global.exception.type.ErrorCode.NOT_FOUND_DATA;
+import static com.project.openrun.global.exception.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -49,11 +49,15 @@ public class OrderService {
                 () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
         );
 
+        if (!OpenRunStatus.OPEN.equals(product.getStatus())){
+            throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), INVALID_CONDITION.formatMessage("오픈런 상품이 아닙니다"));
+        }
+
         if (product.getCurrentQuantity() < orderRequestDto.count()) {
             throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("재고 부족"));
         }
 
-        productRepository.updateProductQuantity(-orderRequestDto.count(),productId);
+        productRepository.updateProductQuantity(orderRequestDto.count(),productId);
 
         OrderEventDto orderEventDto = new OrderEventDto(product, orderRequestDto, member);
 
