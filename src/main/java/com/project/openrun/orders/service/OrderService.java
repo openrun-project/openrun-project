@@ -62,7 +62,7 @@ public class OrderService {
 
         OrderEventDto orderEventDto = new OrderEventDto(product, orderRequestDto, member);
 
-//        orderCreateProducer.createOrder(orderEventDto);
+        orderCreateProducer.createOrder(orderEventDto);
     }
 
     // fetchJoin 이후에 적용
