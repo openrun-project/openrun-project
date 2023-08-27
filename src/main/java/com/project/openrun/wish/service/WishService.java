@@ -65,21 +65,13 @@ public class WishService {
 
     // fetchJoin 이후에 적용
     public Page<WishProductResponseDto> getMyWishProduct(Member member, Pageable pageable) {
-        Page<Wish> wishes = wishRepository.findAllByMemberOrderByIdDesc(member, pageable);
+        Page<WishProductResponseDto> wishes = wishRepository.findAllByMemberOrderByIdDesc(member, pageable);
 
         if (wishes.isEmpty()) {
             return null;
         }
 
-        return wishes.map(wish -> {
-            return new WishProductResponseDto(
-                    wish.getProduct().getId(),
-                    wish.getProduct().getProductName(),
-                    wish.getProduct().getPrice(),
-                    wish.getProduct().getMallName(),
-                    wish.getProduct().getProductImage()
-            );
-        });
+        return wishes;
     }
 
     public IsWishResponseDto getProductWishUser(Long productId, Member member) {

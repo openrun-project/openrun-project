@@ -36,7 +36,7 @@ public class OrderController {
     ) {
         orderService.postOrders(productId, count, userDetails.getMember());
 
-        return "구매 성공";
+        return "주문을 처리중입니다.";
     }
 
     @DeleteMapping("/{orderId}")

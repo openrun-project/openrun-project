@@ -5,6 +5,9 @@ import com.project.openrun.orders.dto.OrderRequestDto;
 import com.project.openrun.orders.dto.OrderResponseDto;
 import com.project.openrun.orders.entity.Order;
 import com.project.openrun.orders.repository.OrderRepository;
+import com.project.openrun.global.kafka.producer.OrderCreateProducer;
+import com.project.openrun.global.kafka.producer.dto.OrderEventDto;
+import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.project.openrun.global.exception.type.ErrorCode.NOT_AUTHORIZATION;
-import static com.project.openrun.global.exception.type.ErrorCode.NOT_FOUND_DATA;
+import static com.project.openrun.global.exception.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -24,26 +26,19 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final OrderCreateProducer orderCreateProducer;
 
 
-    // fetchJoin 이후에 적용
+    // fetchJoin 이후에 적용 -> ok
     public Page<OrderResponseDto> getOrders(Member member, Pageable pageable) {
 
-        Page<Order> orders = orderRepository.findAllByMember(member, pageable);
-        if (orders.isEmpty()) {
+        Page<OrderResponseDto> order = orderRepository.findAllByMember(member, pageable);
+        if (order.isEmpty()) {
             throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("주문"));
         }
 
-        return orders.map(order -> {
-            return new OrderResponseDto(
-                    order.getId(),
-                    order.getProduct().getProductName(),
-                    order.getProduct().getPrice(),
-                    order.getProduct().getMallName(),
-                    order.getCount(),
-                    order.getModifiedAt()
-            );
-        });
+        return order;
+
     }
 
 
@@ -54,16 +49,19 @@ public class OrderService {
                 () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
         );
 
-        Order order = Order.builder()
-                .member(member)
-                .product(product)
-                .count(orderRequestDto.count())
-                .totalPrice(product.getPrice() * orderRequestDto.count())
-                .build();
+        if (!OpenRunStatus.OPEN.equals(product.getStatus())){
+            throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), INVALID_CONDITION.formatMessage("오픈런 상품이 아닙니다"));
+        }
 
-        product.decreaseQuantity(orderRequestDto.count());
+        if (product.getCurrentQuantity() < orderRequestDto.count()) {
+            throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("재고 부족"));
+        }
 
-        orderRepository.save(order);
+        productRepository.updateProductQuantity(orderRequestDto.count(),productId);
+
+        OrderEventDto orderEventDto = new OrderEventDto(product, orderRequestDto, member);
+
+        orderCreateProducer.createOrder(orderEventDto);
     }
 
     // fetchJoin 이후에 적용
@@ -77,7 +75,7 @@ public class OrderService {
             throw new ResponseStatusException(NOT_AUTHORIZATION.getStatus(), NOT_AUTHORIZATION.formatMessage("주문"));
         }
 
-        order.getProduct().increaseQuantity(order.getCount());
+        productRepository.updateProductQuantity(order.getCount(), order.getProduct().getId());
 
         orderRepository.delete(order);
     }

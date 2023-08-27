@@ -7,6 +7,7 @@ import com.project.openrun.product.entity.OpenRunStatus;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -48,18 +49,16 @@ public class ProductRepositoryImpl implements  ProductRepositoryCustom{
     @Override
     public Page<AllProductResponseDto> searchAllProducts(ProductSearchCondition condition, Pageable pageable){
 
+
+
         List<AllProductResponseDto> content = queryFactory
                 .select(Projections.constructor(AllProductResponseDto.class,
                         product.id,
                         product.productName,
-                        product.productImage,
                         product.price,
                         product.mallName,
-                        product.currentQuantity,
-                        product.eventStartTime,
-                        product.category,
-                        product.totalQuantity,
-                        product.wishCount
+                        product.category
+
                 )).from(product)
                 .where(
                         keywordContains(condition.getKeyword()),
@@ -134,7 +133,9 @@ public class ProductRepositoryImpl implements  ProductRepositoryCustom{
     }
 
     private BooleanExpression keywordContains(String keyword) {
-        return hasText(keyword) ? product.productName.contains(keyword).or(product.mallName.contains(keyword)) : null;
+        return hasText(keyword) ? Expressions.booleanTemplate("match({0}) against ({1} in boolean mode)", product.productName, "+" + keyword + "*"): null;
+//        return hasText(keyword) ? product.productName.contains(keyword).or(product.mallName.contains(keyword)) : null;
+
     }
 
     private BooleanExpression categoryEq(String category) {
