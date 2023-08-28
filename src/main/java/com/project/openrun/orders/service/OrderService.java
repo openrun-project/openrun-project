@@ -1,5 +1,6 @@
 package com.project.openrun.orders.service;
 
+import com.project.openrun.global.util.RedisLock;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.orders.dto.OrderRequestDto;
 import com.project.openrun.orders.dto.OrderResponseDto;
@@ -11,11 +12,16 @@ import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Set;
 
 import static com.project.openrun.global.exception.type.ErrorCode.*;
 
@@ -27,6 +33,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final OrderCreateProducer orderCreateProducer;
+    private final RedisLock redisLock;
 
 
     // fetchJoin 이후에 적용 -> ok
@@ -44,21 +51,28 @@ public class OrderService {
 
     @Transactional
     public void postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {
+        Product product = null;
+        if (redisLock.tryLock("orderLock", 5)) {
+            try {
 
-        Product product = productRepository.findWithLockById(productId).orElseThrow(
-                () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
-        );
+                product = productRepository.findById(productId).orElseThrow(
+                        () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
+                );
 
-        if (!OpenRunStatus.OPEN.equals(product.getStatus())){
-            throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), INVALID_CONDITION.formatMessage("오픈런 상품이 아닙니다"));
+                if (!OpenRunStatus.OPEN.equals(product.getStatus())) {
+                    throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), INVALID_CONDITION.formatMessage("오픈런 상품이 아닙니다"));
+                }
+
+                if (product.getCurrentQuantity() < orderRequestDto.count()) {
+                    throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("재고 부족"));
+                }
+
+                product.decreaseProductQuantity(orderRequestDto.count());
+
+            } finally {
+                redisLock.unlock("orderLock");
+            }
         }
-
-        if (product.getCurrentQuantity() < orderRequestDto.count()) {
-            throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("재고 부족"));
-        }
-
-//        productRepository.updateProductQuantity(-orderRequestDto.count(),productId);
-        product.decreaseProductQuantity(orderRequestDto.count());
 
         OrderEventDto orderEventDto = new OrderEventDto(product, orderRequestDto, member);
 
@@ -70,7 +84,7 @@ public class OrderService {
     public void deleteOrders(Long orderId, Member member) throws ResponseStatusException {
         Order order = orderRepository.findWithLockById(orderId).orElseThrow(
                 () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("주문")
-        ));
+                ));
 
         if (order.getMember().getId() != member.getId()) {
             throw new ResponseStatusException(NOT_AUTHORIZATION.getStatus(), NOT_AUTHORIZATION.formatMessage("주문"));
