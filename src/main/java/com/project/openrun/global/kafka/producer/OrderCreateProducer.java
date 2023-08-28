@@ -1,7 +1,7 @@
 package com.project.openrun.global.kafka.producer;
 
 
-import com.project.openrun.global.kafka.producer.dto.OrderEventDto;
+import com.project.openrun.global.kafka.dto.OrderEventDto;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,8 @@ public class OrderCreateProducer {
             }
         });
     }
-    // @Retry & @Recover 활용 고려.
+//     @Retry & @Recover
+//    활용 고려.
     private void retrySend(OrderEventDto orderEventDto, int count) {
         for (int i = 0; i < count; i++) {
             try{

@@ -1,4 +1,4 @@
-package com.project.openrun.global.kafka.producer.dto;
+package com.project.openrun.global.kafka.dto;
 
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.orders.dto.OrderRequestDto;

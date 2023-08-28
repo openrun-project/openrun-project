@@ -1,14 +1,9 @@
-name: Spring-Boot-Manito-Amazon EC2
+name: OPEN-RUN-Amazon EC2
 
 on:
   push:
     branches:
       - main
-env:
-  AWS_REGION: ap-northeast-2
-  S3_BUCKET_NAME: openrun-buket
-  CODE_DEPLOY_APPLICATION_NAME: open-run
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: openrun-codedeploy-group
 
 permissions:
   contents: read
@@ -71,32 +66,3 @@ jobs:
           sudo docker pull ${{ secrets.DOCKER_REPO }}/open-run:shh0429
           docker-compose -f /home/ubuntu/docker-compose.yml up -d
           docker image prune -f
-
-#      # 빌드 결과를 zip파일로 결과를 올리는 작업
-#    - name: Make zip file
-#      # 공식문서의 GITHUB_SHA를 확인. commit의 결과를 고유한 값으로 만들어주기 위함.
-#      run: zip -r ./$GITHUB_SHA .
-#      shell: bash
-#
-#    # (4) AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
-#    - name: Configure AWS credentials
-#      uses: aws-actions/configure-aws-credentials@v1
-#      with:
-#        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#        aws-region: ${{ env.AWS_REGION }}
-#
-#    # (5) 빌드 결과물을 S3 버킷에 업로드
-#    - name: Upload to AWS S3
-#      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
-#
-#    # (6) S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
-#    - name: Deploy to AWS EC2 from S3
-#      run: |
-#        aws deploy create-deployment \
-#          --deployment-config-name CodeDeployDefault.AllAtOnce \
-#          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-#          --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
-#          --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip
-#
-##          --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA.zip,bundleType=zip
