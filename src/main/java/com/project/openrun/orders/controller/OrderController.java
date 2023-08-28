@@ -33,7 +33,7 @@ public class OrderController {
             @PathVariable Long productId,
             @RequestBody OrderRequestDto count,
             @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) throws InterruptedException {
+    ) {
         orderService.postOrders(productId, count, userDetails.getMember());
 
         return "주문을 처리중입니다.";

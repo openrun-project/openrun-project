@@ -40,7 +40,8 @@ public class Product extends BaseAuditing {
     @Enumerated(EnumType.STRING)
     private OpenRunStatus status;
 
-
+    @Version
+    private Long version;
 
     public void addWish() {
         this.wishCount += 1;
