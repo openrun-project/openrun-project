@@ -6,7 +6,7 @@ import com.project.openrun.orders.dto.OrderResponseDto;
 import com.project.openrun.orders.entity.Order;
 import com.project.openrun.orders.repository.OrderRepository;
 import com.project.openrun.global.kafka.producer.OrderCreateProducer;
-import com.project.openrun.global.kafka.producer.dto.OrderEventDto;
+import com.project.openrun.global.kafka.dto.OrderEventDto;
 import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;

@@ -1,6 +1,6 @@
 package com.project.openrun.global.config;
 
-import com.project.openrun.global.kafka.producer.dto.OrderEventDto;
+import com.project.openrun.global.kafka.dto.OrderEventDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.RoundRobinPartitioner;
 import org.apache.kafka.common.serialization.LongSerializer;

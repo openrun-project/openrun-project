@@ -1,6 +1,5 @@
 package com.project.openrun.member.service;
 
-import com.project.openrun.global.exception.CustomExceptionHandler;
 import com.project.openrun.member.dto.MemberSignupRequestDto;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.member.repository.MemberRepository;
