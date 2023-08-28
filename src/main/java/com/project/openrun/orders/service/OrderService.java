@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.project.openrun.global.exception.type.ErrorCode.*;
 
@@ -50,29 +51,42 @@ public class OrderService {
 
 
     @Transactional
-    public void postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {
+    public void postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) throws InterruptedException {
+
+        AtomicInteger retryCount = new AtomicInteger(0);
+        final int MAX_RETRIES = 3;
+
         Product product = null;
-        if (redisLock.tryLock("orderLock", 5)) {
-            try {
+        while (true) {
+            if (redisLock.tryLock("orderLock", 5)) {
+                try {
 
-                product = productRepository.findById(productId).orElseThrow(
-                        () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
-                );
+                    product = productRepository.findById(productId).orElseThrow(
+                            () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
+                    );
 
-                if (!OpenRunStatus.OPEN.equals(product.getStatus())) {
-                    throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), INVALID_CONDITION.formatMessage("오픈런 상품이 아닙니다"));
+                    if (!OpenRunStatus.OPEN.equals(product.getStatus())) {
+                        throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), INVALID_CONDITION.formatMessage("오픈런 상품이 아닙니다"));
+                    }
+
+                    if (product.getCurrentQuantity() < orderRequestDto.count()) {
+                        throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("재고 부족"));
+                    }
+
+                    product.decreaseProductQuantity(orderRequestDto.count());
+
+                } finally {
+                    redisLock.unlock("orderLock");
+                    break;
                 }
-
-                if (product.getCurrentQuantity() < orderRequestDto.count()) {
-                    throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("재고 부족"));
-                }
-
-                product.decreaseProductQuantity(orderRequestDto.count());
-
-            } finally {
-                redisLock.unlock("orderLock");
+            } else if (retryCount.incrementAndGet() >= MAX_RETRIES) {
+                throw new ResponseStatusException(NOT_AUTHORIZATION.getStatus(), NOT_AUTHORIZATION.formatMessage("주문 실패"));
+            } else {
+                Thread.sleep(500);
             }
+
         }
+
 
         OrderEventDto orderEventDto = new OrderEventDto(product, orderRequestDto, member);
 
