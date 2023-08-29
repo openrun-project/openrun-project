@@ -23,19 +23,19 @@
 //
 //        int createMemberNumber = 1000;
 //
-//        for (int i = 518; i < createMemberNumber; i++) {
+//        for (int i = createMemberNumber; i < 10000; i++) {
 //
 //            memberService.signup(new MemberSignupRequestDto(
 //                    "trafictest" + i,
-//                    passwordEncoder.encode("abcd1234"),
+//                    "abcd1234",
 //                    "trafictest" + i + "@naver.com"
 //            ));
 //
 //        }
 //
-//        for (int i = 0; i < createMemberNumber; i++) {
+//        for (int i = 6000; i < 10000; i++) {
 //            String token = jwtUtil.createToken("trafictest" + i + "@naver.com", MemberRoleEnum.USER);
-//            System.out.println("token = " + token);
+//            System.out.println(token);
 //        }
 //
 //    }
