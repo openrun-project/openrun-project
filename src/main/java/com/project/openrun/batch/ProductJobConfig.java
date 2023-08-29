@@ -159,7 +159,7 @@ public class ProductJobConfig {
         return new JpaCursorItemReaderBuilder<Product>()
                 .name("openRunSaveRedisItemReader")
                 .entityManagerFactory(entityManagerFactory)
-                .queryString("select p from product p where status= 'OPEN' order by id desc")
+                .queryString("select p from Product p where status= 'OPEN' order by id desc")
                 .build();
     }
 
