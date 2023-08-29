@@ -7,7 +7,6 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-//@EnableRetry
 @EnableScheduling
 @EnableWebSecurity
 @EnableJpaAuditing

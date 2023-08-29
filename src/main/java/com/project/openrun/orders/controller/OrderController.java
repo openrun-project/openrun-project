@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     private final OrderService orderService;
-//    private final OrderServiceFacade orderServiceFacade;
 
     @GetMapping
     public Page<OrderResponseDto> getOrders(
@@ -36,7 +35,6 @@ public class OrderController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         orderService.postOrders(productId, count, userDetails.getMember());
-//        orderServiceFacade.CheckOrderPossibility(productId, count, userDetails.getMember());
         return "주문을 처리중입니다.";
     }
 

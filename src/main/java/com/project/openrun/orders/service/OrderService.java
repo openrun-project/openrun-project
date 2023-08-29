@@ -61,7 +61,6 @@ public class OrderService {
 
         OrderEventDto orderEventDto = new OrderEventDto(product, orderRequestDto, member);
 
-//        OrderEventDto orderEventDto = orderServiceFacade.CheckOrderPossibility(productId, orderRequestDto, member);
         orderCreateProducer.createOrder(orderEventDto);
     }
 
