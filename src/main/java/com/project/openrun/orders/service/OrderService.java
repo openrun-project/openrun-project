@@ -45,7 +45,7 @@ public class OrderService {
 
     @Transactional
     public void postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {
-        Product product = productRepository.findWithOptimisticLockById(productId).orElseThrow(
+        Product product = productRepository.findWithLockById(productId).orElseThrow(
                 () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
         );
 
