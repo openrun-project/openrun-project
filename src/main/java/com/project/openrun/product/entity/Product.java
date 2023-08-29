@@ -1,5 +1,9 @@
 package com.project.openrun.product.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.project.openrun.global.entity.BaseAuditing;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,6 +33,8 @@ public class Product extends BaseAuditing {
 
     private Integer currentQuantity;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime eventStartTime;
 
     private String category;
