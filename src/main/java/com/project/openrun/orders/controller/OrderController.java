@@ -5,7 +5,6 @@ import com.project.openrun.auth.security.UserDetailsImpl;
 import com.project.openrun.orders.dto.OrderRequestDto;
 import com.project.openrun.orders.dto.OrderResponseDto;
 import com.project.openrun.orders.service.OrderService;
-import com.project.openrun.orders.service.OrderServiceFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     private final OrderService orderService;
-    private final OrderServiceFacade orderServiceFacade;
+//    private final OrderServiceFacade orderServiceFacade;
 
     @GetMapping
     public Page<OrderResponseDto> getOrders(
@@ -36,8 +35,8 @@ public class OrderController {
             @RequestBody OrderRequestDto count,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-//        orderService.postOrders(productId, count, userDetails.getMember());
-        orderServiceFacade.CheckOrderPossibility(productId, count, userDetails.getMember());
+        orderService.postOrders(productId, count, userDetails.getMember());
+//        orderServiceFacade.CheckOrderPossibility(productId, count, userDetails.getMember());
         return "주문을 처리중입니다.";
     }
 

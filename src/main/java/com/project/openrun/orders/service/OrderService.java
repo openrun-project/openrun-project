@@ -1,6 +1,7 @@
 package com.project.openrun.orders.service;
 
 import com.project.openrun.global.kafka.dto.OrderEventDto;
+import com.project.openrun.global.kafka.producer.OrderCreateProducer;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.orders.dto.OrderRequestDto;
 import com.project.openrun.orders.dto.OrderResponseDto;
@@ -25,7 +26,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
-//    private final OrderCreateProducer orderCreateProducer;
+    private final OrderCreateProducer orderCreateProducer;
 
 
 
@@ -43,7 +44,7 @@ public class OrderService {
 
 
     @Transactional
-    public OrderEventDto postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {
+    public void postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {
         Product product = productRepository.findWithOptimisticLockById(productId).orElseThrow(
                 () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
         );
@@ -60,11 +61,8 @@ public class OrderService {
 
         OrderEventDto orderEventDto = new OrderEventDto(product, orderRequestDto, member);
 
-        return orderEventDto;
-
 //        OrderEventDto orderEventDto = orderServiceFacade.CheckOrderPossibility(productId, orderRequestDto, member);
-//
-//        orderCreateProducer.createOrder(orderEventDto);
+        orderCreateProducer.createOrder(orderEventDto);
     }
 
     // fetchJoin 이후에 적용
