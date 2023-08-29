@@ -1,51 +1,35 @@
 package com.project.openrun.orders.service;
 
-import com.project.openrun.global.util.RedisLock;
+import com.project.openrun.global.kafka.dto.OrderEventDto;
 import com.project.openrun.member.entity.Member;
 import com.project.openrun.orders.dto.OrderRequestDto;
 import com.project.openrun.orders.dto.OrderResponseDto;
 import com.project.openrun.orders.entity.Order;
 import com.project.openrun.orders.repository.OrderRepository;
-import com.project.openrun.global.kafka.producer.OrderCreateProducer;
-import com.project.openrun.global.kafka.dto.OrderEventDto;
 import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.ProductRepository;
-import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.dialect.lock.OptimisticEntityLockException;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.project.openrun.global.exception.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
-//@Transactional(readOnly = true)
+@Transactional(readOnly = true)
 public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
-    private final OrderCreateProducer orderCreateProducer;
-    private final OrderServiceFacade orderServiceFacade;
+//    private final OrderCreateProducer orderCreateProducer;
+
 
 
     // fetchJoin 이후에 적용 -> ok
-    @Transactional(readOnly = true)
     public Page<OrderResponseDto> getOrders(Member member, Pageable pageable) {
 
         Page<OrderResponseDto> order = orderRepository.findAllByMember(member, pageable);
@@ -58,40 +42,29 @@ public class OrderService {
     }
 
 
-    @Retryable(
-            retryFor = {
-                    OptimisticEntityLockException.class,
-                    OptimisticLockException.class,
-                    OptimisticLockingFailureException.class
-            },
-            noRetryFor = {ResponseStatusException.class},
-            notRecoverable = {ResponseStatusException.class},
-            maxAttempts = 100, backoff = @Backoff(delay = 50))
-    public void postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {
-//        Product product = productRepository.findWithOptimisticLockById(productId).orElseThrow(
-//                () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
-//        );
-//
-//        if (!OpenRunStatus.OPEN.equals(product.getStatus())) {
-//            throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), INVALID_CONDITION.formatMessage("오픈런 상품이 아닙니다"));
-//        }
-//
-//        if (product.getCurrentQuantity() < orderRequestDto.count()) {
-//            throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("재고 부족"));
-//        }
-//
-//        product.decreaseProductQuantity(orderRequestDto.count());
-//
-//        OrderEventDto orderEventDto = new OrderEventDto(product, orderRequestDto, member);
+    @Transactional
+    public OrderEventDto postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {
+        Product product = productRepository.findWithOptimisticLockById(productId).orElseThrow(
+                () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
+        );
 
-        OrderEventDto orderEventDto = orderServiceFacade.CheckOrderPossibility(productId, orderRequestDto, member);
+        if (!OpenRunStatus.OPEN.equals(product.getStatus())) {
+            throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), INVALID_CONDITION.formatMessage("오픈런 상품이 아닙니다"));
+        }
 
-        orderCreateProducer.createOrder(orderEventDto);
-    }
+        if (product.getCurrentQuantity() < orderRequestDto.count()) {
+            throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("재고 부족"));
+        }
 
-    @Recover
-    public void recover(RuntimeException e, Long productId, OrderRequestDto orderRequestDto, Member member){
-        return;
+        product.decreaseProductQuantity(orderRequestDto.count());
+
+        OrderEventDto orderEventDto = new OrderEventDto(product, orderRequestDto, member);
+
+        return orderEventDto;
+
+//        OrderEventDto orderEventDto = orderServiceFacade.CheckOrderPossibility(productId, orderRequestDto, member);
+//
+//        orderCreateProducer.createOrder(orderEventDto);
     }
 
     // fetchJoin 이후에 적용
