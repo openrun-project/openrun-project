@@ -1,5 +1,6 @@
 package com.project.openrun.global.config;
 
+import com.project.openrun.member.entity.Member;
 import com.project.openrun.product.dto.DetailProductResponseDto;
 import com.project.openrun.product.dto.PageProductResponseDto;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,18 +57,12 @@ public class RedisConfig {
     }
 
 
-
-    //TODO 임시용 아직 미정
     @Bean
-    public RedisTemplate<String, DetailProductResponseDto> productDetailRedisTemplate() {
-        RedisTemplate<String, DetailProductResponseDto> redisTemplate = new RedisTemplate<>();
-        // command 를 코드로 구현할 수 있게 도와주는 것.
+    public RedisTemplate<String, Member> memberRedisTemplate() {
+        RedisTemplate<String, Member> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
-
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<DetailProductResponseDto>(DetailProductResponseDto.class));
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<Member>(Member.class));
 
         return redisTemplate;
     }

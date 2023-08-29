@@ -60,6 +60,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String email = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         MemberRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getMember().getMemberRole();
 
+
+
         // 토큰을 헤더에 담기
         String token = jwtUtil.createToken(email, role);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
