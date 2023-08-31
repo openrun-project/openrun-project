@@ -64,7 +64,9 @@ function searchProducts(page) {
             if (data['content'].length === 0) {
                 var productList = $('#product-row');
                 productList.empty();
-                let html = `<h1 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"> 검색 결과가 없습니다.</h1>`;
+                let html = `<div>
+                                    <h1 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"> 검색 결과가 없습니다.</h1>
+                                </div>`;
                 productList.append(html);
                 updatePagination();
                 return;

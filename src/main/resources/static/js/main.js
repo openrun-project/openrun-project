@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    let count = 10;
+    let count = 12;
     $.ajax({
         type: "GET",
         url: `/api/products/wishcount/${count}`,
@@ -34,42 +34,9 @@ $(document).ready(function () {
             });
         })
         .fail(function (jqXHR, textStatus) {
-            alert("Login Fail");
-            window.location.href = '/openrun/main'
+            alert("새로고침을 해주세요");
         });
 });
-
-
-
-// function onLogin() {
-//     let loginemail = $('#loginemail').val();
-//     let loginpassword = $('#loginpassword').val();
-//
-//     $.ajax({
-//         type: "POST",
-//         url: `/api/members/login`,
-//         contentType: "application/json",
-//         data: JSON.stringify({memberemail: loginemail, memberpassword: loginpassword}),
-//     })
-//         .done(function (res, status, xhr) {
-//
-//             const token = xhr.getResponseHeader('Authorization');
-//             alert("Login Success");
-//
-//             console.log(token);
-//
-//             localStorage.setItem("Authorization", token)
-//
-//             // $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-//             //     jqXHR.setRequestHeader('Authorization', token);
-//             // });
-//             window.location.href = '/openrun/main'
-//         })
-//         .fail(function (jqXHR, textStatus) {
-//             alert("Login Fail");
-//             window.location.href = '/openrun/main'
-//         });
-// }
 
 function getAuthTokenFromCookie() {
     return document.cookie.split(';').find(
