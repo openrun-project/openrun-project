@@ -1,7 +1,6 @@
 package com.project.openrun.global.config;
 
 import com.project.openrun.member.entity.Member;
-import com.project.openrun.product.dto.DetailProductResponseDto;
 import com.project.openrun.product.dto.PageProductResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

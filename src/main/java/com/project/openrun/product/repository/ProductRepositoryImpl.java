@@ -32,6 +32,7 @@ public class ProductRepositoryImpl implements  ProductRepositoryCustom{
                 .select(Projections.constructor(AllProductResponseDto.class,
                         product.id,
                         product.productName,
+                        product.productImage,
                         product.price,
                         product.mallName,
                         product.category

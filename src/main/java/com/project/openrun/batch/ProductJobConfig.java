@@ -80,8 +80,8 @@ public class ProductJobConfig {
     }
 
     @Bean
-    public Step openRunSaveRedisStep(JobRepository jobRepository
-            , PlatformTransactionManager platformTransactionManager) {
+    public Step openRunSaveRedisStep(JobRepository jobRepository,
+                                     PlatformTransactionManager platformTransactionManager) {
 
         return new StepBuilder("openRunSaveRedisStep", jobRepository)
                 .<Product, OpenRunProductResponseDto>chunk(16, platformTransactionManager)
@@ -123,7 +123,6 @@ public class ProductJobConfig {
                             return null;
                         }
                 );
-
     }
 
 

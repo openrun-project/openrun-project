@@ -10,7 +10,7 @@ $(document).ready(function () {
         url: `/api/products/${productId}`,
         contentType: "application/json",
     }).done(function (json) {
-        console.log(json);
+
         let productId = json['id'];
         let productName = json['productName'];
         let productImage = json['productImage'];
@@ -75,7 +75,7 @@ $(document).ready(function () {
                 'Authorization': token
             },
         }).done(function (json) {
-            console.log(json);
+
             isWish = json['isWish'];
             if (isWish) {
                 $("#wish-btn").text("찜 취소" + wishCount);

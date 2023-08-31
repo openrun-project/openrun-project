@@ -35,7 +35,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
-        log.info("[JwtAuthorizationFilter doFilterInternal] authorizationFilter 동작 "+req.getRequestURL().toString());
         String tokenValue = jwtUtil.getJwtFromHeader(req);
         String url = req.getRequestURI();
 
@@ -48,7 +47,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             // 위에서 명시된 리스트의 api 요청된 경우, filterChain.doFilter(req, res); 해주자.
             if (!(StringUtils.hasText(url) && PatternMatchUtils.simpleMatch(whiteUrl, url) && req.getMethod().equals("GET"))) {
-
+                log.info("[JwtAuthorizationFilter doFilterInternal] authorizationFilter 동작 "+req.getRequestURL().toString());
                 Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
 
                 try {

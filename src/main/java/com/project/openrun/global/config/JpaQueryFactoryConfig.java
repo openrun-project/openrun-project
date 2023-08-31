@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Primary;
 public class JpaQueryFactoryConfig {
     @Bean
     @Primary
-    JPAQueryFactory jpaRepository(EntityManager em){
+    public JPAQueryFactory jpaRepository(EntityManager em){
         return new JPAQueryFactory(em);
     }
 }
