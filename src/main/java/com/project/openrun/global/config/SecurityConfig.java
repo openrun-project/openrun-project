@@ -60,7 +60,7 @@ public class SecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/favicon.ico").permitAll()
-                        .requestMatchers("openrun/**").permitAll()
+                        .requestMatchers("/openrun/**").permitAll()
                         .requestMatchers("/api/members/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/products/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
