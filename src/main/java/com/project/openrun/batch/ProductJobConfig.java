@@ -16,10 +16,11 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.JpaPagingItemReader;
-import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
+import org.springframework.batch.item.database.JpaCursorItemReader;
+import org.springframework.batch.item.database.builder.JpaCursorItemReaderBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -170,13 +171,12 @@ public class ProductJobConfig {
     }
 
     @Bean
-    public JpaPagingItemReader<Product> openRunSaveRedisItemReader() {
+    public JpaCursorItemReader<Product> openRunSaveRedisItemReader() {
 
-        return new JpaPagingItemReaderBuilder<Product>()
+        return new JpaCursorItemReaderBuilder<Product>()
                 .name("openRunSaveRedisItemReader")
                 .entityManagerFactory(entityManagerFactory)
                 .queryString("select p from Product p where status= 'OPEN' order by id desc")
-                .pageSize(16)
                 .build();
     }
 //    @Bean
@@ -233,27 +233,27 @@ public class ProductJobConfig {
     }
 
 
-//    @Bean
-//    public Tasklet openRunSaveRedisStepTasklet() {
-//        return (contribution, chunkContext) -> {
-//            // count 값 BATCH JOB EXECUTION CONTEXT 에서 꺼내오기
-//            ExecutionContext jobExecutionContext = chunkContext.getStepContext()
-//                    .getStepExecution()
-//                    .getJobExecution()
-//                    .getExecutionContext();
-//            Long count = jobExecutionContext.getLong("count");
-//
-//            // 저장 로직
-//            long totalPages = count / 16; // 17 => 1.xx  0, 1
-//
-//            for (int i = 0; i <= totalPages; i++) {
-//                Pageable pageable = PageRequest.of(i, 16);
-//                openRunProductRedisRepository.saveProduct(i, productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageable, count));
-//            }
-//
-//            return RepeatStatus.FINISHED;
-//        };
-//    }
+    @Bean
+    public Tasklet openRunSaveRedisStepTasklet() {
+        return (contribution, chunkContext) -> {
+            // count 값 BATCH JOB EXECUTION CONTEXT 에서 꺼내오기
+            ExecutionContext jobExecutionContext = chunkContext.getStepContext()
+                    .getStepExecution()
+                    .getJobExecution()
+                    .getExecutionContext();
+            Long count = jobExecutionContext.getLong("count");
+
+            // 저장 로직
+            long totalPages = count / 16; // 17 => 1.xx  0, 1
+
+            for (int i = 0; i <= totalPages; i++) {
+                Pageable pageable = PageRequest.of(i, 16);
+                openRunProductRedisRepository.saveProduct(i, productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageable, count));
+            }
+
+            return RepeatStatus.FINISHED;
+        };
+    }
 
 }
 
