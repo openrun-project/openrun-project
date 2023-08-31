@@ -10,31 +10,23 @@ import com.project.openrun.product.repository.ProductRepository;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.*;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaCursorItemReader;
 import org.springframework.batch.item.database.builder.JpaCursorItemReaderBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 @Slf4j
 @Configuration
@@ -44,10 +36,9 @@ public class ProductJobConfig {
     private final ProductRepository productRepository;
     private final CacheRedisRepository<AllProductResponseDto> allProductRedisRepository;
     private final CacheRedisRepository<OpenRunProductResponseDto> openRunProductRedisRepository;
-
     private final EntityManagerFactory entityManagerFactory;
-    private int currentPage;
-    private long count;
+    private final CustomItemWriter customItemWriter;
+    private final RetryTemplate retryTemplate;
 
     @Bean
     public Job productJob(
@@ -58,9 +49,18 @@ public class ProductJobConfig {
             Step saveAllProductCountStep) {
         return new JobBuilder("productJob", jobRepository)
                 .start(openRunProductUpdateStep)
-                .next(openRunCountStep)
-                .next(openRunSaveRedisStep)
-                .next(saveAllProductCountStep)
+                .on("FAILED").to(openRunCountStep)
+                .from(openRunProductUpdateStep).on("*").to(openRunCountStep)
+
+                .from(openRunCountStep)
+                .on("FAILED").to(openRunSaveRedisStep)
+                .from(openRunCountStep).on("*").to(openRunSaveRedisStep)
+
+                .from(openRunSaveRedisStep)
+                .on("FAILED").to(saveAllProductCountStep)
+                .from(openRunSaveRedisStep).on("*").to(saveAllProductCountStep)
+
+                .end()
                 .build();
     }
 
@@ -86,23 +86,13 @@ public class ProductJobConfig {
         return new StepBuilder("openRunSaveRedisStep", jobRepository)
                 .<Product, OpenRunProductResponseDto>chunk(16, platformTransactionManager)
                 .reader(openRunSaveRedisItemReader())
-                .writer(openRunSaveRedisItemWriter())
-                .listener(new StepExecutionListener() {
-                    @Override
-                    public void beforeStep(StepExecution stepExecution) {
-                        currentPage = 0;
-                        count = stepExecution.getJobExecution().getExecutionContext().getLong("count");
-                    }
-                })
-                .listener(new ChunkListener() {
-                    @Override
-                    public void afterChunk(ChunkContext context) {
-                        currentPage++;
-                    }
-                })
+                .processor(openRunSaveRedisItemProcessor())
+                .writer(customItemWriter)
                 .faultTolerant()
-                .retry(Exception.class)
                 .retryLimit(3)
+                .retry(IllegalArgumentException.class)
+                .skipLimit(3)
+                .skip(Exception.class)
                 .build();
     }
 
@@ -117,57 +107,46 @@ public class ProductJobConfig {
 
     @Bean
     public Tasklet openRunUpdateStepTasklet() {
-        RetryTemplate retryTemplate = new RetryTemplate();
-        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
-        retryPolicy.setMaxAttempts(3); // 최대 3회 재시도
-        retryTemplate.setRetryPolicy(retryPolicy);
 
-        return (contribution, chunkContext) -> {
-            return retryTemplate.execute(retry -> {
-                        LocalDateTime yesterday = LocalDate.now().plusDays(-1).atStartOfDay();//어제
-                        LocalDateTime today = LocalDate.now().atStartOfDay();//오늘
-                        LocalDateTime tomorrow = LocalDate.now().plusDays(1).atStartOfDay();//내일
+        return (contribution, chunkContext) ->
+                retryTemplate.execute(retry -> {
+                            LocalDateTime yesterday = LocalDate.now().plusDays(-1).atStartOfDay();//어제
+                            LocalDateTime today = LocalDate.now().atStartOfDay();//오늘
+                            LocalDateTime tomorrow = LocalDate.now().plusDays(1).atStartOfDay();//내일
 
-                        productRepository.updateProductStatus(yesterday, today, OpenRunStatus.CLOSE, OpenRunStatus.OPEN);//OPEN => CLOSE
-                        productRepository.updateProductStatus(today, tomorrow, OpenRunStatus.OPEN, OpenRunStatus.WAITING);// WAITING => OPEN
+                            productRepository.updateProductStatus(yesterday, today, OpenRunStatus.CLOSE, OpenRunStatus.OPEN);//OPEN => CLOSE
+                            productRepository.updateProductStatus(today, tomorrow, OpenRunStatus.OPEN, OpenRunStatus.WAITING);// WAITING => OPEN
 
-                        return RepeatStatus.FINISHED;
-                    }, context -> {
-                        log.error("Failed after 3 retries!");
-                        return RepeatStatus.FINISHED;
-                    }
-            );
-        };
+                            return RepeatStatus.FINISHED;
+                        }, context -> {
+                            log.error("Failed after 3 retries!");
+                            return null;
+                        }
+                );
+
     }
 
 
     @Bean
     public Tasklet openRunCountStepTasklet() {
-        RetryTemplate retryTemplate = new RetryTemplate();
-        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
-        retryPolicy.setMaxAttempts(3); // 최대 3회 재시도
-        retryTemplate.setRetryPolicy(retryPolicy);
 
-        return (contribution, chunkContext) -> {
+        return (contribution, chunkContext) ->
+                retryTemplate.execute(retry -> {
+                    Long count = productRepository.countByStatus(OpenRunStatus.OPEN);
+                    openRunProductRedisRepository.saveProductCount(count);
 
-            return retryTemplate.execute(retry -> {
-                Long count = productRepository.countByStatus(OpenRunStatus.OPEN);
-                openRunProductRedisRepository.saveProductCount(count);
+                    // count 값 BATCH JOB EXECUTION CONTEXT 에 넣어주기.
+                    chunkContext.getStepContext()
+                            .getStepExecution()
+                            .getJobExecution()
+                            .getExecutionContext()
+                            .put("count", count);
 
-                // count 값 BATCH JOB EXECUTION CONTEXT 에 넣어주기.
-                chunkContext.getStepContext()
-                        .getStepExecution()
-                        .getJobExecution()
-                        .getExecutionContext()
-                        .put("count", count);
-
-                return RepeatStatus.FINISHED;
-            }, context -> {
-                log.error("Failed after 3 retries!");
-                return RepeatStatus.FINISHED;
-            });
-
-        };
+                    return RepeatStatus.FINISHED;
+                }, context -> {
+                    log.error("Failed after 3 retries!");
+                    return null;
+                });
     }
 
     @Bean
@@ -179,15 +158,6 @@ public class ProductJobConfig {
                 .queryString("select p from Product p where status= 'OPEN' order by id desc")
                 .build();
     }
-//    @Bean
-//    public JpaCursorItemReader<Product> openRunSaveRedisItemReader() {
-//
-//        return new JpaCursorItemReaderBuilder<Product>()
-//                .name("openRunSaveRedisItemReader")
-//                .entityManagerFactory(entityManagerFactory)
-//                .queryString("select p from Product p where status= 'OPEN' order by id desc")
-//                .build();
-//    }
 
     @Bean
     public ItemProcessor<Product, OpenRunProductResponseDto> openRunSaveRedisItemProcessor() {
@@ -202,59 +172,20 @@ public class ProductJobConfig {
     }
 
     @Bean
-    public ItemWriter<OpenRunProductResponseDto> openRunSaveRedisItemWriter() {
-
-        return chunk -> {
-            Pageable pageable = PageRequest.of(currentPage, 16);
-            Page<OpenRunProductResponseDto> page = new PageImpl<>(new ArrayList<>(chunk.getItems()), pageable, count);
-            openRunProductRedisRepository.saveProduct(currentPage, page);
-        };
-    }
-
-    @Bean
     public Tasklet saveAllProductCountStepTasklet() {
-        RetryTemplate retryTemplate = new RetryTemplate();
-        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
-        retryPolicy.setMaxAttempts(3); // 최대 3회 재시도
-        retryTemplate.setRetryPolicy(retryPolicy);
 
-        return (contribution, chunkContext) -> {
+        return (contribution, chunkContext) ->
 
-            return retryTemplate.execute(retry -> {
-                Long count = productRepository.count();
-                allProductRedisRepository.saveProductCount(count);
+                retryTemplate.execute(retry -> {
+                    Long count = productRepository.count();
+                    allProductRedisRepository.saveProductCount(count);
 
-                return RepeatStatus.FINISHED;
-            }, context -> {
-                log.error("Failed after 3 retries!");
-                return RepeatStatus.FINISHED;
-            });
-        };
+                    return RepeatStatus.FINISHED;
+                }, context -> {
+                    log.error("Failed after 3 retries!");
+                    return RepeatStatus.FINISHED;
+                });
     }
-
-
-    @Bean
-    public Tasklet openRunSaveRedisStepTasklet() {
-        return (contribution, chunkContext) -> {
-            // count 값 BATCH JOB EXECUTION CONTEXT 에서 꺼내오기
-            ExecutionContext jobExecutionContext = chunkContext.getStepContext()
-                    .getStepExecution()
-                    .getJobExecution()
-                    .getExecutionContext();
-            Long count = jobExecutionContext.getLong("count");
-
-            // 저장 로직
-            long totalPages = count / 16; // 17 => 1.xx  0, 1
-
-            for (int i = 0; i <= totalPages; i++) {
-                Pageable pageable = PageRequest.of(i, 16);
-                openRunProductRedisRepository.saveProduct(i, productRepository.findOpenRunProducts(OpenRunStatus.OPEN, pageable, count));
-            }
-
-            return RepeatStatus.FINISHED;
-        };
-    }
-
 }
 
 
