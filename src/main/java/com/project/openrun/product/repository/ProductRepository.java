@@ -3,8 +3,6 @@ package com.project.openrun.product.repository;
 import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
 import jakarta.persistence.LockModeType;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,10 +17,11 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long>,ProductRepositoryCustom  {
 
 
-    @Query(value = "select * from product p where p.event_start_time >= now() order by p.wish_count desc limit :count", nativeQuery = true)
+    @Query(value = "select * from product p " +
+            "where p.event_start_time > DATE(now()) " +
+            "and p.event_start_time < DATE(DATE_ADD(now(), INTERVAL 1 DAY )) " +
+            "order by p.wish_count desc limit :count", nativeQuery = true)
     List<Product> findTopCountProduct(@Param("count") Long count);
-
-    Page<Product> findAllByStatusOrderByWishCountDescProductNameDesc(OpenRunStatus openRunStatus, Pageable pageable);
 
 
     @Modifying(flushAutomatically = true)
@@ -31,9 +30,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>,ProductR
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Product> findWithLockById(Long productId);
-
-    @Lock(LockModeType.OPTIMISTIC)
-    Optional<Product> findWithOptimisticLockById(Long productId);
 
     Long countByStatus(OpenRunStatus status);
 
