@@ -84,10 +84,10 @@ public class ProductService {
         return allProductResponseDtos;
     }
 
-    public List<AllProductResponseDtos> getTopCountProducts(Long count) {
+    public List<OpenRunProductResponseDto> getTopCountProducts(Long count) {
         //querydsl로 projections 필요함
         return productRepository.findTopCountProduct(count).stream()
-                .map((product) -> new AllProductResponseDtos(
+                .map((product) -> new OpenRunProductResponseDto(
                         product.getId(),
                         product.getProductName(),
                         product.getProductImage(),

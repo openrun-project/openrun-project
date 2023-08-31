@@ -36,7 +36,7 @@ public class ProductController {
     }
 
     @GetMapping("/wishcount/{count}")
-    public List<AllProductResponseDtos> getTopCountProducts(@PathVariable("count") Long count) {
+    public List<OpenRunProductResponseDto> getTopCountProducts(@PathVariable("count") Long count) {
         return productService.getTopCountProducts(count);
     }
 

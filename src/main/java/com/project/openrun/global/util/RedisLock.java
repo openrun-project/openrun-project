@@ -13,10 +13,11 @@ import java.util.concurrent.TimeUnit;
 public class RedisLock {
 
     private final RedisTemplate<String, String> redisTemplate;
+    private static final String LOCK_VALUE = "LOCK";
 
     public boolean tryLock(String key, long timeout) {
         ValueOperations<String, String> opsValue = redisTemplate.opsForValue();
-        Boolean lock = opsValue.setIfAbsent(key, "LOCK", timeout, TimeUnit.SECONDS);
+        Boolean lock = opsValue.setIfAbsent(key, LOCK_VALUE, timeout, TimeUnit.SECONDS);
         return lock != null ? lock : false;
     }
 

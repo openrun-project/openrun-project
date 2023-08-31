@@ -37,8 +37,7 @@ public class OrderCreateProducer {
             }
         });
     }
-//     @Retry & @Recover
-//    활용 고려.
+
     private void retrySend(OrderEventDto orderEventDto, int count) {
         for (int i = 0; i < count; i++) {
             try{

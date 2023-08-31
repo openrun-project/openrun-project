@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,35 +34,35 @@ public class ProductsSearchRepository {
     private final JPAQueryFactory queryFactory;
 
 
-
     public Page<AllProductResponseDto> searchAllProductsUsingFullText(ProductSearchCondition condition, Pageable pageable) {
         List<Product> products;
 
-        if (condition.getKeyword() != null && !condition.getKeyword().isEmpty()) {
+        // 키워드로 검색할 경우,
+        if (hasKeywordInSearch(condition)) {
             String baseQuery = "SELECT * FROM product WHERE MATCH(product_name) AGAINST (?1 IN BOOLEAN MODE)";
             StringBuilder queryBuilder = new StringBuilder(baseQuery);
 
             if (condition.getCategory() != null && !condition.getCategory().isEmpty()) {
-                queryBuilder.append(" AND category = '"+ condition.getCategory() +"'");
+                queryBuilder.append(" AND category = '" + condition.getCategory() + "'");
             }
             if (condition.getStatus() != null) {
-                queryBuilder.append(" AND status = '"+ condition.getStatus() +"'");
+                queryBuilder.append(" AND status = '" + condition.getStatus() + "'");
             }
             if (condition.getLprice() != null) {
-                queryBuilder.append(" AND price >= " + condition.getLprice() );
+                queryBuilder.append(" AND price >= " + condition.getLprice());
             }
             if (condition.getGprice() != null) {
                 queryBuilder.append(" AND price <= " + condition.getGprice());
             }
             queryBuilder.append(" ORDER BY " + getOrderBy(condition.getSortBy(), condition.getIsAsc()));
-            queryBuilder.append(" LIMIT " + pageable.getPageSize() +  " OFFSET "+ pageable.getOffset() );
+            queryBuilder.append(" LIMIT " + pageable.getPageSize() + " OFFSET " + pageable.getOffset());
 
             Query query = entityManager.createNativeQuery(queryBuilder.toString(), Product.class);
             query.setParameter(1, "+" + condition.getKeyword() + "*");
 
             products = query.getResultList();
         } else {
-
+            // 키워드를 제외한 나머지 조건들로 검색할 경우
             products = queryFactory
                     .selectFrom(product)
                     .where(
@@ -75,15 +76,22 @@ public class ProductsSearchRepository {
                     .fetch();
         }
 
+        // content 만들기
         List<AllProductResponseDto> content = products.stream()
-                .map(p -> new AllProductResponseDto(p.getId(), p.getProductName(), p.getPrice(), p.getMallName(), p.getCategory()))
+                .map(p -> new AllProductResponseDto(
+                        p.getId(),
+                        p.getProductName(),
+                        p.getProductImage(),
+                        p.getPrice(),
+                        p.getMallName(),
+                        p.getCategory())
+                )
                 .collect(Collectors.toList());
 
-        if (condition.getKeyword() != null && !condition.getKeyword().isEmpty()){
+        // 키워드 검색시, page 객체 반환
+        if (hasKeywordInSearch(condition)) {
             return PageableExecutionUtils.getPage(content, pageable, () -> getCount(condition));
-        }
-        else
-        {
+        } else { // 키워드 외 다른 조건들로만 검색할 경우, page 객체 반환
             JPAQuery<Long> countQuery = queryFactory
                     .select(product.count())
                     .from(product)
@@ -99,16 +107,21 @@ public class ProductsSearchRepository {
 
     }
 
+    private boolean hasKeywordInSearch(ProductSearchCondition condition) {
+        return StringUtils.hasText(condition.getKeyword());
+    }
+
+    // Querydsl를 사용하여 검색 쿼리를 만들 때, 필요한 메서드들( 4개 )
     private OrderSpecifier<?> sortMethod(String sortBy, Boolean isAsc) {
-        if(isAsc ==null){
+        if (isAsc == null) {
             isAsc = true;
         }
 
-        if(sortBy == null){
+        if (sortBy == null) {
             return product.id.desc();
         }
 
-        switch(sortBy){
+        switch (sortBy) {
             case "price" -> {
                 return (isAsc == true) ? product.price.asc() : product.price.desc();
             }
@@ -129,7 +142,7 @@ public class ProductsSearchRepository {
     }
 
     private BooleanExpression isOpenRunEq(OpenRunStatus status) {
-        if( status == null){
+        if (status == null) {
             return null;
         }
 
@@ -138,22 +151,24 @@ public class ProductsSearchRepository {
 
     private BooleanExpression isPriceBetween(Integer lprice, Integer uprice) {
 
-        if (lprice == null && uprice == null){
+        if (lprice == null && uprice == null) {
             return null;
-        }else if(lprice == null){
+        } else if (lprice == null) {
             return product.price.loe(uprice);
-        }else if(uprice == null){
+        } else if (uprice == null) {
             return product.price.goe(lprice);
         }
 
         return product.price.between(lprice, uprice);
     }
 
+
+    // native query에서의 오더 바이 메서드
     private String getOrderBy(String sortBy, Boolean isAsc) {
         String orderColumn;
-        if(Objects.isNull(sortBy)){
+        if (Objects.isNull(sortBy)) {
             orderColumn = "product_id";
-        }else{
+        } else {
 
             switch (sortBy) {
                 case "price":
@@ -172,10 +187,10 @@ public class ProductsSearchRepository {
         }
 
 
-
         return orderColumn + (Boolean.TRUE.equals(isAsc) ? " ASC" : " DESC");
     }
 
+    // native query에서 count 쿼리
     private long getCount(ProductSearchCondition condition) {
 
         String baseQuery = "SELECT COUNT(*) FROM product WHERE MATCH(product_name) AGAINST (?1 IN BOOLEAN MODE)";
@@ -183,14 +198,14 @@ public class ProductsSearchRepository {
 
 
         if (condition.getCategory() != null && !condition.getCategory().isEmpty()) {
-            queryBuilder.append(" AND category = '"+ condition.getCategory() +"'");
+            queryBuilder.append(" AND category = '" + condition.getCategory() + "'");
         }
         if (condition.getStatus() != null) {
-            queryBuilder.append(" AND status = '"+ condition.getStatus() + "'");
+            queryBuilder.append(" AND status = '" + condition.getStatus() + "'");
         }
 
         if (condition.getLprice() != null) {
-            queryBuilder.append(" AND price >= " + condition.getLprice() );
+            queryBuilder.append(" AND price >= " + condition.getLprice());
         }
         if (condition.getGprice() != null) {
             queryBuilder.append(" AND price <= " + condition.getGprice());

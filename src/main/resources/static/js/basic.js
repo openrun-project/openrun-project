@@ -29,13 +29,8 @@ function onLogin() {
             const token = xhr.getResponseHeader('Authorization');
             alert("Login Success");
 
-            console.log(token);
-
             localStorage.setItem("Authorization", token)
 
-            // $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-            //     jqXHR.setRequestHeader('Authorization', token);
-            // });
             window.location.href = '/openrun/main'
         })
         .fail(function (jqXHR, textStatus) {

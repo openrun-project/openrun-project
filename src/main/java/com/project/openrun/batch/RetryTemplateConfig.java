@@ -25,5 +25,4 @@ public class RetryTemplateConfig {
                 .retryOn(Exception.class)
                 .build();
     }
-
 }
