@@ -83,6 +83,7 @@ $(document).ready(function () {
                 $("#wish-btn").text("찜 하기" + wishCount);
             }
         }).fail(function (jqXHR, textStatus) {
+            alert("찜목록을 가지고 올 수 없습니다.")
         });
     }
 });

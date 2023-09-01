@@ -7,7 +7,7 @@ let searchMode = false;
 fetchProducts(0); // Fetch initial page on page load
 
 //이게 페이징에서 클릭시
-$('#pagination').on('click', 'a', function(e) {
+$('#pagination').on('click', 'a', function (e) {
     e.preventDefault(); // Prevent default link behavior
 
     let clickedText = $(this).text();
@@ -64,9 +64,9 @@ function searchProducts(page) {
             if (data['content'].length === 0) {
                 var productList = $('#product-row');
                 productList.empty();
-                let html = `<div>
-                                    <h1 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"> 검색 결과가 없습니다.</h1>
-                                </div>`;
+                let html = `<div style="width: 100%; height: 700px; align-content: center;">
+                                        <h1 style="text-align: center;">검색 결과가 없습니다.</h1>
+                                    </div>`;
                 productList.append(html);
                 updatePagination();
                 return;
