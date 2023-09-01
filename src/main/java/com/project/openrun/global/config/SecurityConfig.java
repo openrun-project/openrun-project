@@ -60,6 +60,7 @@ public class SecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/favicon.ico").permitAll()
+                        .requestMatchers("/health-check").permitAll()
                         .requestMatchers("/openrun/**").permitAll()
                         .requestMatchers("/api/members/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/products/**").permitAll()
