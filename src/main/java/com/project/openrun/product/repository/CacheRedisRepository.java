@@ -11,6 +11,23 @@ public interface CacheRedisRepository<T> {
     Page<T> getProduct(int subKey);
 
     void saveProductCount(Long count);
+
     Optional<Long> getProductCount();
+
+
+    default void saveCurrentQuantityCount(Long subKey, Integer count) {}
+
+    default Integer getCurrentQuantityCount(Long subKey) {
+        return null;
+    }
+
+
+    default void increaseQuantity(Long subKey, Integer count) {}
+
+
+    default Long decreaseQuantity(Long subKey, Integer count) {
+        return null;
+    }
+
 
 }
