@@ -7,8 +7,6 @@ import com.project.openrun.orders.dto.OrderRequestDto;
 import com.project.openrun.orders.dto.OrderResponseDto;
 import com.project.openrun.orders.entity.Order;
 import com.project.openrun.orders.repository.OrderRepository;
-import com.project.openrun.product.entity.OpenRunStatus;
-import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.OpenRunProductRedisRepositoryImpl;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.project.openrun.global.exception.type.ErrorCode.*;
+import static com.project.openrun.global.exception.type.ErrorCode.NOT_AUTHORIZATION;
+import static com.project.openrun.global.exception.type.ErrorCode.NOT_FOUND_DATA;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +55,7 @@ public class OrderService {
 
         OrderEventDto orderEventDto = new OrderEventDto(productId, orderRequestDto, member);
 
-        orderCreateProducer.createOrder(orderEventDto);
+//        orderCreateProducer.createOrder(orderEventDto);
 
 
 
