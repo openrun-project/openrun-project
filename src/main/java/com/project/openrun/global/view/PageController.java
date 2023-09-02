@@ -33,7 +33,6 @@ public class PageController {
 
     @GetMapping("/main")
     public String goMainPage() {
-        System.out.println("메인 페이지 컨트롤러");
         return "main";
     }
 
