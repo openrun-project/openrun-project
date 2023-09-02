@@ -50,7 +50,7 @@ public class OrderCreateProducer {
 
         productRepository.updateProductQuantity(
                 orderEventDto.getOrderRequestDto().count(),
-                orderEventDto.getProduct().getId()
+                orderEventDto.getProductId()
         );
     }
 }

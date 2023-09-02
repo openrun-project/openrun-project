@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrderEventDto {
 
-    private Product product;
+    private Long productId;
     private OrderRequestDto orderRequestDto;
     private Member member;
 
