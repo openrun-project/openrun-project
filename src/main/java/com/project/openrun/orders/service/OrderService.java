@@ -21,7 +21,6 @@ import static com.project.openrun.global.exception.type.ErrorCode.NOT_FOUND_DATA
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -32,6 +31,7 @@ public class OrderService {
 
 
     // fetchJoin 이후에 적용 -> ok
+    @Transactional(readOnly = true)
     public Page<OrderResponseDto> getOrders(Member member, Pageable pageable) {
 
         Page<OrderResponseDto> order = orderRepository.findAllByMember(member, pageable);
@@ -44,7 +44,6 @@ public class OrderService {
     }
 
 
-    @Transactional
     public void postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {//구매 갯수가 1
         //여기서 가져온 숫자 1
         if(openRunProductRedisRepository.decreaseQuantity(productId, orderRequestDto.count()) < 0){
@@ -90,6 +89,9 @@ public class OrderService {
         }
 
         productRepository.updateProductQuantity(order.getCount(), order.getProduct().getId());
+
+        // 레디스 복구
+        openRunProductRedisRepository.increaseQuantity(order.getProduct().getId(), order.getCount());
 
         orderRepository.delete(order);
     }
