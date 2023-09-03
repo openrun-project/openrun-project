@@ -54,8 +54,7 @@ public class OrderService {
 
         OrderEventDto orderEventDto = new OrderEventDto(productId, orderRequestDto, member);
 
-//        orderCreateProducer.createOrder(orderEventDto);
-
+        orderCreateProducer.createOrder(orderEventDto);
 
 
         /*Product product = productRepository.findWithLockById(productId).orElseThrow(

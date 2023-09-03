@@ -2,6 +2,9 @@ package com.project.openrun.global.kafka.producer;
 
 
 import com.project.openrun.global.kafka.dto.OrderEventDto;
+import com.project.openrun.product.dto.OpenRunProductResponseDto;
+import com.project.openrun.product.repository.CacheRedisRepository;
+import com.project.openrun.product.repository.OpenRunProductRedisRepositoryImpl;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 public class OrderCreateProducer {
 
     private final KafkaTemplate<Long, OrderEventDto> orderEventDtoKafkaTemplate;
-    private final ProductRepository productRepository;
+    private final CacheRedisRepository<OpenRunProductResponseDto> openRunProductRedisRepository;
     private static final int RETRY_COUNT = 3;
 
 
@@ -31,26 +34,23 @@ public class OrderCreateProducer {
                 long offset = result.getRecordMetadata().offset();
                 int partition = result.getRecordMetadata().partition();
 
-                log.info("Sent error message with offset=[{}] and partition =[{}]",offset,partition);
+                log.info("Sent error message with offset=[{}] and partition =[{}]", offset, partition);
 
-                retrySend(result.getProducerRecord().value(),RETRY_COUNT);
+                retrySend(result.getProducerRecord().value(), RETRY_COUNT);
             }
         });
     }
 
     private void retrySend(OrderEventDto orderEventDto, int count) {
         for (int i = 0; i < count; i++) {
-            try{
+            try {
                 orderEventDtoKafkaTemplate.send("test", orderEventDto);
                 return;
-            }catch (Exception e){
-                log.error("Exception : {}, This RetryCont is {} ", e.getMessage(),i+1);
+            } catch (Exception e) {
+                log.error("Exception : {}, This RetryCont is {} ", e.getMessage(), i + 1);
             }
         }
-
-        productRepository.updateProductQuantity(
-                orderEventDto.getOrderRequestDto().count(),
-                orderEventDto.getProductId()
-        );
+        // redis 재고 복구
+        openRunProductRedisRepository.increaseQuantity(orderEventDto.getProductId(), orderEventDto.getOrderRequestDto().count());
     }
 }
