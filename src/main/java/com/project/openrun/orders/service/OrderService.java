@@ -7,8 +7,7 @@ import com.project.openrun.orders.dto.OrderRequestDto;
 import com.project.openrun.orders.dto.OrderResponseDto;
 import com.project.openrun.orders.entity.Order;
 import com.project.openrun.orders.repository.OrderRepository;
-import com.project.openrun.product.entity.OpenRunStatus;
-import com.project.openrun.product.entity.Product;
+import com.project.openrun.product.repository.OpenRunProductRedisRepositoryImpl;
 import com.project.openrun.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,20 +16,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.project.openrun.global.exception.type.ErrorCode.*;
+import static com.project.openrun.global.exception.type.ErrorCode.NOT_AUTHORIZATION;
+import static com.project.openrun.global.exception.type.ErrorCode.NOT_FOUND_DATA;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final OrderCreateProducer orderCreateProducer;
+    private final OpenRunProductRedisRepositoryImpl openRunProductRedisRepository;
 
 
 
     // fetchJoin 이후에 적용 -> ok
+    @Transactional(readOnly = true)
     public Page<OrderResponseDto> getOrders(Member member, Pageable pageable) {
 
         Page<OrderResponseDto> order = orderRepository.findAllByMember(member, pageable);
@@ -43,9 +44,20 @@ public class OrderService {
     }
 
 
-    @Transactional
-    public void postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {
-        Product product = productRepository.findWithLockById(productId).orElseThrow(
+    public void postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {//구매 갯수가 1
+        //여기서 가져온 숫자 1
+        if(openRunProductRedisRepository.decreaseQuantity(productId, orderRequestDto.count()) < 0){
+            //이때 가져온 숫자 0
+            openRunProductRedisRepository.increaseQuantity(productId, orderRequestDto.count());
+            throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("재고 부족"));
+        }
+
+        OrderEventDto orderEventDto = new OrderEventDto(productId, orderRequestDto, member);
+
+        orderCreateProducer.createOrder(orderEventDto);
+
+
+        /*Product product = productRepository.findWithLockById(productId).orElseThrow(
                 () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
         );
 
@@ -61,7 +73,7 @@ public class OrderService {
 
         OrderEventDto orderEventDto = new OrderEventDto(product, orderRequestDto, member);
 
-        orderCreateProducer.createOrder(orderEventDto);
+        orderCreateProducer.createOrder(orderEventDto);*/
     }
 
     // fetchJoin 이후에 적용
@@ -76,6 +88,9 @@ public class OrderService {
         }
 
         productRepository.updateProductQuantity(order.getCount(), order.getProduct().getId());
+
+        // 레디스 복구
+        openRunProductRedisRepository.increaseQuantity(order.getProduct().getId(), order.getCount());
 
         orderRepository.delete(order);
     }

@@ -5,6 +5,7 @@ import com.project.openrun.product.dto.*;
 import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.CacheRedisRepository;
+import com.project.openrun.product.repository.OpenRunProductRedisRepositoryImpl;
 import com.project.openrun.product.repository.ProductRepository;
 import com.project.openrun.product.repository.ProductsSearchRepository;
 import lombok.RequiredArgsConstructor;
@@ -58,9 +59,17 @@ public class ProductService {
 
 
     public DetailProductResponseDto getDetailProduct(Long productId) {
+
+        Integer currentQuantity = openRunProductRedisRepository.getCurrentQuantityCount(productId);
+
         Product findProduct = productRepository.findById(productId).orElseThrow(
                 () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("해당 상품"))
         );
+
+        if(currentQuantity == null && OpenRunStatus.OPEN.equals(findProduct.getStatus())){
+            openRunProductRedisRepository.saveCurrentQuantityCount(productId, findProduct.getCurrentQuantity());
+            currentQuantity = openRunProductRedisRepository.getCurrentQuantityCount(productId);
+        }
 
         return new DetailProductResponseDto(
                 findProduct.getId(),
@@ -68,7 +77,7 @@ public class ProductService {
                 findProduct.getProductImage(),
                 findProduct.getPrice(),
                 findProduct.getMallName(),
-                findProduct.getCurrentQuantity(),
+                currentQuantity,
                 findProduct.getEventStartTime(),
                 findProduct.getCategory(),
                 findProduct.getTotalQuantity(),
@@ -117,6 +126,5 @@ public class ProductService {
 
         return productsInRedis;
     }
-
 
 }

@@ -22,7 +22,7 @@ $(document).ready(function () {
                                         <div class="card-body">
                                             <h5 class="card-title">${productName}</h5>
                                             <p class="card-text">${mallName}</p>
-                                            <p class="card-text">${price}</p>
+                                            <p class="card-text">${price}₩</p>
                                             <p class="card-text">${productCategory}</p>
                                             <a href="/openrun/detail/${productId}" class="btn btn-primary">Buy Now</a>
                                         </div>

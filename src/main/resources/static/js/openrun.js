@@ -36,7 +36,7 @@ function searchProducts(page) {
     var maxPrice = $("#maxPrice").val();
 
     if (keyword === '' && category === '' && sortBy === '' && minPrice === '' && maxPrice === '') {
-        console.log("검색 조건을 입력해주세요.");
+        alert("검색 조건을 입력해주세요.");
         return;
     }
 
@@ -51,7 +51,8 @@ function searchProducts(page) {
             sortBy: sortBy,
             lprice: minPrice,
             gprice: maxPrice,
-            isAsc: isAsc
+            isAsc: isAsc,
+            status: 'OPEN'
         },
         dataType: "json",
         contentType: "json",
@@ -122,7 +123,7 @@ function displayData(data) {
                                         <div class="card-body">
                                             <h5 class="card-title">${productName}</h5>
                                             <p class="card-text">${mallName}</p>
-                                            <p class="card-text">${price}</p>
+                                            <p class="card-text">${price}₩</p>
                                             <p class="card-text">${productCategory}</p>
                                             <a href="/openrun/detail/${productId}" class="btn btn-primary">Buy Now</a>
                                         </div>
