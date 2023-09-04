@@ -5,12 +5,15 @@ $(document).ready(function() {
 
     if (token !== null) {
         $('#logout').show();
+        $('#mypage').show();
         $('#signup').hide();
         $('#login').hide();
     } else {
         $('#login').show();
         $('#signup').show();
         $('#logout').hide();
+        $('#mypage').hide();
+
     }
 });
 
