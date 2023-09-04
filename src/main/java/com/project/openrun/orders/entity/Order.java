@@ -22,6 +22,15 @@ public class Order extends BaseAuditing {
     @Column(name = "orders_id")
     private Long id;
 
+    @Column(nullable = false)
+    private Integer count;
+
+    @Column(nullable = false)
+    private Integer totalPrice;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -30,11 +39,7 @@ public class Order extends BaseAuditing {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @Column(nullable = false)
-    private Integer count;
 
-    @Column(nullable = false)
-    private Integer totalPrice;
 
 
 }
