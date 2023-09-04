@@ -36,7 +36,7 @@ function searchProducts(page) {
     var maxPrice = $("#maxPrice").val();
 
     if (keyword === '' && category === '' && sortBy === '' && minPrice === '' && maxPrice === '') {
-        console.log("검색 조건을 입력해주세요.");
+        alert("검색 조건을 입력해주세요.");
         return;
     }
 
