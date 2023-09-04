@@ -28,7 +28,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
                         product.price,
                         product.mallName,
                         order.count,
-                        order.modifiedAt
+                        order.modifiedAt,
+                        order.orderStatus
                 ))
                 .from(order)
                 .leftJoin(order.product, product)//left조인과 Projections 를 사용해 fetchJoin을 미사용

@@ -1,5 +1,7 @@
 package com.project.openrun.orders.dto;
 
+import com.project.openrun.orders.entity.OrderStatus;
+
 import java.time.LocalDateTime;
 
 public record OrderResponseDto(
@@ -8,5 +10,7 @@ public record OrderResponseDto(
         Integer price,
         String mallName,
         Integer count,
-        LocalDateTime modifiedAt
+        LocalDateTime modifiedAt,
+        OrderStatus orderStatus
+
 ) {}
