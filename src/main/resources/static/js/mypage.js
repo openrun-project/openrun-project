@@ -35,10 +35,9 @@ function fetchWishProducts(page) {
         .done(function (json) {
             totalPagesWish = json.totalPages;
             currentPageWish = page;
+            $("#myWish-row").empty();
 
             let products = json.content;
-
-            $("#myWish-row").empty();
 
             products.forEach((data) => {
                 displayWishProduct(data);
@@ -124,7 +123,7 @@ function displayWishProduct(data){
                         <div class="card-body">
                             <h5 class="card-title" style="cursor: pointer;" onclick="window.location.href='/openrun/detail/${productId}'">${productName}</h5>
                             <p class="card-text">${mallName}</p>
-                            <p class="card-text">${price}</p>                                            
+                            <p class="card-text">${price}₩</p>                                            
                             <a href="/openrun/detail/${productId}" class="btn btn-primary">Buy Now</a> 
                         </div>
                     </div>
@@ -141,18 +140,35 @@ function displayMyOrders(order,index){
     let productName = order['productName'];
     let price = order['price'];
     let count = order['count'];
+    let orderStatus = order['orderStatus'] === 'SUCCESS' ? '구매성공' : '구매실패';
+
 
     let total = price * count; // 총 가격 계산
 
-    let row = `<tr id = "myorder">
-                    <td>${index++}</td>
-                    <td>${productName}</td>
-                    <td>${price}</td>
-                    <td>${count}</td>
-                    <td>${total}</td>
-                    <td><button class="btn btn-danger" onclick="cancelOrder(${orderId})">구매 취소</button></td>
-               </tr>`
+    let row = `<tr id="myorder">
+                <td>${index++}</td>
+                <td>${productName}</td>
+                <td>${price}</td>
+                <td>${count}</td>
+                <td>${total}</td>
+                <td>${orderStatus}</td>`;
+
+    if (orderStatus === '구매성공') {
+        row += `
+            <td><button class="btn btn-danger" onclick="cancelOrder(${orderId})">구매 취소</button></td>`;
+    } else {
+        row += `<td></td>`;
+    }
+
+    row += `</tr>`;
+
     $('#purchase-list').append(row);
+
+
+
+
+
+
 }
 
 
