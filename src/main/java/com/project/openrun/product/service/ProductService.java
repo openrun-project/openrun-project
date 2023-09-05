@@ -94,7 +94,7 @@ public class ProductService {
     }
 
     public List<OpenRunProductResponseDto> getTopCountProducts(Long count) {
-        //querydsl로 projections 필요함
+
         return productRepository.findTopCountProduct(count).stream()
                 .map((product) -> new OpenRunProductResponseDto(
                         product.getId(),
@@ -111,7 +111,6 @@ public class ProductService {
     public Page<OpenRunProductResponseDto> getOpenRunAllProducts(Pageable pageable) {
         int pageNumber = pageable.getPageNumber();
         Page<OpenRunProductResponseDto> productsInRedis = openRunProductRedisRepository.getProduct(pageNumber);
-
 
         if (Objects.isNull(productsInRedis)) {
             Long count = openRunProductRedisRepository.getProductCount().orElseGet(() -> {
