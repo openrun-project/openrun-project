@@ -28,17 +28,17 @@ public class WishService {
 
     public WishResponseDto createWish(Long productId, Member member) {
         Product product = productRepository.findWithLockById(productId).orElseThrow(() ->
-                new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품")
-        ));
+                new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품"))
+        );
 
         if (wishRepository.findByProductAndMember(product, member).isPresent()) {
             throw new ResponseStatusException(DUPLICATE_DATA.getStatus(), DUPLICATE_DATA.formatMessage("관심 상품"));
         }
         wishRepository.save(
                 Wish.builder()
-                        .product(product)
-                        .member(member)
-                        .build()
+                    .product(product)
+                    .member(member)
+                    .build()
         );
 
         product.addWish();
@@ -63,7 +63,7 @@ public class WishService {
         return new WishResponseDto(product.getWishCount());
     }
 
-    // fetchJoin 이후에 적용
+
     public Page<WishProductResponseDto> getMyWishProduct(Member member, Pageable pageable) {
         Page<WishProductResponseDto> wishes = wishRepository.findAllByMemberOrderByIdDesc(member, pageable);
 
@@ -78,9 +78,9 @@ public class WishService {
 
         Product product = productRepository.findById(productId).orElseThrow(() ->
                 new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품")
-        ));
+                ));
 
-        if(wishRepository.findByProductAndMember(product, member).isPresent()) {
+        if (wishRepository.findByProductAndMember(product, member).isPresent()) {
             return new IsWishResponseDto(true);
         }
 

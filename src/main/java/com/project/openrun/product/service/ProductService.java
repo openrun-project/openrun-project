@@ -1,11 +1,13 @@
 package com.project.openrun.product.service;
 
 
-import com.project.openrun.product.dto.*;
+import com.project.openrun.product.dto.AllProductResponseDto;
+import com.project.openrun.product.dto.DetailProductResponseDto;
+import com.project.openrun.product.dto.OpenRunProductResponseDto;
+import com.project.openrun.product.dto.ProductSearchCondition;
 import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.CacheRedisRepository;
-import com.project.openrun.product.repository.OpenRunProductRedisRepositoryImpl;
 import com.project.openrun.product.repository.ProductRepository;
 import com.project.openrun.product.repository.ProductsSearchRepository;
 import lombok.RequiredArgsConstructor;
@@ -86,7 +88,7 @@ public class ProductService {
         );
     }
 
-    //테스트 코드 작성 필요
+    
     public Page<AllProductResponseDto> searchAllProducts(ProductSearchCondition condition, Pageable pageable) {
         Page<AllProductResponseDto> allProductResponseDtos = productsSearchRepository.searchAllProductsUsingFullText(condition, pageable);
 
