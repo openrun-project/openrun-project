@@ -3,6 +3,7 @@ package com.project.openrun.product.service;
 import com.project.openrun.product.dto.AllProductResponseDto;
 import com.project.openrun.product.dto.DetailProductResponseDto;
 import com.project.openrun.product.dto.OpenRunProductResponseDto;
+import com.project.openrun.product.dto.ProductSearchCondition;
 import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
 import com.project.openrun.product.repository.CacheRedisRepository;
@@ -21,15 +22,14 @@ import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 
@@ -51,6 +51,145 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
+
+    @Test
+    @DisplayName("redis에 저장된 데이터가 없을 때, 상품 전체 조회 가능한가")
+    void getAllProducts_Test_No_Redis() {
+        //given
+        PageRequest pageRequest = PageRequest.of(0, 1);
+        Long productCount = 100L;
+        AllProductResponseDto product = mock(AllProductResponseDto.class);
+        Page<AllProductResponseDto> dbPage = new PageImpl<>(Arrays.asList(product), pageRequest, 1);
+
+        when(allProductRedisRepository.getProduct(0)).thenReturn(null);
+        when(allProductRedisRepository.getProductCount()).thenReturn(Optional.of(productCount));
+        when(productRepository.findAllDto(pageRequest, productCount)).thenReturn(dbPage);
+
+        //when
+        Page<AllProductResponseDto> result = productService.getAllProducts(pageRequest);
+
+        //then
+        assertThat(result).isEqualTo(dbPage);
+        verify(allProductRedisRepository, times(1)).saveProduct(0, dbPage);
+    }
+
+    @Test
+    @DisplayName("redis에 저장된 데이터가 있을 때, 상품 전체 조회 가능한가")
+    void getAllProducts_Test_Yes_Redis() {
+        //given
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        AllProductResponseDto product = mock(AllProductResponseDto.class);
+        Page<AllProductResponseDto> dbPage = new PageImpl<>(Arrays.asList(product), pageRequest, 1);
+
+        when(allProductRedisRepository.getProduct(0)).thenReturn(dbPage);
+        when(allProductRedisRepository.getProduct(0)).thenReturn(dbPage);
+
+        //when
+        Page<AllProductResponseDto> result = productService.getAllProducts(pageRequest);
+
+        //then
+        assertThat(result).isEqualTo(dbPage);
+    }
+
+
+    @Test
+    @DisplayName("상품이 없을 때 빈 리스트가 나오는가")
+    void getAllProducts_Test_No_Data() {
+        PageRequest pageRequest = PageRequest.of(0, 1);
+        //when
+        when(productRepository.findAllDto(pageRequest, 0L)).thenReturn(new PageImpl<>(Collections.emptyList(), pageRequest, 0));
+        Page<AllProductResponseDto> result = productService.getAllProducts(pageRequest);
+
+        //then
+        assertThat(result.getContent().size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("특정 상품 조회가 가능한가")
+    void getDetailProduct_Test_Success() {
+        // given
+        Product product1 = Product.builder()
+                .id(1L)
+                .productName("test")
+                .price(1000)
+                .wishCount(0)
+                .mallName("test mall")
+                .totalQuantity(30)
+                .currentQuantity(30)
+                .category("category")
+                .productImage("test Image")
+                .eventStartTime(LocalDateTime.now())
+                .build();
+
+        //when
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product1));
+        DetailProductResponseDto result = productService.getDetailProduct(1L);
+
+
+        //then
+        assertThat(result.mallName()).isEqualTo("test mall");
+    }
+
+    @Test
+    @DisplayName("없는 상품을 조회 시, 에러 발생 여부")
+    void getDetailProduct_Test_Failed() {
+
+        //when
+        when(productRepository.findById(2L)).thenThrow(ResponseStatusException.class);
+
+        //then
+        assertThatThrownBy(
+                () -> productService.getDetailProduct(2L)
+        ).isInstanceOf(ResponseStatusException.class);
+    }
+
+
+
+    @Test
+    @DisplayName("상품 검색 테스트 성공")
+    void searchAllProducts_Test() {
+        //given
+        ProductSearchCondition productSearchCondition = ProductSearchCondition.builder()
+                .keyword("나이키")
+                .build();
+        PageRequest pageRequest = PageRequest.of(0, 1);
+        List<AllProductResponseDto> content = Collections.singletonList(new AllProductResponseDto(
+                0L,
+                "나이키",
+                "",
+                1,
+                "",
+                ""));
+
+        Page<AllProductResponseDto> product = PageableExecutionUtils.getPage(content, pageRequest, () -> 0L);
+        when(productsSearchRepository.searchAllProductsUsingFullText(productSearchCondition, pageRequest)).thenReturn(product);
+
+        //when
+        Page<AllProductResponseDto> products = productService.searchAllProducts(productSearchCondition, pageRequest);
+
+        //then
+        assertThat(products.getContent()).extracting("productName").containsExactly("나이키");
+    }
+
+    @Test
+    @DisplayName("상품 검색 테스트 데이터 없을때")
+    void searchAllProducts_Test_No_Data() {
+        //given
+        ProductSearchCondition productSearchCondition = ProductSearchCondition.builder()
+                .keyword("fdsagfadsfdsafdsafd")
+                .build();
+        PageRequest pageRequest = PageRequest.of(0, 1);
+        List<AllProductResponseDto> content = new ArrayList<>();
+
+        Page<AllProductResponseDto> product = PageableExecutionUtils.getPage(content, pageRequest, () -> 0L);
+        when(productsSearchRepository.searchAllProductsUsingFullText(productSearchCondition, pageRequest)).thenReturn(product);
+
+        //when
+        Page<AllProductResponseDto> products = productService.searchAllProducts(productSearchCondition, pageRequest);
+
+        //then
+        assertThat(products.getContent().size()).isEqualTo(0);
+    }
 
     @Test
     @DisplayName("아이디로 상품 조회했을 때, 상품이 없다면 예외 발생")
