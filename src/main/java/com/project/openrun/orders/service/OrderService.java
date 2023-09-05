@@ -44,10 +44,10 @@ public class OrderService {
     }
 
 
-    public void postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {//구매 갯수가 1
-        //여기서 가져온 숫자 1
+    public void postOrders(Long productId, OrderRequestDto orderRequestDto, Member member) {
+
         if (openRunProductRedisRepository.decreaseQuantity(productId, orderRequestDto.count()) < 0) {
-            //이때 가져온 숫자 0
+
             openRunProductRedisRepository.increaseQuantity(productId, orderRequestDto.count());
             throw new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("재고 부족"));
         }
@@ -70,7 +70,6 @@ public class OrderService {
 
         productRepository.updateProductQuantity(order.getCount(), order.getProduct().getId());
 
-//        // 레디스 복구
         openRunProductRedisRepository.increaseQuantity(order.getProduct().getId(), order.getCount());
 
         orderRepository.delete(order);
