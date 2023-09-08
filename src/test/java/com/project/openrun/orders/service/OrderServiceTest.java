@@ -201,7 +201,6 @@ public class OrderServiceTest {
 
         orderService.deleteOrders(order.getId(), member);
 
-        verify(productRepository, times(1)).updateProductQuantity(order.getCount(), order.getProduct().getId());
         verify(openRunProductRedisRepository, times(1)).increaseQuantity(order.getProduct().getId(), order.getCount());
         verify(orderRepository, times(1)).delete(any(Order.class));
 

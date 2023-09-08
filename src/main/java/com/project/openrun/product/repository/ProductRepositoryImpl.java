@@ -136,7 +136,6 @@ public class ProductRepositoryImpl implements  ProductRepositoryCustom{
     private BooleanExpression keywordContains(String keyword) {
         return hasText(keyword) ? Expressions.booleanTemplate("match({0}) against ({1} in boolean mode)", product.productName, "+" + keyword + "*"): null;
 //        return hasText(keyword) ? product.productName.contains(keyword).or(product.mallName.contains(keyword)) : null;
-
     }
 
     private BooleanExpression categoryEq(String category) {

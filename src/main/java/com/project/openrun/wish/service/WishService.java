@@ -63,7 +63,7 @@ public class WishService {
         return new WishResponseDto(product.getWishCount());
     }
 
-
+    @Transactional(readOnly = true)
     public Page<WishProductResponseDto> getMyWishProduct(Member member, Pageable pageable) {
         Page<WishProductResponseDto> wishes = wishRepository.findAllByMemberOrderByIdDesc(member, pageable);
 
@@ -74,11 +74,11 @@ public class WishService {
         return wishes;
     }
 
+    @Transactional(readOnly = true)
     public IsWishResponseDto getProductWishUser(Long productId, Member member) {
 
         Product product = productRepository.findById(productId).orElseThrow(() ->
-                new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품")
-                ));
+                new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("상품")));
 
         if (wishRepository.findByProductAndMember(product, member).isPresent()) {
             return new IsWishResponseDto(true);

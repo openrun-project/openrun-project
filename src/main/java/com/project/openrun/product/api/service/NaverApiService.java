@@ -1,7 +1,6 @@
 package com.project.openrun.product.api.service;
 
 
-import com.project.openrun.product.api.dto.CreateDataRequestDto;
 import com.project.openrun.product.api.dto.NaverDto;
 import com.project.openrun.product.entity.OpenRunStatus;
 import com.project.openrun.product.entity.Product;
@@ -48,16 +47,16 @@ public class NaverApiService {
     static {
         PRODUCT_ITEMS = new HashMap<>();
         // 상의, 하의, 신발, 가방, 모자, 노트북, 스마트폰, 가전, 향수, ...
-        PRODUCT_ITEMS.put("아우터", new ArrayList<>(Arrays.asList("빌리버스","UNKNOWN","스콰즈","옷자락","몽클레르"/*,"엘케이트","바보사랑","현대모비스","스톤아일랜드","노브랜드","막스마라","아디다스","노스페이스","버버리","에르노","보드미","나이키","올리비아로렌","휠라","바버","톰브라운","울리치","파라점퍼스","오노마","돌체앤가바나","1300K","CP컴퍼니","디스퀘어드2","원픽","파파브로","브루넬로쿠치넬리",
+        PRODUCT_ITEMS.put("아우터", new ArrayList<>(Arrays.asList("빌리버스", "UNKNOWN", "스콰즈", "옷자락", "몽클레르"/*,"엘케이트","바보사랑","현대모비스","스톤아일랜드","노브랜드","막스마라","아디다스","노스페이스","버버리","에르노","보드미","나이키","올리비아로렌","휠라","바버","톰브라운","울리치","파라점퍼스","오노마","돌체앤가바나","1300K","CP컴퍼니","디스퀘어드2","원픽","파파브로","브루넬로쿠치넬리",
                 "프라다","캐나다구스","발망","무스너클","페이","리더스","오프화이트","발렌티노","팜엔젤스","릭오웬스","지프","알렉산더맥퀸","발렌시아가","구찌","빈폴","딸리아또레","아페쎄","텐바이텐","리스트","메종마르지엘라","베르사체","내셔널지오그래픽","아미","쉬즈미스","겐조","뉴발란스","랜더스","하늘","에잇세컨즈","이자벨마랑","타미힐피거","보테가베네타","질샌더","생로랑","푸마","프렐린","GANNI","티아이포맨",
                 "언더아머","에트로","골든구스","아스페시","지방시","폴로랄프로렌","웨일테일","시마노","올포유","스텔라매카트니","핀코","BCBG","모스키노","자라","COZY","디엠에스","플라스틱아일랜드","MSGM","듀베티카","윌슨","라코스테","아날도바시니","PAT","ab.f.z","퍼피아","꼼데가르송","크로커다일레이디","지센","프로월드컵","자크뮈스","수키"*/))); // 8
-        PRODUCT_ITEMS.put("상의", new ArrayList<>(Arrays.asList("UNKNOWN","나이키","엠씨엔","아디다스","자라"/*,"타미힐피거","폴로랄프로렌","리스트","라코스테","ab.f.z","쉬즈미스","랩","게스","올리비아로렌","BNX","미쏘","헤지스","잇미샤","라인","시스티나","폴로","포커스","JAJU","레코브","지컷","COS","비지트인뉴욕","에고이스트","보니스팍스","반에이크","보브","에잇세컨즈","러브앤쇼","베스띠벨리",
+        PRODUCT_ITEMS.put("상의", new ArrayList<>(Arrays.asList("UNKNOWN", "나이키", "엠씨엔", "아디다스", "자라"/*,"타미힐피거","폴로랄프로렌","리스트","라코스테","ab.f.z","쉬즈미스","랩","게스","올리비아로렌","BNX","미쏘","헤지스","잇미샤","라인","시스티나","폴로","포커스","JAJU","레코브","지컷","COS","비지트인뉴욕","에고이스트","보니스팍스","반에이크","보브","에잇세컨즈","러브앤쇼","베스띠벨리",
                 "나인","ZOOC","르샵","꼼빠니아","CLOVIS","폴햄","베네통","부루앤쥬디","더아이잗","트위","PAT","SI","지고트","enc","로엠","아뜨랑스","더웨이나인","BCBG","탑텐","엠씨","온앤온","제시뉴욕","제너럴아이디어","지오다노","크로커다일레이디","GGPX","리안뉴욕","SOUP","나이스클랍","블루페페","JJ지고트","지센","레노마레이디스","모조에스핀","샤틴","아이잗바바","씨씨콜렉트","샤트렌","시슬리","플라스틱아일랜드",
                 "난닝구","발렌시아","헤지스레이디스","라인어디션","코인코즈","올리비아하슬러","스튜디오톰보이","레니본","피그먼트","써스데이아일랜드","오조크","더뽐","크로커다일","케네스레이디","마리끌레르","올리브데올리브","플리츠미","안지크","살롱드쥬","미엘","베이지크","라우렐","듀엘","빈폴레이디스","무자크","에이비플러스"*/)));
-        PRODUCT_ITEMS.put("하의", new ArrayList<>(Arrays.asList("나이키","아디다스","비비안","리바이스","안다르"/*,"폴로랄프로렌","지프","타미힐피거","레노마","바쏘옴므","라코스테","스톤아일랜드","빠니깔레","파타고니아","버커루","뱅뱅","챔피온","라이프워크","BON","리버클래시","디키즈","내셔널지오그래픽","지오송지오","클라이드앤","뉴에라","게스","인디안","CP컴퍼니","다이나핏","NFL","지오지아","JAJU","닉스","바쏘",
+        PRODUCT_ITEMS.put("하의", new ArrayList<>(Arrays.asList("나이키", "아디다스", "비비안", "리바이스", "안다르"/*,"폴로랄프로렌","지프","타미힐피거","레노마","바쏘옴므","라코스테","스톤아일랜드","빠니깔레","파타고니아","버커루","뱅뱅","챔피온","라이프워크","BON","리버클래시","디키즈","내셔널지오그래픽","지오송지오","클라이드앤","뉴에라","게스","인디안","CP컴퍼니","다이나핏","NFL","지오지아","JAJU","닉스","바쏘",
                 "폴햄","킨록","장롱","티아이포맨","HotCode","트레몰로","헤지스","그라미치","에잇세컨즈","NBA","오어슬로우","앤드지","지오다노","올젠","엄브로","칼하트WIP","PAT","웰파","에디션","STCO","브렌우드","칼하트","행텐","바나나리퍼블릭","마인드브릿지","유니클로","용된다","폴로","체이스컬트","트루젠","빈폴","MLB","MIR","지이크","탑텐","프로젝트M","심플리","RZ지오지아","파파브로","후아유","커스텀멜로우",
                 "에디션앤드지","커버낫","프랭키뉴욕","샙","시리즈","캉골","스파오","아킵","TNGT","프랑코페라로","헨리코튼","컨셉원","로가디스","흄","뭉크","카이아크만","산토초이","앤듀","펠틱스","TBJ","릴리전","다니엘크레뮤","스메르","화이트워터보이즈","갤럭시라이프스타일"*/)));
-        PRODUCT_ITEMS.put("모자", new ArrayList<>(Arrays.asList("UNKNOWN","뉴에라","버버리","네파","내셔널지오그래픽"/*,"프로스펙스","에잇세컨즈","타미진스","LEE","코닥어패럴","LIMS","노스페이스","47BRAND","칼하트","타미힐피거","슈펜","코오롱스포츠","동대문모자","피에르가르뎅","헤네스","이미스","나이키","NBA","휠라","화이트샌즈","아메리칸니들","커버낫","밀로","베루툼","구김스","베네노","슈프림",
+        PRODUCT_ITEMS.put("모자", new ArrayList<>(Arrays.asList("UNKNOWN", "뉴에라", "버버리", "네파", "내셔널지오그래픽"/*,"프로스펙스","에잇세컨즈","타미진스","LEE","코닥어패럴","LIMS","노스페이스","47BRAND","칼하트","타미힐피거","슈펜","코오롱스포츠","동대문모자","피에르가르뎅","헤네스","이미스","나이키","NBA","휠라","화이트샌즈","아메리칸니들","커버낫","밀로","베루툼","구김스","베네노","슈프림",
                 "스톤아일랜드","오클리","파타고니아","DIOR","록시","ENVY","데우스엑스마키나","메르헨","굿즈인","닥스","자크뮈스","엄브로","K2","캘빈클라인","스노우피크","JAJU","플리퍼","썬글레이드","MLB","폴로랄프로렌","GANNI","제이제이나인","비비안웨스트우드","후아유","로스코","커먼하우스","하바행크","캠모아","스콰즈","캉골","레노마","바잘","아크테릭스","빌라봉","앙상블","배럴","3M","에콴디노","지프",
                 "캡텐","햇츠온","아가타","UNDERCONTROL","폴로","빈폴ACC","벤시몽","타입서비스","헬스투오","아디다스","헬렌카민스키","구찌","라코스테","데상트","Calvin Klein Jeans","라이프워크","이코마켓","우알롱","SONHADOR","언더아머","뉴발란스","스투시","디스커버리익스페디션","퀵실버","노스페이스화이트라벨","JORDAN","아이엠써니","뷰랩","위크나인"*/)));
         /*PRODUCT_ITEMS.put("신발", new ArrayList<>(Arrays.asList("UNKNOWN", "탠디","나이키","아디다스","에스콰이아","뉴발란스","미소페","소다","크록스","엘칸토","푸마","반스","컨버스","스케쳐스","아식스","알렉산더맥퀸","발렌티노","락포트","휠라","토즈","닥스","허시파피","골든구스","발렌시아가","고세","구찌","언더아머","세라","핏플랍","프라다","베어파우","메종마르지엘라","프로스펙스","리복","AUTRY",
@@ -84,8 +83,7 @@ public class NaverApiService {
     }
 
 
-    public void createItemForNaverApi(CreateDataRequestDto requestDto) {
-        // 첫 for 문 -> display:100, start:1  /  display:100, start:101 / display:100, start:201  /  display:100, start:301 / ..  /  display:100, start:901 / display:100 , start:1000
+    public void createItemForNaverApi() {
         int display = 100;
 
         for (Map.Entry<String, ArrayList<String>> stringArrayListEntry : PRODUCT_ITEMS.entrySet()) {
@@ -104,25 +102,21 @@ public class NaverApiService {
 
                     i += 100;
 
-                    // 보내줄 헤더 정보. 메타 정보
                     RequestEntity<Void> voidRequestEntity = RequestEntity
                             .get(uri)
                             .header("X-Naver-Client-Id", clientId)
                             .header("X-Naver-Client-Secret", clientSecret)
                             .build();
 
-                    // 반환 결과
                     NaverDto naverDto;
                     try {
                         naverDto = restTemplate.exchange(voidRequestEntity, NaverDto.class).getBody();
                     } catch (RestClientException e) {
-//                        throw new ResponseStatusException(WRONG_INPUT.getStatus(), WRONG_INPUT.getMessageTemplate());
                         break;
                     }
 
                     if (ObjectUtils.isEmpty(naverDto.naverItemResponseDtoList())) {
                         log.error("[NaverApiService createItemForNaverApi] no itemResponseDtoList");
-//                        new ResponseStatusException(NO_SEARCH_DATA.getStatus(),NO_SEARCH_DATA.getMessageTemplate());
                         break;
                     }
 
@@ -160,10 +154,7 @@ public class NaverApiService {
 
         LocalDate randomDate = getRandomDateBetween(from, to);
 
-        // 랜덤 날짜에 9시 설정
         LocalDateTime dateTime = randomDate.atTime(9, 0, 0);
-
-//        System.out.println(dateTime);
 
         return dateTime;
     }

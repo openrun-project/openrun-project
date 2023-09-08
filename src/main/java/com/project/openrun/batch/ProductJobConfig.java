@@ -90,11 +90,12 @@ public class ProductJobConfig {
                 .writer(customItemWriter)
                 .faultTolerant()
                 .retryLimit(3)
-                .retry(IllegalArgumentException.class)
+                .retry(Exception.class)
                 .skipLimit(3)
                 .skip(Exception.class)
                 .build();
     }
+
 
 
     @Bean
@@ -104,18 +105,17 @@ public class ProductJobConfig {
                 .build();
     }
 
-
     @Bean
     public Tasklet openRunUpdateStepTasklet() {
 
         return (contribution, chunkContext) ->
                 retryTemplate.execute(retry -> {
-                            LocalDateTime yesterday = LocalDate.now().plusDays(-1).atStartOfDay();//어제
+                            LocalDateTime yesterday = LocalDate.now().plusDays(-1).atStartOfDay();
                             LocalDateTime today = LocalDate.now().atStartOfDay();//오늘
-                            LocalDateTime tomorrow = LocalDate.now().plusDays(1).atStartOfDay();//내일
+                            LocalDateTime tomorrow = LocalDate.now().plusDays(1).atStartOfDay();
 
-                            productRepository.updateProductStatus(yesterday, today, OpenRunStatus.CLOSE, OpenRunStatus.OPEN);//OPEN => CLOSE
-                            productRepository.updateProductStatus(today, tomorrow, OpenRunStatus.OPEN, OpenRunStatus.WAITING);// WAITING => OPEN
+                            productRepository.updateProductStatus(yesterday, today, OpenRunStatus.CLOSE, OpenRunStatus.OPEN);
+                            productRepository.updateProductStatus(today, tomorrow, OpenRunStatus.OPEN, OpenRunStatus.WAITING);
 
                             return RepeatStatus.FINISHED;
                         }, context -> {

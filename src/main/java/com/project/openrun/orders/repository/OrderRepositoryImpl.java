@@ -16,7 +16,7 @@ import static com.project.openrun.orders.entity.QOrder.order;
 import static com.project.openrun.product.entity.QProduct.product;
 
 @RequiredArgsConstructor
-public class OrderRepositoryImpl implements OrderRepositoryCustom{
+public class OrderRepositoryImpl implements OrderRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -32,7 +32,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
                         order.orderStatus
                 ))
                 .from(order)
-                .leftJoin(order.product, product)//left조인과 Projections 를 사용해 fetchJoin을 미사용
+                .leftJoin(order.product, product)
                 .where(order.member.eq(member))
                 .orderBy(order.modifiedAt.desc())
                 .offset(pageable.getOffset())

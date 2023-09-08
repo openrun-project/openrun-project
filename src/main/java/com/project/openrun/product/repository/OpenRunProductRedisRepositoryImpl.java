@@ -27,8 +27,6 @@ public class OpenRunProductRedisRepositoryImpl implements CacheRedisRepository<O
     private final RedisTemplate<String, Integer> productCurrentQuantityCountTemplate;
 
 
-
-
     @Override
     public void saveProduct(int subKey, Page<OpenRunProductResponseDto> products) {
 
@@ -47,12 +45,12 @@ public class OpenRunProductRedisRepositoryImpl implements CacheRedisRepository<O
     }
 
     @Override
-    public void saveProductCount(Long count){
+    public void saveProductCount(Long count) {
         redisCountTemplate.opsForValue().set(CACHE_OPEN_RUN_PRODUCT_COUNT_KEY, String.valueOf(count));
     }
 
     @Override
-    public Optional<Long> getProductCount(){
+    public Optional<Long> getProductCount() {
         String count = redisCountTemplate.opsForValue().get(CACHE_OPEN_RUN_PRODUCT_COUNT_KEY);
         Long result = count == null ? null : Long.parseLong(count);
 
@@ -60,12 +58,10 @@ public class OpenRunProductRedisRepositoryImpl implements CacheRedisRepository<O
     }
 
 
-
     @Override
     public void saveCurrentQuantityCount(Long subKey, Integer count) {
         productCurrentQuantityCountTemplate.opsForValue().set(createOrderKey(subKey), count, getTTL());
     }
-
 
 
     @Override
@@ -90,10 +86,9 @@ public class OpenRunProductRedisRepositoryImpl implements CacheRedisRepository<O
         return CACHE_OPEN_RUN_PRODUCT_KEY + ":" + subKey;
     }
 
-    private String createOrderKey(Long subKey){
-        return CURRENT_QUANTITY_COUNT_KEY+":"+subKey;
+    private String createOrderKey(Long subKey) {
+        return CURRENT_QUANTITY_COUNT_KEY + ":" + subKey;
     }
-
 
 
     private static Duration getTTL() {

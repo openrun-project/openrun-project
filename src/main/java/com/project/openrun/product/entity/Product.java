@@ -54,8 +54,7 @@ public class Product extends BaseAuditing {
         this.wishCount -= 1;
     }
 
-
-    public void decreaseProductQuantity(Integer count) {
-        this.currentQuantity -= count;
+    public void increaseQuantity(Integer count) {
+        this.currentQuantity += count;
     }
 }

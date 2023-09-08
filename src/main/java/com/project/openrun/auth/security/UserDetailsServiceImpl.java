@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        Member member = memberRedisRepository.getMember(email).orElseGet(() ->{
+        Member member = memberRedisRepository.getMember(email).orElseGet(() -> {
             Member findMember = memberRepository.findByMemberEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("Not Found " + email));
 

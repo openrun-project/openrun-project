@@ -14,9 +14,9 @@ import java.util.Optional;
 public class MemberRedisRepository {
 
     private final RedisTemplate<String, Member> memberRedisTemplate;
-    private static final long MEMBER_TTL = 1L;
+    private static final long MEMBER_TTL = 3 * 60L;
     public void setMember(String email, Member member) {
-        memberRedisTemplate.opsForValue().set(createKey(email), member, Duration.ofDays(MEMBER_TTL));
+        memberRedisTemplate.opsForValue().set(createKey(email), member, Duration.ofSeconds(MEMBER_TTL));
     }
 
     public Optional<Member> getMember(String email) {

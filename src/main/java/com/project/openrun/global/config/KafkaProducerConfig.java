@@ -16,7 +16,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import java.util.HashMap;
 import java.util.Map;
 
-@EnableKafka  // Spring Kafka를 활성화시키는 어노테이션
+@EnableKafka
 @Configuration
 public class KafkaProducerConfig {
     @Value("${kafka.bootstrap-servers}")

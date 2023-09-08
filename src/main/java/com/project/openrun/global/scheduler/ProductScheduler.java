@@ -25,27 +25,30 @@ public class ProductScheduler {
 
     private final RedisLock redisLock;
 
-    // 스케줄러 설정
+    private static final String JOB_NAME = "productJob";
+    private static final String BATCH_LOCK_KEY = "batch";
+    private static final String JOB_PARAM_KEY = "time";
+    private static final long TIME_OUT = 5;
+
     @Scheduled(cron = "0 0 0 * * *")  // 매일 정오에 실행
     public void scheduledJobRunner() throws Exception {
 
-        if (redisLock.tryLock("batch", 5)) {
+        if (redisLock.tryLock(BATCH_LOCK_KEY, TIME_OUT)) {
             try {
-                // 마지막 JobExecution의 상태를 확인하여 잡이 이미 실행 중인지 확인
-                Set<JobExecution> productJob = jobExplorer.findRunningJobExecutions("productJob");
+                Set<JobExecution> productJob = jobExplorer.findRunningJobExecutions(JOB_NAME);
 
                 if (productJob.isEmpty()) {
                     JobParameters jobParameters = new JobParametersBuilder()
-                            .addLong("time", System.currentTimeMillis())
+                            .addLong(JOB_PARAM_KEY, System.currentTimeMillis())
                             .toJobParameters();
 
-                    jobLauncher.run(jobRegistry.getJob("productJob"), jobParameters);
+                    jobLauncher.run(jobRegistry.getJob(JOB_NAME), jobParameters);
 
                 } else {
                     log.info("Job이 이미 실행 중 입니다.");
                 }
             } finally {
-                redisLock.unlock("batch");
+                redisLock.unlock(BATCH_LOCK_KEY);
             }
         } else {
             log.info("락을 획득하지 못했습니다. 다른 인스턴스에서 이미 batch 작업 수행중입니다.");

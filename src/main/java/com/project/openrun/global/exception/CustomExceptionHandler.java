@@ -12,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity dataValidException(MethodArgumentNotValidException ex){
+    public ResponseEntity dataValidException(MethodArgumentNotValidException ex) {
         log.error("Data Not Valid", ex);
         return ResponseEntity.status(400).build();
     }
@@ -22,6 +22,6 @@ public class CustomExceptionHandler {
 
         return ResponseEntity
                 .status(ex.getStatusCode())
-                .body(new ExceptionResponseDto(ex.getBody().getTitle(),ex.getBody().getDetail()));
+                .body(new ExceptionResponseDto(ex.getBody().getTitle(), ex.getBody().getDetail()));
     }
 }

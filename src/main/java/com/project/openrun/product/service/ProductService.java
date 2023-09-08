@@ -41,7 +41,6 @@ public class ProductService {
         Page<AllProductResponseDto> productsInRedis = allProductRedisRepository.getProduct(pageNumber);
 
         if (Objects.isNull(productsInRedis)) {
-            // 인덱싱 적용 고려중
 
             Long count = allProductRedisRepository.getProductCount().orElseGet(() -> {
                 long countResult = productRepository.count();
@@ -49,7 +48,7 @@ public class ProductService {
                 return countResult;
             });
 
-            Page<AllProductResponseDto> productsInDB = productRepository.findAllDto(pageable,count);
+            Page<AllProductResponseDto> productsInDB = productRepository.findAllDto(pageable, count);
 
             allProductRedisRepository.saveProduct(pageNumber, productsInDB);
 
@@ -68,7 +67,7 @@ public class ProductService {
                 () -> new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("해당 상품"))
         );
 
-        if(currentQuantity == null && OpenRunStatus.OPEN.equals(findProduct.getStatus())){
+        if (currentQuantity == null && OpenRunStatus.OPEN.equals(findProduct.getStatus())) {
             openRunProductRedisRepository.saveCurrentQuantityCount(productId, findProduct.getCurrentQuantity());
             currentQuantity = openRunProductRedisRepository.getCurrentQuantityCount(productId);
         }
@@ -88,7 +87,7 @@ public class ProductService {
         );
     }
 
-    
+
     public Page<AllProductResponseDto> searchAllProducts(ProductSearchCondition condition, Pageable pageable) {
         Page<AllProductResponseDto> allProductResponseDtos = productsSearchRepository.searchAllProductsUsingFullText(condition, pageable);
 

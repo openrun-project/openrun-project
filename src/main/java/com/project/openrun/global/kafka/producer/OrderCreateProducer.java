@@ -61,14 +61,13 @@ public class OrderCreateProducer {
                 log.error("Exception : {}, This RetryCont is {} ", e.getMessage(), i + 1);
             }
         }
-        // redis 재고 복구
+
         openRunProductRedisRepository.increaseQuantity(orderEventDto.getProductId(), orderEventDto.getOrderRequestDto().count());
 
         Product product = productRepository.findById(orderEventDto.getProductId()).orElseThrow(() ->
                 new ResponseStatusException(NOT_FOUND_DATA.getStatus(), NOT_FOUND_DATA.formatMessage("존재하지 않는 상품"))
         );
 
-        //status가 "FAIL"인 주문 생성
         Order order = Order.builder()
                 .member(orderEventDto.getMember())
                 .product(product)

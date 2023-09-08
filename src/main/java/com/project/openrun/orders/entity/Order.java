@@ -40,6 +40,4 @@ public class Order extends BaseAuditing {
     private Product product;
 
 
-
-
 }

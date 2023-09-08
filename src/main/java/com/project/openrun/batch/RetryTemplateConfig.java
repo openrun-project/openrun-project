@@ -14,7 +14,7 @@ public class RetryTemplateConfig {
     @Bean
     public RetryTemplate retryTemplate(){
         SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
-        retryPolicy.setMaxAttempts(RETRY_COUNT); // 최대 3회 재시도
+        retryPolicy.setMaxAttempts(RETRY_COUNT);
 
         FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
         backOffPolicy.setBackOffPeriod(DELAY);

@@ -30,7 +30,7 @@ public class RedisConfig {
     @Bean
     public RedisTemplate<String, PageProductResponseDto> productRedisTemplate() {
         RedisTemplate<String, PageProductResponseDto> redisTemplate = new RedisTemplate<>();
-        // command 를 코드로 구현할 수 있게 도와주는 것.
+
         redisTemplate.setConnectionFactory(redisConnectionFactory());
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());

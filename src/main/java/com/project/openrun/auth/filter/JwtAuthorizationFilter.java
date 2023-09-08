@@ -25,7 +25,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
 
-    // 토큰이 필요없는 api 리스트를 만들어 놓는다.
+
     private static final String[] whiteUrl = {"/api/products", "/api/products/openrun", "/api/products/wishcount/**"};
 
     public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
@@ -45,9 +45,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            // 위에서 명시된 리스트의 api 요청된 경우, filterChain.doFilter(req, res); 해주자.
             if (!(StringUtils.hasText(url) && PatternMatchUtils.simpleMatch(whiteUrl, url) && req.getMethod().equals("GET"))) {
-                log.info("[JwtAuthorizationFilter doFilterInternal] authorizationFilter 동작 "+req.getRequestURL().toString());
+                log.info("[JwtAuthorizationFilter doFilterInternal] authorizationFilter 동작 " + req.getRequestURL().toString());
                 Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
 
                 try {
@@ -62,7 +61,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(req, res);
     }
 
-    // 인증 처리
     public void setAuthentication(String username) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         Authentication authentication = createAuthentication(username);
@@ -71,7 +69,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         SecurityContextHolder.setContext(context);
     }
 
-    // 인증 객체 생성
     private Authentication createAuthentication(String username) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

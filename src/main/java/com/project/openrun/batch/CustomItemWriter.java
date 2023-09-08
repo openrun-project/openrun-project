@@ -23,9 +23,7 @@ import java.util.ArrayList;
 public class CustomItemWriter implements ItemWriter<OpenRunProductResponseDto>, StepExecutionListener {
 
     private final CacheRedisRepository<OpenRunProductResponseDto> openRunProductRedisRepository;
-
     private static final int PAGE_SIZE = 16;
-
     private ExecutionContext executionContext;
     private int currentPage;
 

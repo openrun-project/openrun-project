@@ -40,7 +40,6 @@ public class OrderService {
         }
 
         return order;
-
     }
 
 
@@ -68,7 +67,7 @@ public class OrderService {
             throw new ResponseStatusException(NOT_AUTHORIZATION.getStatus(), NOT_AUTHORIZATION.formatMessage("주문"));
         }
 
-        productRepository.updateProductQuantity(order.getCount(), order.getProduct().getId());
+        order.getProduct().increaseQuantity(order.getCount());
 
         openRunProductRedisRepository.increaseQuantity(order.getProduct().getId(), order.getCount());
 
