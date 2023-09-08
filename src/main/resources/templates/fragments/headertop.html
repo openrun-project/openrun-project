@@ -60,16 +60,21 @@
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
-                            <label for="email">Email address</label>
-                            <input type="email" class="form-control" id="email" aria-describedby="emailHelp"
+                            <label for="signupemail">Email address</label>
+                            <input type="email" class="form-control" id="signupemail" name="memberemail" aria-describedby="emailHelp"
                                    placeholder="Enter email">
                         </div>
                         <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="Password">
+                            <label for="signuppassword">Password</label>
+                            <input type="password" class="form-control" id="signuppassword" name="memberpassword" placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                            <label for="signupname">name</label>
+                            <input type="name" class="form-control" id="signupname" name="membername" aria-describedby="emailHelp"
+                                   placeholder="Enter name">
                         </div>
                         <!-- ... [회원 가입 폼 필드] ... -->
-                        <button type="submit" class="btn btn-primary">Signup</button>
+                        <button type="button" class="btn btn-primary" onclick="signup();">Signup</button>
                     </form>
                 </div>
             </div>
