@@ -123,7 +123,7 @@
 
 - 👉 <a href="https://www.notion.so/EC2-ce08e6ed64724051978d9f410e0233ae?pvs=4" target="_blank"> EC2 서버 메모리 사용량 누적 </a> 
   
-- 👉 <a href=" https://www.notion.so/Scheduler-Spring-Batch-Redis-c04f9f94dd6b4bf48049a902ad06cdf5?pvs=4" target="_blank"> Scheduler 실행의 문제 - Spring Batch, Redis 분산락 </a>
+- 👉 <a href="https://www.notion.so/Scheduler-Spring-Batch-Redis-c04f9f94dd6b4bf48049a902ad06cdf5?pvs=4" target="_blank"> Scheduler 실행의 문제 - Spring Batch, Redis 분산락 </a>
 
 - 👉 <a href="https://www.notion.so/Spring-Batch-ad54195611094f49ad2a33513797a753?pvs=4" target="_blank"> Spring Batch 페이징 방식의 성능 문제 개선 </a> 
 
