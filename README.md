@@ -52,12 +52,8 @@
 
 📚 **Tech Stack**
 
-<img src="https://img.shields.io/badge/JAVA-6DB33F?style=flat&logo=&logoColor=white"/>
-<img src="https://img.shields.io/badge/JWT-6DB33F?style=flat&logo=&logoColor=white"/>
-<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat&logo=springboot&logoColor=white"/>  <img src="https://img.shields.io/badge/Spring JPA-6DB33F?style=flat&logo=&logoColor=white"/>  <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=flat&logo=springsecurity&logoColor=white"/>
- <img src="https://img.shields.io/badge/Spring Batch-6DB33F?style=flat&logo=&logoColor=white"/>
-<img src="https://img.shields.io/badge/QueryDSL-7957D5?style=flat&logo=&logoColor=white"/>
-<img src="https://img.shields.io/badge/Kafka-231F20?style=flat&logo=ApacheKafka&logoColor=white"/>
+<img src="https://img.shields.io/badge/JAVA-6DB33F?style=flat&logo=&logoColor=white"/> <img src="https://img.shields.io/badge/JWT-6DB33F?style=flat&logo=&logoColor=white"/>
+<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat&logo=springboot&logoColor=white"/> <img src="https://img.shields.io/badge/Spring JPA-6DB33F?style=flat&logo=&logoColor=white"/> <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=flat&logo=springsecurity&logoColor=white"/> <img src="https://img.shields.io/badge/Spring Batch-6DB33F?style=flat&logo=&logoColor=white"/> <img src="https://img.shields.io/badge/QueryDSL-7957D5?style=flat&logo=&logoColor=white"/> <img src="https://img.shields.io/badge/Kafka-231F20?style=flat&logo=ApacheKafka&logoColor=white"/>
 
 
 🛢️ **DB**
@@ -66,13 +62,11 @@
 
 🛞 **DevOps**
 
-<img src="https://img.shields.io/badge/AWS EC2-FF9900?style=flat&logo=amazonec2&logoColor=white"/> 
-<img src="https://img.shields.io/badge/AWS Application Load Balancer-6DB33F?style=flat&logo=&logoColor=white"/>  <img src="https://img.shields.io/badge/AWS Auto Scaling-FF9900?style=flat&logo=&logoColor=white"/>  
-<img src="https://img.shields.io/badge/GitHub Actions-F05032?style=flat&logo=&logoColor=white"/> <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white"/> <img src="https://img.shields.io/badge/DockerHub-2430ED?style=flat&logo=docker&logoColor=white"/>
+<img src="https://img.shields.io/badge/AWS EC2-FF9900?style=flat&logo=amazonec2&logoColor=white"/> <img src="https://img.shields.io/badge/AWS Application Load Balancer-6DB33F?style=flat&logo=&logoColor=white"/> <img src="https://img.shields.io/badge/AWS Auto Scaling-FF9900?style=flat&logo=&logoColor=white"/> <img src="https://img.shields.io/badge/GitHub Actions-F05032?style=flat&logo=&logoColor=white"/> <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white"/> <img src="https://img.shields.io/badge/DockerHub-2430ED?style=flat&logo=docker&logoColor=white"/>
 
 👨‍🔬 **Test**
 
-<img src="https://img.shields.io/badge/Junit5-25A162?style=flat&logo=junit5&logoColor=white"/>  <img src="https://img.shields.io/badge/Mockito-6DB33F?style=flat&logo=&logoColor=white"/>  <img src="https://img.shields.io/badge/Jmeter-D22128?style=flat&logo=apachejmeter&logoColor=white"/>  <img src="https://img.shields.io/badge/Postman-FF6C37?style=flat&logo=postman&logoColor=white"/>  
+<img src="https://img.shields.io/badge/Junit5-25A162?style=flat&logo=junit5&logoColor=white"/> <img src="https://img.shields.io/badge/Mockito-6DB33F?style=flat&logo=&logoColor=white"/> <img src="https://img.shields.io/badge/Jmeter-D22128?style=flat&logo=apachejmeter&logoColor=white"/> <img src="https://img.shields.io/badge/Postman-FF6C37?style=flat&logo=postman&logoColor=white"/>  
 
 🖥️ **Monitoring**
 
@@ -87,9 +81,10 @@
 ## 시연영상
 [시연영상 바로가기](https://www.youtube.com/watch?v=QbM4UkDW9LI&t=44s)
 
-#
+
 ## 서비스 아키텍처 
 ![image](https://github.com/openrun-project/openrun-project/assets/96398475/9d32e923-d70d-4946-b0bb-68e085125feb)
+
 
 ## 우리가 사용 기술 선택한 이유 보러가기
 [보러가기](https://teamsparta.notion.site/OpenRace-66c285369aa04733aedf899adae798d9)
