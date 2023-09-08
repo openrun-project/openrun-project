@@ -87,7 +87,7 @@
 
 
 ## 우리가 사용 기술 선택한 이유 보러가기
-[보러가기](https://teamsparta.notion.site/OpenRace-66c285369aa04733aedf899adae798d9)
+[보러가기](https://www.notion.so/OpenRace-705eedb8ceb14014b41efc5ea624bcfa?pvs=4#0d806bdf7e5c433ab7cd0339865edf5e)
 
 
 ## ERD
